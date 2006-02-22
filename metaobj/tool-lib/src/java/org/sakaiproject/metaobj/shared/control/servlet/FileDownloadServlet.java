@@ -1,29 +1,29 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2005, 2006 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2005, 2006 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control.servlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.DownloadableManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -89,11 +89,11 @@ public class FileDownloadServlet extends HttpServlet {
     * returns an HTTP "Bad Request" message.
     *
     * @param request  an {@link javax.servlet.http.HttpServletRequest} object that
-    *             contains the request the client has made
-    *             of the servlet
+    *                 contains the request the client has made
+    *                 of the servlet
     * @param response an {@link javax.servlet.http.HttpServletResponse} object that
-    *             contains the response the servlet sends
-    *             to the client
+    *                 contains the response the servlet sends
+    *                 to the client
     * @throws java.io.IOException            if an input or output error is
     *                                        detected when the servlet handles
     *                                        the GET request
@@ -103,36 +103,35 @@ public class FileDownloadServlet extends HttpServlet {
     */
    protected void doGet(HttpServletRequest request,
                         HttpServletResponse response) throws ServletException, IOException {
-      java.util.Enumeration tokenizer = new StringTokenizer(
-         request.getRequestURI(), "/");
+      java.util.Enumeration tokenizer = new StringTokenizer(request.getRequestURI(), "/");
 
       if (!tokenizer.hasMoreElements()) {
          throw new ServletException("Incorrect format url.");
       }
-      String base = (String)tokenizer.nextElement(); // burn off the first element of the path
+      String base = (String) tokenizer.nextElement(); // burn off the first element of the path
 
       while (!base.equalsIgnoreCase(REPOSITORY_PREFIX)) {
          if (!tokenizer.hasMoreElements()) {
             throw new ServletException("Incorrect format url.");
          }
-         base = (String)tokenizer.nextElement();
+         base = (String) tokenizer.nextElement();
       }
 
       Hashtable params = HttpUtils.parseQueryString(getNextToken(tokenizer));
 
-      DownloadableManager manager = getDownloadableManager(((String[])params.get(MANAGER_NAME))[0]);
+      DownloadableManager manager = getDownloadableManager(((String[]) params.get(MANAGER_NAME))[0]);
       manager.packageForDownload(params, response.getOutputStream());
    }
 
    protected DownloadableManager getDownloadableManager(String name) {
-      return (DownloadableManager)ComponentManager.get(name);
+      return (DownloadableManager) ComponentManager.get(name);
    }
 
    protected String getNextToken(Enumeration tokenizer) throws ServletException {
       if (!tokenizer.hasMoreElements()) {
          throw new ServletException("Incorrect format url.");
       }
-      return (String)tokenizer.nextElement();
+      return (String) tokenizer.nextElement();
    }
 
 }

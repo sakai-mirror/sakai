@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.xml.impl;
 
 import org.jdom.Element;
@@ -69,7 +69,8 @@ public class NumberElementType extends FormatterElementType {
                minIncl = (Number) getFormattedRestriction(restrictions, "minInclusive", xsdNamespace);
                maxExcl = (Number) getFormattedRestriction(restrictions, "maxExclusive", xsdNamespace);
                minExcl = (Number) getFormattedRestriction(restrictions, "minExclusive", xsdNamespace);
-            } catch (ParseException e) {
+            }
+            catch (ParseException e) {
                throw new SchemaInvalidException(e);
             }
 
@@ -78,8 +79,8 @@ public class NumberElementType extends FormatterElementType {
       }
 
       if (maxIncl != null || minIncl != null ||
-          maxExcl != null || minExcl != null) {
-          // one must not be null, create a range
+            maxExcl != null || minExcl != null) {
+         // one must not be null, create a range
          Comparable min = (Comparable) minIncl;
          if (min == null) {
             min = (Comparable) minExcl;
@@ -104,27 +105,27 @@ public class NumberElementType extends FormatterElementType {
 
       if (maxIncl != null && i > maxIncl.intValue()) {
          throw new NormalizationException("Invalid number",
-            NormalizationException.TOO_LARGE_INCLUSIVE_ERROR_CODE, new Object[]{o, maxIncl});
+               NormalizationException.TOO_LARGE_INCLUSIVE_ERROR_CODE, new Object[]{o, maxIncl});
       }
 
       if (minIncl != null && i < minIncl.intValue()) {
          throw new NormalizationException("Invalid number",
-            NormalizationException.TOO_SMALL_INCLUSIVE_ERROR_CODE, new Object[]{o, minIncl});
+               NormalizationException.TOO_SMALL_INCLUSIVE_ERROR_CODE, new Object[]{o, minIncl});
       }
 
       if (maxExcl != null && i >= maxExcl.intValue()) {
          throw new NormalizationException("Invalid number",
-            NormalizationException.TOO_LARGE_ERROR_CODE, new Object[]{o, maxExcl});
+               NormalizationException.TOO_LARGE_ERROR_CODE, new Object[]{o, maxExcl});
       }
 
       if (minExcl != null && i <= minExcl.intValue()) {
          throw new NormalizationException("Invalid number",
-            NormalizationException.TOO_SMALL_ERROR_CODE, new Object[]{o, minExcl});
+               NormalizationException.TOO_SMALL_ERROR_CODE, new Object[]{o, minExcl});
       }
 
       if (totalDigits != -1 && o.toString().length() > totalDigits) {
          throw new NormalizationException("Invalid number",
-            NormalizationException.TOO_MANY_DIGITS_ERROR_CODE, new Object[]{o, new Integer(totalDigits)});
+               NormalizationException.TOO_MANY_DIGITS_ERROR_CODE, new Object[]{o, new Integer(totalDigits)});
       }
 
       return o;
@@ -132,7 +133,7 @@ public class NumberElementType extends FormatterElementType {
 
    protected String parserException(String value, ParseException e) {
       throw new NormalizationException("Invalid number",
-         NormalizationException.INVALID_NUMBER_ERROR_CODE, new Object[]{value});
+            NormalizationException.INVALID_NUMBER_ERROR_CODE, new Object[]{value});
    }
 
    public Class getObjectType() {

@@ -6,23 +6,23 @@
             <xs:element name="description" minOccurs="0">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">description</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
             <xs:element name="finishBy" minOccurs="1">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="19" />
+                     <xs:maxLength value="19"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">finish by</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
          </xs:sequence>

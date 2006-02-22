@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.home;
 
 import org.apache.commons.logging.Log;
@@ -27,24 +27,17 @@ import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.ResourceLoader;
+import org.jdom.output.XMLOutputter;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.FinderException;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -118,11 +111,13 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
       if (id == null) {
          try {
             objectFile = File.createTempFile(rootNode, ".xml", homeDirectory);
-         } catch (IOException e) {
-            logger.error("",e);
+         }
+         catch (IOException e) {
+            logger.error("", e);
             throw new OspException(e);
          }
-      } else {
+      }
+      else {
          objectFile = new File(homeDirectory, id);
          if (objectFile.exists()) {
             objectFile.delete();
@@ -138,8 +133,9 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
          Format format = Format.getPrettyFormat();
          outputter.setFormat(format);
          outputter.output(xmlObject.getBaseElement(), new FileOutputStream(objectFile));
-      } catch (IOException e) {
-         logger.error("",e);
+      }
+      catch (IOException e) {
+         logger.error("", e);
          throw new OspException(e);
       }
 
@@ -189,14 +185,15 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
          Document doc = builder.build(objectFile);
 
          StructuredArtifact xmlObject =
-            new StructuredArtifact(doc.getRootElement(), getSchema().getChild(rootNode));
+               new StructuredArtifact(doc.getRootElement(), getSchema().getChild(rootNode));
 
          xmlObject.setId(id);
 
          xmlObject.setHome(this);
 
          return xmlObject;
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          throw new SchemaInvalidException(e);
       }
    }
@@ -226,7 +223,8 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
       for (int i = 0; i < files.length; i++) {
          try {
             returnedList.add(load(files[i]));
-         } catch (PersistenceException e) {
+         }
+         catch (PersistenceException e) {
             throw new FinderException();
          }
       }
@@ -246,7 +244,7 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
    public String getExternalUri(Id artifactId, String name) {
       //http://johnellis.rsmart.com:8080/osp/member/viewNode.osp?pid=1107451588272-643&nodeId=48D2AFE5A98453AD673579E14405607C
       return "viewNode.osp?pid=" + PortalService.getCurrentToolId() +
-         "&nodeId=" + artifactId.getValue();
+            "&nodeId=" + artifactId.getValue();
    }
 
    public InputStream getStream(Id artifactId) {
@@ -307,10 +305,11 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
       getType().setId(getIdManager().getId(getTypeId()));
    }
 
-   protected String pathToWebInf(){
+   protected String pathToWebInf() {
       try {
          return resourceLoader.getResource("WEB-INF").getFile().getCanonicalPath();
-      } catch (IOException e) {
+      }
+      catch (IOException e) {
          throw new RuntimeException(e);
       }
    }
@@ -343,7 +342,7 @@ public class XmlElementHome implements StructuredArtifactHomeInterface, Initiali
       this.instruction = instruction;
    }
 
-   public SchemaNode getRootSchema(){
+   public SchemaNode getRootSchema() {
       return getSchema().getChild(getRootNode());
    }
 

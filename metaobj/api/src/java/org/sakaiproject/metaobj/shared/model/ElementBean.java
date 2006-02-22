@@ -1,37 +1,26 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.model;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +34,10 @@ import org.sakaiproject.metaobj.utils.TypedMap;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
 import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -122,24 +115,28 @@ public class ElementBean extends HashMap implements TypedMap {
 
          try {
             normalizedValue = elementSchema.getSchemaNormalizedValue(value);
-         } catch (NormalizationException exp) {
+         }
+         catch (NormalizationException exp) {
             if (deferValidation) {
                normalizedValue = value.toString();
-            } else {
+            }
+            else {
                throw exp;
             }
          }
 
          if (elementSchema.isAttribute()) {
-            Attribute oldAttribute = currentElement().getAttribute((String)key);
+            Attribute oldAttribute = currentElement().getAttribute((String) key);
             if (value != null && value.toString().length() > 0) {
                logger.debug("not removing attribute" + key);
                if (oldAttribute == null) {
                   currentElement().setAttribute(key.toString(), normalizedValue);
-               } else {
+               }
+               else {
                   oldAttribute.setValue(normalizedValue);
                }
-            } else if (oldAttribute != null) {
+            }
+            else if (oldAttribute != null) {
                logger.debug("removing attribute" + key);
                currentElement().removeAttribute(key.toString());
             }
@@ -152,16 +149,19 @@ public class ElementBean extends HashMap implements TypedMap {
                   Element newElement = new Element((String) key);
                   newElement.addContent(normalizedValue);
                   currentElement().addContent(newElement);
-               } else {
+               }
+               else {
                   oldElement.setText(normalizedValue);
                }
-            } else if (oldElement != null) {
+            }
+            else if (oldElement != null) {
                currentElement().removeContent(oldElement);
             }
          }
-      } else {
+      }
+      else {
          // if you got here, must be a simple element
-         ElementListBean listBean = (ElementListBean)get(key);
+         ElementListBean listBean = (ElementListBean) get(key);
 
          while (listBean.size() > 0) {
             listBean.remove(0);
@@ -169,9 +169,9 @@ public class ElementBean extends HashMap implements TypedMap {
 
          if (value instanceof String[]) {
 
-            String[] values = (String[])value;
+            String[] values = (String[]) value;
 
-            for (int i=0;i<values.length;i++) {
+            for (int i = 0; i < values.length; i++) {
                if (values[i].length() > 0) {
                   ElementBean bean = listBean.createBlank();
                   bean.getBaseElement().addContent(values[i]);
@@ -182,7 +182,7 @@ public class ElementBean extends HashMap implements TypedMap {
          else if (value instanceof String) {
             if (value.toString().length() > 0) {
                ElementBean bean = listBean.createBlank();
-               bean.getBaseElement().addContent((String)value);
+               bean.getBaseElement().addContent((String) value);
                listBean.add(bean);
             }
          }
@@ -235,7 +235,7 @@ public class ElementBean extends HashMap implements TypedMap {
       }
 
       if (schema.isAttribute()) {
-         Attribute child = baseElement.getAttribute((String)key);
+         Attribute child = baseElement.getAttribute((String) key);
 
          if (child == null) {
             return null;
@@ -243,7 +243,8 @@ public class ElementBean extends HashMap implements TypedMap {
          else {
             try {
                return schema.getActualNormalizedValue(child.getValue());
-            } catch (NormalizationException exp) {
+            }
+            catch (NormalizationException exp) {
                // This should not happen... values should already be validated...
                // just return the text itself...
                return child.getValue();
@@ -257,7 +258,8 @@ public class ElementBean extends HashMap implements TypedMap {
             if (schema.getObjectType().isAssignableFrom(java.util.Map.class)) {
                child = new Element(schema.getName());
                baseElement.addContent(child);
-            } else {
+            }
+            else {
                return null;
             }
          }
@@ -268,10 +270,12 @@ public class ElementBean extends HashMap implements TypedMap {
 
          if (Map.class.isAssignableFrom(objectClass)) {
             return new ElementBean(child, schema, deferValidation);
-         } else {
+         }
+         else {
             try {
                return schema.getActualNormalizedValue(child.getText());
-            } catch (NormalizationException exp) {
+            }
+            catch (NormalizationException exp) {
                // This should not happen... values should already be validated...
                // just return the text itself...
                return child.getText();
@@ -286,7 +290,8 @@ public class ElementBean extends HashMap implements TypedMap {
       if (wrapper == null) {
          wrapper = getWrapperFactory().wrapInstance(value);
          wrappedInstances.put(key, wrapper);
-      } else {
+      }
+      else {
          wrapper.setValue(value);
       }
 
@@ -354,106 +359,106 @@ public class ElementBean extends HashMap implements TypedMap {
    public void setDeferValidation(boolean deferValidation) {
       this.deferValidation = deferValidation;
    }
-   
-   /**
-    * Generate a string containing XML tags and values representing the current contents of the element 
-	* @return An XML String representation of the object 
-	*/
-   public String toXmlString() throws PersistenceException
-   {
-   		XMLOutputter outputter = new XMLOutputter();
-   		ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-   		try 
-		{
-   			Format format = Format.getPrettyFormat();
-   			outputter.setFormat(format);
-   			outputter.output(getBaseElement(), os);
-   			return new String(os.toByteArray());
-   			//return os.toByteArray();
-		} 
-   		catch (IOException e) 
-		{
-   			throw new PersistenceException(e, "Unable to write object", null, null);
-		}
+   /**
+    * Generate a string containing XML tags and values representing the current contents of the element
+    *
+    * @return An XML String representation of the object
+    */
+   public String toXmlString() throws PersistenceException {
+      XMLOutputter outputter = new XMLOutputter();
+      ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+      try {
+         Format format = Format.getPrettyFormat();
+         outputter.setFormat(format);
+         outputter.output(getBaseElement(), os);
+         return new String(os.toByteArray());
+         //return os.toByteArray();
+      }
+      catch (IOException e) {
+         throw new PersistenceException(e, "Unable to write object", null, null);
+      }
 
    }	  // toXmlString
-   
-   class EntrySet implements Map.Entry {
-       
-       private Object key;
-       private Object value;
-       //TODO what about equals and hashcode?
-       
-       public EntrySet (Object key, Object value) {
-           this.key = key;
-           this.value = value;
-       }
-        /* (non-Javadoc)
-         * @see java.util.Map.Entry#getKey()
-         */
-        public Object getKey() {
-            return key;
-        }
-    
-        /* (non-Javadoc)
-         * @see java.util.Map.Entry#getValue()
-         */
-        public Object getValue() {
-            return value;
-        }
-    
-        /* (non-Javadoc)
-         * @see java.util.Map.Entry#setValue(java.lang.Object)
-         */
-        public Object setValue(Object value) {
-            // TODO Maybe throw an exception instead
-            this.value = value;
-            return this.value;
-        }
-   
-   }
-   
-   
-   
-    /* (non-Javadoc)
-     * @see java.util.Map#entrySet()
-     */
-    public Set entrySet() {
-        Set entries = new HashSet();
-        List children = currentSchema.getChildren();
-        for (Iterator iter = children.iterator(); iter.hasNext();) {
-            SchemaNode child = (SchemaNode)iter.next();
-            String key = child.getName();
-            Object value = get(key);
-            EntrySet entry = new EntrySet(key, value);
-            entries.add(entry);
-        }
 
-        return entries;
-    }
-    /* (non-Javadoc)
-     * @see java.util.Map#keySet()
-     */
-    public Set keySet() {
-        Set keys = new HashSet();
-        //List children = currentSchema.getChildren();
-        for (Iterator iter = entrySet().iterator(); iter.hasNext();) {
-            EntrySet child = (EntrySet)iter.next();
-            keys.add(child.getKey());
-        }
-        return keys;
-    }
-    /* (non-Javadoc)
-     * @see java.util.Map#values()
-     */
-    public Collection values() {
-        Set values = new HashSet();
-        for (Iterator iter = entrySet().iterator(); iter.hasNext();) {
-            EntrySet child = (EntrySet)iter.next();
-            Object value = child.getValue();
-            values.add(value);
-        }
-        return values;
-    }
+   class EntrySet implements Map.Entry {
+
+      private Object key;
+      private Object value;
+      //TODO what about equals and hashcode?
+
+      public EntrySet(Object key, Object value) {
+         this.key = key;
+         this.value = value;
+      }
+
+      /* (non-Javadoc)
+       * @see java.util.Map.Entry#getKey()
+       */
+      public Object getKey() {
+         return key;
+      }
+
+      /* (non-Javadoc)
+       * @see java.util.Map.Entry#getValue()
+       */
+      public Object getValue() {
+         return value;
+      }
+
+      /* (non-Javadoc)
+       * @see java.util.Map.Entry#setValue(java.lang.Object)
+       */
+      public Object setValue(Object value) {
+         // TODO Maybe throw an exception instead
+         this.value = value;
+         return this.value;
+      }
+
+   }
+
+
+   /* (non-Javadoc)
+    * @see java.util.Map#entrySet()
+    */
+   public Set entrySet() {
+      Set entries = new HashSet();
+      List children = currentSchema.getChildren();
+      for (Iterator iter = children.iterator(); iter.hasNext();) {
+         SchemaNode child = (SchemaNode) iter.next();
+         String key = child.getName();
+         Object value = get(key);
+         EntrySet entry = new EntrySet(key, value);
+         entries.add(entry);
+      }
+
+      return entries;
+   }
+
+   /* (non-Javadoc)
+    * @see java.util.Map#keySet()
+    */
+   public Set keySet() {
+      Set keys = new HashSet();
+      //List children = currentSchema.getChildren();
+      for (Iterator iter = entrySet().iterator(); iter.hasNext();) {
+         EntrySet child = (EntrySet) iter.next();
+         keys.add(child.getKey());
+      }
+      return keys;
+   }
+
+   /* (non-Javadoc)
+    * @see java.util.Map#values()
+    */
+   public Collection values() {
+      Set values = new HashSet();
+      for (Iterator iter = entrySet().iterator(); iter.hasNext();) {
+         EntrySet child = (EntrySet) iter.next();
+         Object value = child.getValue();
+         values.add(value);
+      }
+      return values;
+   }
 }

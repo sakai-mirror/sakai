@@ -2,19 +2,19 @@
 
 <registration>
 
-	<tool id="sakai.metaobj" title="Forms" description="Sakai Forms Tool">
-       <configuration name="test" value="reg-value" />
+   <tool id="sakai.metaobj" title="Forms" description="Sakai Forms Tool">
+      <configuration name="test" value="reg-value"/>
 
-       <category name="sakai.main" />
-       <category name="project" />
+      <category name="sakai.main"/>
+      <category name="project"/>
 
-       <keyword name="structured" />
-       <keyword name="artifact"/>
-       <keyword name="definition" />
-       
-       <configuration name="theospi.resetUrl"
-            value="listStructuredArtifactDefinitions.osp" />
-       
-	</tool>
+      <keyword name="structured"/>
+      <keyword name="artifact"/>
+      <keyword name="definition"/>
+
+      <configuration name="theospi.resetUrl"
+         value="listStructuredArtifactDefinitions.osp"/>
+
+   </tool>
 
 </registration>

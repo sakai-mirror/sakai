@@ -1,32 +1,31 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.xml.impl;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.sakaiproject.metaobj.utils.xml.*;
-import org.sakaiproject.metaobj.utils.xml.ElementType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -158,7 +157,7 @@ public class BaseElementType implements ElementType {
     */
    public ValidatedNode validateAndNormalize(Element node) {
       ValidatedNodeImpl validatedNode =
-         new ValidatedNodeImpl(parentNode, node);
+            new ValidatedNodeImpl(parentNode, node);
 
       String value = node.getText();
 
@@ -170,7 +169,8 @@ public class BaseElementType implements ElementType {
          if (value == null || value.length() == 0) {
             return null;
          }
-      } catch (NormalizationException exp) {
+      }
+      catch (NormalizationException exp) {
          validatedNode.getErrors().add(new ValidationError(validatedNode, exp.getErrorCode(), exp.getErrorInfo()));
       }
 
@@ -201,30 +201,30 @@ public class BaseElementType implements ElementType {
 
       if (length != -1 && valueLength != length) {
          throw new NormalizationException("Invalid string length",
-            NormalizationException.INVALID_LENGTH_ERROR_CODE, new Object[]{startingValue, new Integer(length)});
+               NormalizationException.INVALID_LENGTH_ERROR_CODE, new Object[]{startingValue, new Integer(length)});
       }
 
       if (maxLength != -1 && valueLength > maxLength) {
          throw new NormalizationException("Invalid string length",
-            NormalizationException.INVALID_LENGTH_TOO_LONG_ERROR_CODE,
-            new Object[]{startingValue, new Integer(maxLength)});
+               NormalizationException.INVALID_LENGTH_TOO_LONG_ERROR_CODE,
+               new Object[]{startingValue, new Integer(maxLength)});
       }
 
       if (minLength != -1 && valueLength < minLength && minLength == 1) {
          throw new NormalizationException("Required field",
-            NormalizationException.REQIRED_FIELD_ERROR_CODE, new Object[0]);
+               NormalizationException.REQIRED_FIELD_ERROR_CODE, new Object[0]);
       }
 
       if (minLength != -1 && valueLength < minLength) {
          throw new NormalizationException("Invalid string length",
-            NormalizationException.INVALID_LENGTH_TOO_SHORT_ERROR_CODE,
-            new Object[]{startingValue, new Integer(minLength)});
+               NormalizationException.INVALID_LENGTH_TOO_SHORT_ERROR_CODE,
+               new Object[]{startingValue, new Integer(minLength)});
       }
 
       if (pattern != null && !pattern.matcher(startingValue).matches()) {
          throw new NormalizationException("Invalid string pattern",
-            NormalizationException.INVALID_PATTERN_MATCH_ERROR_CODE,
-            new Object[]{startingValue, pattern.pattern()});
+               NormalizationException.INVALID_PATTERN_MATCH_ERROR_CODE,
+               new Object[]{startingValue, pattern.pattern()});
       }
 
       return startingValue;
@@ -232,13 +232,14 @@ public class BaseElementType implements ElementType {
 
    private String handleWhiteSpace(String s) {
       if (whiteSpaceType == WHITE_SPACE_TYPE_NONE ||
-         whiteSpaceType == WHITE_SPACE_TYPE_PRESERVE) {
+            whiteSpaceType == WHITE_SPACE_TYPE_PRESERVE) {
          return s;
       }
 
       if (whiteSpaceType == WHITE_SPACE_TYPE_REPLACE) {
          s = s.replaceAll("\\s", " ");
-      } else if (whiteSpaceType == WHITE_SPACE_TYPE_COLLAPSE) {
+      }
+      else if (whiteSpaceType == WHITE_SPACE_TYPE_COLLAPSE) {
          s = s.replaceAll("\\s+", " ");
       }
 
@@ -255,8 +256,8 @@ public class BaseElementType implements ElementType {
       if (enumeration != null) {
          if (!enumeration.contains(returned)) {
             throw new NormalizationException("Not enumerated",
-               NormalizationException.NOT_IN_ENUMERATION_ERROR_CODE,
-               new Object[]{returned});
+                  NormalizationException.NOT_IN_ENUMERATION_ERROR_CODE,
+                  new Object[]{returned});
          }
       }
 
@@ -315,7 +316,7 @@ public class BaseElementType implements ElementType {
 
    public ValidatedNode validateAndNormalize(Attribute node) {
       ValidatedNodeImpl validatedNode =
-         new ValidatedNodeImpl(parentNode, null);
+            new ValidatedNodeImpl(parentNode, null);
 
       String value = node.getValue();
 
@@ -327,7 +328,8 @@ public class BaseElementType implements ElementType {
          if (value == null || value.length() == 0) {
             return null;
          }
-      } catch (NormalizationException exp) {
+      }
+      catch (NormalizationException exp) {
          validatedNode.getErrors().add(new ValidationError(validatedNode, exp.getErrorCode(), exp.getErrorInfo()));
       }
 

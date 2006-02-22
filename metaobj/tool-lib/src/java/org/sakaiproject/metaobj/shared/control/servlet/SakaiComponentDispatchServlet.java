@@ -1,108 +1,107 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
-* $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
+ * $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control.servlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.shared.model.*;
-//import org.sakaiproject.metaobj.repository.RepositoryManager;
-import org.springframework.web.servlet.DispatcherServlet;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.framework.session.SessionState;
+import org.springframework.web.servlet.DispatcherServlet;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
-import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class SakaiComponentDispatchServlet extends DispatcherServlet {
 
 
-    private class SimpleAgent2 implements Agent {
+   private class SimpleAgent2 implements Agent {
 
-    String uid="";
-    String eid="";
+      String uid = "";
+      String eid = "";
 
-    SimpleAgent2(String eid,String uid) {
-        this.eid=eid;
-        this.uid=uid;
-    }
+      SimpleAgent2(String eid, String uid) {
+         this.eid = eid;
+         this.uid = uid;
+      }
 
-    public Id getId() {
-        return new IdImpl(eid,null);
-    }
+      public Id getId() {
+         return new IdImpl(eid, null);
+      }
 
-    public Artifact getProfile() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+      public Artifact getProfile() {
+         return null;  //To change body of implemented methods use File | Settings | File Templates.
+      }
 
-    public Object getProperty(String key) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+      public Object getProperty(String key) {
+         return null;  //To change body of implemented methods use File | Settings | File Templates.
+      }
 
-    public String getDisplayName() {
-        return this.uid;
-    }
+      public String getDisplayName() {
+         return this.uid;
+      }
 
-    public boolean isInRole(String role) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+      public boolean isInRole(String role) {
+         return false;  //To change body of implemented methods use File | Settings | File Templates.
+      }
 
-    public boolean isInitialized() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+      public boolean isInitialized() {
+         return false;  //To change body of implemented methods use File | Settings | File Templates.
+      }
 
-    public String getRole() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+      public String getRole() {
+         return null;  //To change body of implemented methods use File | Settings | File Templates.
+      }
 
-    public List getWorksiteRoles(String worksiteId) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+      public List getWorksiteRoles(String worksiteId) {
+         return null;  //To change body of implemented methods use File | Settings | File Templates.
+      }
 
-    public List getWorksiteRoles() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
+      public List getWorksiteRoles() {
+         return null;  //To change body of implemented methods use File | Settings | File Templates.
+      }
 
-       public boolean isRole() {
-          return false;
-       }
+      public boolean isRole() {
+         return false;
+      }
 
-       public String getName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-};
+      public String getName() {
+         return null;  //To change body of implemented methods use File | Settings | File Templates.
+      }
+   };
 
 
    protected final transient Log logger = LogFactory.getLog(getClass());
-   public static final String TOOL_STATE_VIEW_KEY ="osp.tool.state.view";
-   public static final String TOOL_STATE_VIEW_REQUEST_PARAMS_KEY ="osp.tool.state.request.params";
+   public static final String TOOL_STATE_VIEW_KEY = "osp.tool.state.view";
+   public static final String TOOL_STATE_VIEW_REQUEST_PARAMS_KEY = "osp.tool.state.request.params";
 
    /**
     * Obtain and use the handler for this method.
@@ -126,47 +125,42 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
             }
 
 
+            Session s = SessionManager.getCurrentSession();
+            if (s == null) {
+               logger.error("can't determine user");
+            }
+
+
+            SimpleAgent2 agent = new SimpleAgent2(s.getUserEid(), s.getUserId());
+
+
+            //RepositoryManager rm=(RepositoryManager)BeanFactory.getInstance().getBean("repositoryManager");
 
 
 
-
-        Session s=SessionManager.getCurrentSession();
-		if (s == null)
-		{
-            logger.error("can't determine user");
-		}
-
-
-        SimpleAgent2 agent=new SimpleAgent2(s.getUserEid(),s.getUserId());
-
-
-        //RepositoryManager rm=(RepositoryManager)BeanFactory.getInstance().getBean("repositoryManager");
-
-
-
-        //logger.debug("Global root: "+rm.getGlobalRoot().getDisplayName());
-        //logger.debug("Agent's root: "+rm.getRootNode(agent));
+            //logger.debug("Global root: "+rm.getGlobalRoot().getDisplayName());
+            //logger.debug("Agent's root: "+rm.getRootNode(agent));
 
 
 
 
 
-             logger.error("TOOL STATE IS NOT BEING CONSIDERED. FIX ME!!!");
-             //TODO
+            logger.error("TOOL STATE IS NOT BEING CONSIDERED. FIX ME!!!");
+            //TODO
 
             // workaround to force tools into a certain state
 
-             //
+            //
 
             // relies on "osp.tool.view" param being in tool session state
             SessionState toolState = PortalService.getCurrentToolState();
-            if (toolState != null){
+            if (toolState != null) {
                String redirectPath = (String) toolState.getAttribute(TOOL_STATE_VIEW_KEY);
 
-               if (redirectPath != null){
+               if (redirectPath != null) {
                   StringBuffer redirectUrl = new StringBuffer(redirectPath + "?pid=" + req.getParameter("pid"));
-                  Map requestParams = (Map)toolState.getAttribute(TOOL_STATE_VIEW_REQUEST_PARAMS_KEY);
-                  for (Iterator i=requestParams.keySet().iterator();i.hasNext();){
+                  Map requestParams = (Map) toolState.getAttribute(TOOL_STATE_VIEW_REQUEST_PARAMS_KEY);
+                  for (Iterator i = requestParams.keySet().iterator(); i.hasNext();) {
                      String name = (String) i.next();
                      redirectUrl.append("&" + name + "=" + requestParams.get(name));
                   }
@@ -178,11 +172,11 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
             }
 
             super.doService(req, resp);
-         } catch (Exception e) {
+         }
+         catch (Exception e) {
             logger.error("", e);
             throw new OspException(e);
-         }
-         finally {
+         } finally {
             getFilter().tearDown(req);
          }
       }
@@ -213,7 +207,7 @@ public class SakaiComponentDispatchServlet extends DispatcherServlet {
    }
 
    protected RequestSetupFilter getFilter() {
-      return (RequestSetupFilter)ComponentManager.getInstance().get(RequestSetupFilter.class.getName());
+      return (RequestSetupFilter) ComponentManager.getInstance().get(RequestSetupFilter.class.getName());
    }
 
 }

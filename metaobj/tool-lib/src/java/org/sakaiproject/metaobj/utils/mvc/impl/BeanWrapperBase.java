@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
-* $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
+ * $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.mvc.impl;
 
 import org.apache.commons.logging.Log;
@@ -29,11 +29,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
 
 import java.beans.PropertyEditor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,7 +85,8 @@ public abstract class BeanWrapperBase extends BeanWrapperImpl {
       if (isNestedProperty(propertyName)) {
          BeanWrapper nestedBw = getBeanWrapperForPropertyPath(propertyName);
          return nestedBw.getPropertyValue(getFinalPath(propertyName));
-      } else {
+      }
+      else {
          return super.getPropertyValue(propertyName);
       }
    }
@@ -111,10 +108,12 @@ public abstract class BeanWrapperBase extends BeanWrapperImpl {
 
          if (nestedBw instanceof BeanWrapperBase) {
             return ((BeanWrapperBase) nestedBw).getBeanWrapperForPropertyPath(nestedPath);
-         } else {
+         }
+         else {
             return nestedBw;
          }
-      } else {
+      }
+      else {
          return this;
       }
    }
@@ -140,9 +139,11 @@ public abstract class BeanWrapperBase extends BeanWrapperImpl {
          ;
          nestedBeanWrappers.put(nestedProperty, nextWrapper);
          return nextWrapper;
-      } else if (nextWrapper instanceof BeanWrapperBase) {
+      }
+      else if (nextWrapper instanceof BeanWrapperBase) {
          return ((BeanWrapperBase) nextWrapper).getBeanWrapperForPropertyPath(nestedProperty);
-      } else {
+      }
+      else {
          return nextWrapper;
       }
    }
@@ -151,14 +152,14 @@ public abstract class BeanWrapperBase extends BeanWrapperImpl {
       BeanWrapperImpl nextWrapper = null;
 
       nextWrapper = constructWrapper(this.getPropertyValue(nestedProperty),
-         parentPath + NESTED_PROPERTY_SEPARATOR + nestedProperty);
+            parentPath + NESTED_PROPERTY_SEPARATOR + nestedProperty);
 
       nestedBeanWrappers.put(nestedProperty, nextWrapper);
 
-      for (Iterator i = customEditors.iterator();i.hasNext();) {
-         CustomEditorHolder holder = (CustomEditorHolder)i.next();
+      for (Iterator i = customEditors.iterator(); i.hasNext();) {
+         CustomEditorHolder holder = (CustomEditorHolder) i.next();
          nextWrapper.registerCustomEditor(holder.requiredType, holder.propertyPath,
-            holder.propertyEditor);
+               holder.propertyEditor);
       }
 
       return nextWrapper;
@@ -183,7 +184,8 @@ public abstract class BeanWrapperBase extends BeanWrapperImpl {
          BeanWrapper nestedBw = getBeanWrapperForPropertyPath(propertyName);
          nestedBw.setPropertyValue(getFinalPath(propertyName), value);
          return;
-      } else {
+      }
+      else {
          super.setPropertyValue(propertyName, value);
       }
    }
@@ -217,7 +219,8 @@ public abstract class BeanWrapperBase extends BeanWrapperImpl {
       if (propertyPath != null && isNestedProperty(propertyPath)) {
          BeanWrapperImpl bw = getBeanWrapperForPropertyPath(propertyPath);
          return bw.findCustomEditor(requiredType, getFinalPath(propertyPath));
-      } else {
+      }
+      else {
          return super.findCustomEditor(requiredType, propertyPath);
       }
    }

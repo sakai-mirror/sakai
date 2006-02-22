@@ -11,6 +11,7 @@ package org.sakaiproject.metaobj.shared.model;
 /**
  * This object contains information reguarding an error on an individual field
  * that occurs during validation
+ *
  * @see ElementBean
  */
 public class ValidationError {
@@ -23,13 +24,13 @@ public class ValidationError {
    /**
     * Construct a ValidationError with all the required parameters
     *
-    * @param fieldName the name of the field within this element.  if the field
-    * is from a nested element, the parent field name will be prepended with a "."
-    * @param errorCode Code that is suitable for dereferencing into a properties file for
-    * i8n purposes.  errorCode will contain the proper formatting for use as a default message.
-    * for instance, "Value {1} for field {0} must match pattern {2}".  With the error info, this could be
-    * used by a message formater.
-    * @param errorInfo an array of information related to the error.
+    * @param fieldName      the name of the field within this element.  if the field
+    *                       is from a nested element, the parent field name will be prepended with a "."
+    * @param errorCode      Code that is suitable for dereferencing into a properties file for
+    *                       i8n purposes.  errorCode will contain the proper formatting for use as a default message.
+    *                       for instance, "Value {1} for field {0} must match pattern {2}".  With the error info, this could be
+    *                       used by a message formater.
+    * @param errorInfo      an array of information related to the error.
     * @param defaultMessage the fields applied to the error code.
     */
    public ValidationError(String fieldName, String errorCode, Object[] errorInfo, String defaultMessage) {

@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.xml.impl;
 
 import org.jdom.Attribute;
@@ -28,12 +28,7 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.sakaiproject.metaobj.utils.xml.*;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +40,7 @@ import java.util.Collection;
 public class SchemaNodeImpl implements SchemaNode {
 
    protected Namespace xsdNamespace =
-      Namespace.getNamespace("xs", "http://www.w3.org/2001/XMLSchema");
+         Namespace.getNamespace("xs", "http://www.w3.org/2001/XMLSchema");
 
    private SchemaFactory factory = null;
    private Object path = null;
@@ -66,7 +61,7 @@ public class SchemaNodeImpl implements SchemaNode {
    private Namespace targetNamespace;
 
    public SchemaNodeImpl(Element schemaElement, GlobalMaps globalMaps)
-      throws SchemaInvalidException {
+         throws SchemaInvalidException {
 
       this.globalElements = globalMaps.globalElements;
       this.globalCustomTypes = globalMaps.globalCustomTypes;
@@ -80,7 +75,7 @@ public class SchemaNodeImpl implements SchemaNode {
    }
 
    public SchemaNodeImpl(Document shemaDoc, SchemaFactory factory, Object path)
-      throws SchemaInvalidException {
+         throws SchemaInvalidException {
 
       this.factory = factory;
       this.path = path;
@@ -102,27 +97,27 @@ public class SchemaNodeImpl implements SchemaNode {
       processIncludes(rootElement.getChildren("include", xsdNamespace));
 
       List rootSchemaElements =
-         rootElement.getChildren("element", xsdNamespace);
+            rootElement.getChildren("element", xsdNamespace);
 
       for (Iterator i = rootSchemaElements.iterator(); i.hasNext();) {
          Element schemaElement = (Element) i.next();
 
          globalElements.put(schemaElement.getAttributeValue("name"),
-            createNode(schemaElement));
+               createNode(schemaElement));
       }
 
       rootSchemaElements =
-         rootElement.getChildren("attribute", xsdNamespace);
+            rootElement.getChildren("attribute", xsdNamespace);
 
       for (Iterator i = rootSchemaElements.iterator(); i.hasNext();) {
          Element schemaElement = (Element) i.next();
 
          globalElements.put(schemaElement.getAttributeValue("name"),
-            createNode(schemaElement, true));
+               createNode(schemaElement, true));
       }
 
       rootSchemaElements =
-         rootElement.getChildren("attributeGroup", xsdNamespace);
+            rootElement.getChildren("attributeGroup", xsdNamespace);
 
       for (Iterator i = rootSchemaElements.iterator(); i.hasNext();) {
          Element schemaElement = (Element) i.next();
@@ -131,23 +126,23 @@ public class SchemaNodeImpl implements SchemaNode {
       }
 
       List rootTypes =
-         rootElement.getChildren("complexType", xsdNamespace);
+            rootElement.getChildren("complexType", xsdNamespace);
 
       for (Iterator i = rootTypes.iterator(); i.hasNext();) {
          Element schemaElement = (Element) i.next();
 
          globalCustomTypes.put(schemaElement.getAttributeValue("name"),
-            createTypeNode(schemaElement));
+               createTypeNode(schemaElement));
       }
-      
+
       rootTypes =
-         rootElement.getChildren("simpleType", xsdNamespace);
+            rootElement.getChildren("simpleType", xsdNamespace);
 
       for (Iterator i = rootTypes.iterator(); i.hasNext();) {
          Element schemaElement = (Element) i.next();
 
          globalCustomTypes.put(schemaElement.getAttributeValue("name"),
-            createTypeNode(schemaElement));
+               createTypeNode(schemaElement));
       }
    }
 
@@ -176,20 +171,19 @@ public class SchemaNodeImpl implements SchemaNode {
       List attributes = groupElement.getChildren("attribute", xsdNamespace);
       SchemaNode[] attributeGroup = new SchemaNode[attributes.size()];
 
-      for (int i=0;i<attributeGroup.length;i++) {
-         attributeGroup[i] = createNode((Element)attributes.get(i),
-            true);
+      for (int i = 0; i < attributeGroup.length; i++) {
+         attributeGroup[i] = createNode((Element) attributes.get(i),
+               true);
       }
 
       getGlobalMaps().globalAttributeGroups.put(groupElement.getAttributeValue("name"),
-         attributeGroup);
+            attributeGroup);
    }
 
    protected void processIncludes(List includes) {
-      for (Iterator i=includes.iterator();i.hasNext();) {
-         Element include = (Element)i.next();
-         SchemaNodeImpl includedSchema = (SchemaNodeImpl)factory.getRelativeSchema(
-            include.getAttributeValue("schemaLocation"), path);
+      for (Iterator i = includes.iterator(); i.hasNext();) {
+         Element include = (Element) i.next();
+         SchemaNodeImpl includedSchema = (SchemaNodeImpl) factory.getRelativeSchema(include.getAttributeValue("schemaLocation"), path);
          GlobalMaps maps = includedSchema.getGlobalMaps();
          this.getGlobalMaps().globalCustomTypes.putAll(maps.globalCustomTypes);
          this.getGlobalMaps().globalElements.putAll(maps.globalElements);
@@ -206,10 +200,11 @@ public class SchemaNodeImpl implements SchemaNode {
          fakeRoot.setAttribute("targetNamespace", getTargetNamespace().getURI());
       }
 
-      fakeRoot.addContent((Element)schemaElement.clone());
+      fakeRoot.addContent((Element) schemaElement.clone());
       if (schemaElement.getName().equals("complexType")) {
          return new ComplexSchemaNodeImpl(fakeRoot, globalMaps);
-      } else {
+      }
+      else {
          return new SimpleSchemaNodeImpl(fakeRoot, globalMaps, false);
       }
    }
@@ -231,7 +226,7 @@ public class SchemaNodeImpl implements SchemaNode {
          Element elem = (Element) i.next();
          if (elem.getAttribute("source") != null) {
             annotationMap.put(elem.getAttributeValue("source"),
-               elem.getText());
+                  elem.getText());
          }
       }
    }
@@ -245,7 +240,8 @@ public class SchemaNodeImpl implements SchemaNode {
 
          if (maxOccursValue.equals("unbounded")) {
             maxOccurs = -1;
-         } else {
+         }
+         else {
             maxOccurs = Integer.parseInt(maxOccursValue);
          }
       }
@@ -264,18 +260,22 @@ public class SchemaNodeImpl implements SchemaNode {
       if (schemaElement.getAttribute("ref") != null) {
          if (isAttribute) {
             return new RefAttributeSchemaNodeImpl(schemaElement.getAttributeValue("ref"),
-            schemaElement, globalMaps);
-         } else {
-            return new RefSchemaNodeImpl(schemaElement.getAttributeValue("ref"),
-               schemaElement, globalMaps);
+                  schemaElement, globalMaps);
          }
-      } else if (schemaElement.getAttribute("type") != null &&
-         !schemaElement.getAttributeValue("type").startsWith(xsdNamespace.getPrefix())) {
+         else {
+            return new RefSchemaNodeImpl(schemaElement.getAttributeValue("ref"),
+                  schemaElement, globalMaps);
+         }
+      }
+      else if (schemaElement.getAttribute("type") != null &&
+            !schemaElement.getAttributeValue("type").startsWith(xsdNamespace.getPrefix())) {
          return new CustomTypeSchemaNodeImpl(schemaElement, globalMaps,
-            schemaElement.getAttributeValue("type"), isAttribute);
-      } else if (schemaElement.getChild("complexType", xsdNamespace) != null) {
+               schemaElement.getAttributeValue("type"), isAttribute);
+      }
+      else if (schemaElement.getChild("complexType", xsdNamespace) != null) {
          return new ComplexSchemaNodeImpl(schemaElement, globalMaps);
-      } else if (isAttribute) {
+      }
+      else if (isAttribute) {
          return new AttributeSchemaNodeImpl(schemaElement, globalMaps, isAttribute);
       }
       else {
@@ -329,7 +329,7 @@ public class SchemaNodeImpl implements SchemaNode {
       return null;
    }
 
-   public Collection getRootChildren(){
+   public Collection getRootChildren() {
       if (documentNode) {
          return globalElements.keySet();
       }

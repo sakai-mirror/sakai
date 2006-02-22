@@ -1,34 +1,26 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
-* $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
+ * $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +40,8 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.*;
+
 abstract public class AbstractStructuredArtifactDefinitionController extends AbstractFormController {
    protected final Log logger = LogFactory.getLog(getClass());
    private HomeFactory homeFactory;
@@ -63,11 +57,11 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
    
    //TODO removed references to repositoryManager and fileArtifactFinder 
 
-   public void checkPermission(String function) throws AuthorizationFailedException{
+   public void checkPermission(String function) throws AuthorizationFailedException {
       if (getStructuredArtifactDefinitionManager().isGlobal()) {
-         getAuthzManager().checkPermission(function, getIdManager().getId(
-            StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
-      } else {
+         getAuthzManager().checkPermission(function, getIdManager().getId(StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
+      }
+      else {
          getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentToolId()));
       }
 
@@ -78,32 +72,35 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
             getIdManager().getId(PortalService.getCurrentSiteId())));
    }
 
-   protected ModelAndView prepareListView(Map request, String recentId){
-       Map model = new HashMap();
-       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
-       model.put("isMaintainer", isMaintainer());
-       model.put("worksite", getWorksiteManager().getSite(worksiteId));
-       model.put("sites", getUserSites());
-       ToolConfiguration tool = getWorksiteManager().getTool(PortalService.getCurrentToolId());
-       model.put("tool", tool);
+   protected ModelAndView prepareListView(Map request, String recentId) {
+      Map model = new HashMap();
+      String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      model.put("isMaintainer", isMaintainer());
+      model.put("worksite", getWorksiteManager().getSite(worksiteId));
+      model.put("sites", getUserSites());
+      ToolConfiguration tool = getWorksiteManager().getTool(PortalService.getCurrentToolId());
+      model.put("tool", tool);
 
-       boolean global = getStructuredArtifactDefinitionManager().isGlobal();
-       model.put("isGlobal", new Boolean(global));
+      boolean global = getStructuredArtifactDefinitionManager().isGlobal();
+      model.put("isGlobal", new Boolean(global));
 
-       if (global) {
-          model.put("authZqualifier",getIdManager().getId(
-            StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
-       } else {
-          if (tool != null)
-             model.put("authZqualifier",getIdManager().getId(tool.getId()));
-          else
-             model.put("authZqualifier",getIdManager().getId(PortalService.getCurrentToolId()));
-       }
+      if (global) {
+         model.put("authZqualifier", getIdManager().getId(StructuredArtifactDefinitionManager.GLOBAL_SAD_QUALIFIER));
+      }
+      else {
+         if (tool != null) {
+            model.put("authZqualifier", getIdManager().getId(tool.getId()));
+         }
+         else {
+            model.put("authZqualifier", getIdManager().getId(PortalService.getCurrentToolId()));
+         }
+      }
 
       List types;
-      if (getStructuredArtifactDefinitionManager().isGlobal()){
+      if (getStructuredArtifactDefinitionManager().isGlobal()) {
          types = getStructuredArtifactDefinitionManager().findGlobalHomes();
-      } else {
+      }
+      else {
          types = getStructuredArtifactDefinitionManager().findHomes(getWorksiteManager().getCurrentWorksiteId());
       }
 
@@ -111,20 +108,20 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
       List typesList = new ArrayList(types);
       if (recentId != null) {
          request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getTypeIndex(typesList,
-            recentId));
+               recentId));
          model.put("newFormId", recentId);
       }
-      
+
       types = getListScrollIndexer().indexList(request, model, typesList);
 
       model.put("types", types);
-      
+
       return new ModelAndView("success", model);
    }
 
    protected int getTypeIndex(List typesList, String recentId) {
-      for (int i=0;i<typesList.size();i++) {
-         StructuredArtifactDefinitionBean home = (StructuredArtifactDefinitionBean)typesList.get(i);
+      for (int i = 0; i < typesList.size(); i++) {
+         StructuredArtifactDefinitionBean home = (StructuredArtifactDefinitionBean) typesList.get(i);
          if (home.getType().getId().getValue().equals(recentId)) {
             return i;
          }
@@ -134,18 +131,18 @@ abstract public class AbstractStructuredArtifactDefinitionController extends Abs
    }
 
    /**
-    *
     * @return collection of site ids user belongs to, as Strings
     */
    protected Map getUserSites() {
       Collection sites = getWorksiteManager().getUserSites();
       Map userSites = new HashMap();
-      for (Iterator i=sites.iterator();i.hasNext();){
-         Site site = (Site)i.next();
+      for (Iterator i = sites.iterator(); i.hasNext();) {
+         Site site = (Site) i.next();
          userSites.put(site.getId(), site);
       }
       return userSites;
    }
+
    /**
     * @return Returns the authManager.
     */

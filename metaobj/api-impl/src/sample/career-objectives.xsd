@@ -6,67 +6,67 @@
             <xs:element name="objective">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="100" />
+                     <xs:maxLength value="100"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">Objective</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
             <xs:element name="required-skills">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">Required Skills</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
             <xs:element name="prior-experience">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">Prior Experience</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
             <xs:element name="action-plan">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">Action Plan</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
             <xs:element name="timeline">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">Timeline</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
             <xs:element name="reflective-statement">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">Reflective Statement</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
          </xs:sequence>

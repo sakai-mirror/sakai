@@ -6,15 +6,17 @@
    <bean id="org.sakaiproject.metaobj.utils.mvc.impl.beans.AdditionalViewResources.repository"
       class="org.sakaiproject.metaobj.utils.mvc.impl.beans.AdditionalViewResources" init-method="init"
       lazy-init="false">
-		<property name="baseNames">
-		   <list>
-		      <value>repository-views</value>
-		   </list>
-		</property>
+      <property name="baseNames">
+         <list>
+            <value>repository-views</value>
+         </list>
+      </property>
    </bean>
 
    <bean id="fileArtifactValidator" class="org.sakaiproject.metaobj.repository.control.FileArtifactValidator">
-      <property name="fileNameValidator"><ref bean="fileValidator"/></property>
+      <property name="fileNameValidator">
+         <ref bean="fileValidator"/>
+      </property>
    </bean>
 
    <bean id="nodeMgtController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
@@ -23,16 +25,32 @@
 
             <property name="navigationController">
                <bean class="org.sakaiproject.metaobj.repository.control.NavigationController">
-                  <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-                  <property name="authnManager"><ref bean="authManager"/></property>
-                  <property name="idManager"><ref bean="idManager"/></property>
+                  <property name="repositoryManager">
+                     <ref bean="repositoryManager"/>
+                  </property>
+                  <property name="authnManager">
+                     <ref bean="authManager"/>
+                  </property>
+                  <property name="idManager">
+                     <ref bean="idManager"/>
+                  </property>
                </bean>
             </property>
-            <property name="authnManager"><ref bean="authManager"/></property>
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
-            <property name="fileValidator"><ref bean="fileValidator" /></property>
+            <property name="authnManager">
+               <ref bean="authManager"/>
+            </property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
+            <property name="fileValidator">
+               <ref bean="fileValidator"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -45,17 +63,29 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="commandName"><value>node</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.control.RepositoryFormBean</value></property>
-      <property name="formView"><value>repository</value></property>
+      <property name="commandName">
+         <value>node</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.control.RepositoryFormBean</value>
+      </property>
+      <property name="formView">
+         <value>repository</value>
+      </property>
    </bean>
-   
+
    <bean id="moveNodeController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.MoveNodeController">
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -64,17 +94,29 @@
             <prop key="failure">repositoryForward</prop>
          </props>
       </property>
-      <property name="formView"><value>moveNode</value></property>
-      <property name="commandName"><value>node</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value></property>
+      <property name="formView">
+         <value>moveNode</value>
+      </property>
+      <property name="commandName">
+         <value>node</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value>
+      </property>
    </bean>
 
    <bean id="deleteNodeController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.DeleteNodeController">
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -88,18 +130,32 @@
             <prop key="failure">repositoryForward</prop>
          </props>
       </property>
-      <property name="commandName"><value>node</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.control.DeleteFormBean</value></property>
+      <property name="commandName">
+         <value>node</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.control.DeleteFormBean</value>
+      </property>
    </bean>
 
    <bean id="copyNodeController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.CopyNodeController">
-            <property name="homeFactory"><ref bean="homeFactory"/></property>
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
-            <property name="authnManager"><ref bean="authManager"/></property>
+            <property name="homeFactory">
+               <ref bean="homeFactory"/>
+            </property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
+            <property name="authnManager">
+               <ref bean="authManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -108,19 +164,35 @@
             <prop key="failure">repositoryForward</prop>
          </props>
       </property>
-      <property name="commandName"><value>node</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value></property>
+      <property name="commandName">
+         <value>node</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value>
+      </property>
    </bean>
 
    <bean id="fileUploadController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.FileUploadController">
-            <property name="homeFactory"><ref bean="homeFactory" /></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authnManager"><ref bean="authManager"/></property>
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
-            <property name="worksiteManager"><ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/></property>
+            <property name="homeFactory">
+               <ref bean="homeFactory"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authnManager">
+               <ref bean="authManager"/>
+            </property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -128,18 +200,32 @@
             <prop key="success">repositoryRedirect</prop>
          </props>
       </property>
-      <property name="commandName"><value>file</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.control.FileArtifactWrapper</value></property>
-      <property name="formView"><value>fileUpload</value></property>
-      <property name="validator"><ref bean="fileArtifactValidator" /></property>
+      <property name="commandName">
+         <value>file</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.control.FileArtifactWrapper</value>
+      </property>
+      <property name="formView">
+         <value>fileUpload</value>
+      </property>
+      <property name="validator">
+         <ref bean="fileArtifactValidator"/>
+      </property>
    </bean>
 
    <bean id="editFileArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.EditFileArtifactController">
-            <property name="homeFactory"><ref bean="homeFactory"/></property>
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="homeFactory">
+               <ref bean="homeFactory"/>
+            </property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -152,16 +238,26 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="validator"><ref bean="fileArtifactValidator"/></property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.model.impl.FileArtifactImpl</value></property>
-      <property name="formView"><value>editFileArtifact</value></property>
+      <property name="validator">
+         <ref bean="fileArtifactValidator"/>
+      </property>
+      <property name="commandName">
+         <value>bean</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.model.impl.FileArtifactImpl</value>
+      </property>
+      <property name="formView">
+         <value>editFileArtifact</value>
+      </property>
    </bean>
-   
+
    <bean id="viewFileArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.ViewFileController">
-            <property name="homeFactory"><ref bean="homeFactory"/></property>
+            <property name="homeFactory">
+               <ref bean="homeFactory"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -174,15 +270,23 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.model.impl.FileArtifactImpl</value></property>
+      <property name="commandName">
+         <value>bean</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.model.impl.FileArtifactImpl</value>
+      </property>
    </bean>
 
    <bean id="webDavInstructionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.WebDAVInstructionController">
-            <property name="authnManager"><ref bean="authManager"/></property>
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
+            <property name="authnManager">
+               <ref bean="authManager"/>
+            </property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -195,15 +299,23 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.model.impl.FileArtifactImpl</value></property>
+      <property name="commandName">
+         <value>bean</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.model.impl.FileArtifactImpl</value>
+      </property>
    </bean>
-   
+
    <bean id="fileUploadDirPermissionsController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.DirectoryPermissionsController">
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -213,20 +325,32 @@
             <prop key="failure">repositoryForward</prop>
          </props>
       </property>
-      <property name="commandName"><value>node</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value></property>
+      <property name="commandName">
+         <value>node</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value>
+      </property>
    </bean>
 
    <bean id="org.sakaiproject.metaobj.security.mgt.ToolPermissionManager.repository"
-      class="org.sakaiproject.metaobj.repository.model.impl.RepositoryToolListener" >
+      class="org.sakaiproject.metaobj.repository.model.impl.RepositoryToolListener">
 
-      <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="permissionManager">
-         <ref bean="org.sakaiproject.metaobj.security.mgt.PermissionManager" />
+      <property name="repositoryManager">
+         <ref bean="repositoryManager"/>
       </property>
-      <property name="agentManager"><ref bean="agentManager" /></property>
-      <property name="permissionEditName"><value>repository</value></property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="permissionManager">
+         <ref bean="org.sakaiproject.metaobj.security.mgt.PermissionManager"/>
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager"/>
+      </property>
+      <property name="permissionEditName">
+         <value>repository</value>
+      </property>
       <property name="functions">
          <list>
             <value>osp.repository.read</value>
@@ -257,9 +381,15 @@
    <bean id="viewNodeController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.ViewNodeController">
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -268,18 +398,28 @@
             <prop key="artifact">artifactRedirect</prop>
          </props>
       </property>
-      <property name="commandName"><value>node</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value></property>
+      <property name="commandName">
+         <value>node</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.control.NodeFormBean</value>
+      </property>
    </bean>
 
    <bean id="createFolderController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.CreateFolderController">
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager" /></property>
-<!--             <property name="authzManager"><ref bean="authzManager"/></property>
-            <property name="authnManager"><ref bean="authManager"/></property> -->
-            <property name="homeFactory"><ref bean="homeFactory"/></property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <!--             <property name="authzManager"><ref bean="authzManager"/></property>
+                        <property name="authnManager"><ref bean="authManager"/></property> -->
+            <property name="homeFactory">
+               <ref bean="homeFactory"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -292,18 +432,32 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="validator"><ref bean="fileArtifactValidator"/></property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.model.impl.FolderImpl</value></property>
-      <property name="formView"><value>createFolder</value></property>
+      <property name="validator">
+         <ref bean="fileArtifactValidator"/>
+      </property>
+      <property name="commandName">
+         <value>bean</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.model.impl.FolderImpl</value>
+      </property>
+      <property name="formView">
+         <value>createFolder</value>
+      </property>
    </bean>
-   
+
    <bean id="editFolderController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.EditFolderController">
-            <property name="homeFactory"><ref bean="homeFactory"/></property>
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager" /></property>
+            <property name="homeFactory">
+               <ref bean="homeFactory"/>
+            </property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -316,26 +470,44 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="validator"><ref bean="fileArtifactValidator"/></property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.model.impl.FolderImpl</value></property>
-      <property name="formView"><value>editFolder</value></property>
+      <property name="validator">
+         <ref bean="fileArtifactValidator"/>
+      </property>
+      <property name="commandName">
+         <value>bean</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.model.impl.FolderImpl</value>
+      </property>
+      <property name="formView">
+         <value>editFolder</value>
+      </property>
    </bean>
 
    <bean id="org.sakaiproject.metaobj.repository.FilePickerFilter.moveFile"
       class="org.sakaiproject.metaobj.repository.mgt.MoveFilePickerFilter">
-      <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="authzManager"><ref bean="authzManager"/></property>
-   </bean>   
-   
+      <property name="repositoryManager">
+         <ref bean="repositoryManager"/>
+      </property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="authzManager">
+         <ref bean="authzManager"/>
+      </property>
+   </bean>
+
    <bean id="org.sakaiproject.metaobj.repository.FilePickerFilter.templateXslFileFilter"
       class="org.sakaiproject.metaobj.repository.mgt.FileExtensionFilter">
       <property name="mimeTypes">
          <list>
             <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
-               <property name="primaryType"><value>text</value></property>
-               <property name="subType"><value>xml</value></property>
+               <property name="primaryType">
+                  <value>text</value>
+               </property>
+               <property name="subType">
+                  <value>xml</value>
+               </property>
             </bean>
          </list>
       </property>
@@ -351,12 +523,20 @@
       <property name="mimeTypes">
          <list>
             <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
-               <property name="primaryType"><value>application</value></property>
-               <property name="subType"><value>zip</value></property>
+               <property name="primaryType">
+                  <value>application</value>
+               </property>
+               <property name="subType">
+                  <value>zip</value>
+               </property>
             </bean>
             <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
-               <property name="primaryType"><value>application</value></property>
-               <property name="subType"><value>x-zip-compressed</value></property>
+               <property name="primaryType">
+                  <value>application</value>
+               </property>
+               <property name="subType">
+                  <value>x-zip-compressed</value>
+               </property>
             </bean>
          </list>
       </property>
@@ -372,8 +552,12 @@
       <property name="mimeTypes">
          <list>
             <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
-               <property name="primaryType"><value>text</value></property>
-               <property name="subType"><value>xml</value></property>
+               <property name="primaryType">
+                  <value>text</value>
+               </property>
+               <property name="subType">
+                  <value>xml</value>
+               </property>
             </bean>
          </list>
       </property>
@@ -385,8 +569,8 @@
             <value>xsd</value>
          </list>
       </property>
-   </bean>   
-   
+   </bean>
+
    <bean id="org.sakaiproject.metaobj.repository.FilePickerFilter.templateAsscFileFilter"
       class="org.sakaiproject.metaobj.repository.mgt.ArtifactTypeFilter">
       <property name="acceptableType">
@@ -403,14 +587,20 @@
             <value>fileArtifact</value>
          </list>
       </property>
-      </bean>
+   </bean>
 
    <bean id="filePickerController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.repository.control.FilePickerController">
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="repositoryManager">
+               <ref bean="repositoryManager"/>
+            </property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
             <property name="filterMap">
                <map>
                   <entry key="templateAsscFileFilter">
@@ -446,11 +636,15 @@
             <prop key="show">repositoryRedirect</prop>
             <prop key="close">filePickerClose</prop>
             <prop key="setAndClose">filePickerSetAndClose</prop>
-            <prop key="blank">blankFilePicker</prop>            
+            <prop key="blank">blankFilePicker</prop>
          </props>
       </property>
-      <property name="commandName"><value>filePickerState</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.repository.model.FilePickerState</value></property>
+      <property name="commandName">
+         <value>filePickerState</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.repository.model.FilePickerState</value>
+      </property>
    </bean>
 
    <bean id="org.sakaiproject.metaobj.utils.mvc.impl.beans.AdditionalHandlers.repository"
@@ -475,9 +669,8 @@
             <prop key="/member/repositoryUpdate.osp">nodeMgtController</prop>
 
             <prop key="/mercury/sakai.repository/mercury">nodeMgtController</prop>   <!--  This is the root folder, default from Mercury dispatcher-->
-             <!--
-             <prop key="/sakai2-repository/member/repositoryUpdate.osp">nodeMgtController</prop>   --> <!--  This is the root folder, default from Mercury dispatcher-->
-
+            <!--
+            <prop key="/sakai2-repository/member/repositoryUpdate.osp">nodeMgtController</prop>   --> <!--  This is the root folder, default from Mercury dispatcher-->
 
 
             <prop key="/member/webdavInstruction.osp">webDavInstructionController</prop>

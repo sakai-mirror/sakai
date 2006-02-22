@@ -1,45 +1,45 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.security.impl.sakai;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.UserDirectoryService;
-import org.sakaiproject.service.legacy.user.UserEdit;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.security.AnonymousAgent;
 import org.sakaiproject.metaobj.security.PasswordGenerator;
+import org.sakaiproject.metaobj.shared.mgt.AgentManagerListener;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
-import org.sakaiproject.metaobj.shared.mgt.AgentManagerListener;
+import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
+import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.user.UserDirectoryService;
+import org.sakaiproject.service.legacy.user.UserEdit;
 
 import java.util.*;
 
@@ -63,10 +63,11 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
 
       Agent returned = null;
 
-      if (id != null){
+      if (id != null) {
          try {
             returned = getAgentInternal(id.getValue());
-         } catch (IdUnusedException e) {
+         }
+         catch (IdUnusedException e) {
             exception = e;
          }
       }
@@ -100,7 +101,8 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       Agent returned = null;
       try {
          returned = getAgentInternal(username);
-      } catch (IdUnusedException e) {
+      }
+      catch (IdUnusedException e) {
          exception = e;
       }
 
@@ -128,15 +130,16 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       return getWorksiteRole(roleName, PortalService.getCurrentSiteId());
    }
 
-   public List getWorksiteRoles(String siteId){
+   public List getWorksiteRoles(String siteId) {
       List roles = new ArrayList();
       try {
          AuthzGroup siteRealm = AuthzGroupService.getAuthzGroup("/site/" + siteId);
-         for (Iterator i=siteRealm.getRoles().iterator();i.hasNext();){
+         for (Iterator i = siteRealm.getRoles().iterator(); i.hasNext();) {
             Role sakaiRole = (Role) i.next();
             roles.add(convertRole(sakaiRole, siteRealm));
          }
-      } catch (IdUnusedException e) {
+      }
+      catch (IdUnusedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -146,12 +149,13 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
    public Agent getWorksiteRole(String roleName, String siteId) {
       try {
          AuthzGroup siteRealm = AuthzGroupService.getAuthzGroup("/site/" +
-            siteId);
+               siteId);
 
          Role sakaiRole = siteRealm.getRole(roleName);
 
          return convertRole(sakaiRole, siteRealm);
-      } catch (IdUnusedException e) {
+      }
+      catch (IdUnusedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -164,7 +168,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
    }
 
    protected Agent getAgentInternal(String username) throws IdUnusedException {
-      if (username == null){
+      if (username == null) {
          return null;
       }
       if (username.startsWith("/site/")) {
@@ -191,8 +195,9 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
       realm = AuthzGroupService.getAuthzGroup(siteId);
       role = realm.getRole(roleName);
 
-      if (role == null || realm == null)
+      if (role == null || realm == null) {
          return null;
+      }
       return convertRole(role, realm);
    }
 
@@ -200,23 +205,24 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
     * @param siteId
     * @return list of agents that are participants in the given siteId
     */
-	public List getWorksiteAgents(String siteId) {
-		List users = new ArrayList();
-		List participants = new ArrayList();
-		String realmId = "/site/" + siteId;
-		try {
-			AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
-			users.addAll(getDirectoryService().getUsers(realm.getUsers()));
-			Collections.sort(users);
-			for (int i = 0; i < users.size(); i++){
-            User user = (User) users.get(i);				
-				participants.add(morphAgent(user));
-			}
-		} catch (IdUnusedException e) {
-			logger.warn("" + realmId);
-		}
-		return participants;
-	}
+   public List getWorksiteAgents(String siteId) {
+      List users = new ArrayList();
+      List participants = new ArrayList();
+      String realmId = "/site/" + siteId;
+      try {
+         AuthzGroup realm = AuthzGroupService.getAuthzGroup(realmId);
+         users.addAll(getDirectoryService().getUsers(realm.getUsers()));
+         Collections.sort(users);
+         for (int i = 0; i < users.size(); i++) {
+            User user = (User) users.get(i);
+            participants.add(morphAgent(user));
+         }
+      }
+      catch (IdUnusedException e) {
+         logger.warn("" + realmId);
+      }
+      return participants;
+   }
 
    public Agent getAnonymousAgent() {
       return new AnonymousAgent();
@@ -234,25 +240,28 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
     * @return
     */
    public List findByProperty(String type, Object object) {
-      if (type.equals("displayName")){
+      if (type.equals("displayName")) {
          try {
             List users = new ArrayList();
             users.add(morphAgent(getDirectoryService().getUser((String) object)));
             return users;
-         } catch (IdUnusedException e) {
+         }
+         catch (IdUnusedException e) {
             // user not found, return null
             return null;
          }
       }
-      if (type.equals("email")){
-        List users = new ArrayList();
-        Collection directoryUsers = getDirectoryService().findUsersByEmail((String) object);
-        if ((directoryUsers == null) || (directoryUsers.isEmpty())) return null;
-        for (Iterator i = directoryUsers.iterator(); i.hasNext();) {
-          User u = (User) i.next();
-          users.add(morphAgent(u));
-        }
-        return users;
+      if (type.equals("email")) {
+         List users = new ArrayList();
+         Collection directoryUsers = getDirectoryService().findUsersByEmail((String) object);
+         if ((directoryUsers == null) || (directoryUsers.isEmpty())) {
+            return null;
+         }
+         for (Iterator i = directoryUsers.iterator(); i.hasNext();) {
+            User u = (User) i.next();
+            users.add(morphAgent(u));
+         }
+         return users;
       }
       return null;
    }
@@ -267,8 +276,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
          throw new UnsupportedOperationException();
       }
 
-      try
-      {
+      try {
          UserEdit uEdit = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.addUser(agent.getId().getValue());
 
          //set email address
@@ -284,21 +292,21 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
          uEdit.setPassword(pw);
          org.sakaiproject.service.legacy.user.cover.UserDirectoryService.commitEdit(uEdit);
 
-         AgentImpl impl = (AgentImpl)agent;
+         AgentImpl impl = (AgentImpl) agent;
          impl.setPassword(pw);
 
-         for (Iterator i = getListeners().iterator();i.hasNext();) {
-            ((AgentManagerListener)i.next()).createAgent(agent);
+         for (Iterator i = getListeners().iterator(); i.hasNext();) {
+            ((AgentManagerListener) i.next()).createAgent(agent);
          }
 
          return getAgent(agent.getId());
-       }
-       catch(RuntimeException exp) {
+      }
+      catch (RuntimeException exp) {
          throw exp;
-       }
-       catch(Exception exp) {
+      }
+      catch (Exception exp) {
          throw new OspException(exp);
-       }
+      }
    }
 
    /**
@@ -313,7 +321,7 @@ public class AgentManager extends SecurityBase implements org.sakaiproject.metao
    }
 
    protected UserDirectoryService getDirectoryService() {
-      return (UserDirectoryService)ComponentManager.get(UserDirectoryService.class.getName());
+      return (UserDirectoryService) ComponentManager.get(UserDirectoryService.class.getName());
    }
 
    public org.sakaiproject.metaobj.shared.mgt.AgentManager getBaseAgentManager() {

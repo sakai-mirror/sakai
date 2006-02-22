@@ -1,47 +1,26 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
-
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.xml.transform.TransformerException;
 
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -69,13 +48,7 @@ import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
@@ -87,16 +60,21 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
+import javax.xml.transform.TransformerException;
+import java.io.*;
+import java.util.*;
+import java.util.zip.*;
+
 
 /**
  * @author chmaurer
  * @author jbush
  */
 public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
-   implements StructuredArtifactDefinitionManager, DuplicatableToolService, DownloadableManager {
+      implements StructuredArtifactDefinitionManager, DuplicatableToolService, DownloadableManager {
 
-   static final private String	DOWNLOAD_FORM_ID_PARAM = "formId";
-      
+   static final private String DOWNLOAD_FORM_ID_PARAM = "formId";
+
    private AuthorizationFacade authzManager = null;
    private IdManager idManager;
    private ArtifactFinderManager artifactFinderManager;
@@ -138,7 +116,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    /**
-    *
     * @return list of published sads or sads owned by current user
     */
    public List findHomes() {
@@ -146,8 +123,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       String query = "from StructuredArtifactDefinitionBean where owner = ? or globalState = ? or (siteState = ?  and siteId in (";
 
       List sites = getWorksiteManager().getUserSites();
-      for (Iterator i=sites.iterator();i.hasNext();) {
-         Site site = (Site)i.next();
+      for (Iterator i = sites.iterator(); i.hasNext();) {
+         Site site = (Site) i.next();
          query += "'" + site.getId() + "'";
          query += ",";
       }
@@ -161,7 +138,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    /**
-    *
     * @return list of all published globals or global sad owned by current user or waiting for approval
     */
    public List findGlobalHomes() {
@@ -190,25 +166,25 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public StructuredArtifactDefinitionBean loadHome(Id id) {
-         return (StructuredArtifactDefinitionBean) getHibernateTemplate().get(
-            StructuredArtifactDefinitionBean.class, id);
+      return (StructuredArtifactDefinitionBean) getHibernateTemplate().get(StructuredArtifactDefinitionBean.class, id);
    }
 
    public StructuredArtifactDefinitionBean loadHomeByExternalType(String externalType, Id worksiteId) {
-      List homes = (List) getHibernateTemplate().find(
-         "from StructuredArtifactDefinitionBean a where externalType=? AND " +
-         "(globalState=? OR siteId=?)", new Object[]{
-            externalType, new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
-            worksiteId.getValue()});
+      List homes = (List) getHibernateTemplate().find("from StructuredArtifactDefinitionBean a where externalType=? AND " +
+            "(globalState=? OR siteId=?)", new Object[]{
+               externalType, new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
+               worksiteId.getValue()});
 
-      if (homes.size() == 0) return null;
+      if (homes.size() == 0) {
+         return null;
+      }
 
       if (homes.size() == 1) {
          return (StructuredArtifactDefinitionBean) homes.get(0);
       }
       else {
-         for (Iterator i=homes.iterator();i.hasNext();) {
-            StructuredArtifactDefinitionBean def = (StructuredArtifactDefinitionBean)i.next();
+         for (Iterator i = homes.iterator(); i.hasNext();) {
+            StructuredArtifactDefinitionBean def = (StructuredArtifactDefinitionBean) i.next();
             if (def.getSiteId() != null) {
                if (def.getSiteId().equals(worksiteId.getValue())) {
                   return def;
@@ -220,8 +196,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public StructuredArtifactDefinitionBean save(StructuredArtifactDefinitionBean bean) {
-      if (!sadExists(bean)){
-	      bean.setModified(new Date(System.currentTimeMillis()));
+      if (!sadExists(bean)) {
+         bean.setModified(new Date(System.currentTimeMillis()));
 
          boolean loadSchema = false;
 
@@ -231,7 +207,8 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
                loadSchema = true;
                loadNode(bean);
                bean.setCreated(new Date(System.currentTimeMillis()));
-            } else if (bean.getSchemaFile() != null){
+            }
+            else if (bean.getSchemaFile() != null) {
                loadSchema = true;
                loadNode(bean);
                sad = new StructuredArtifactDefinition(bean);
@@ -245,9 +222,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          bean.setExternalType(sad.getExternalType());
          bean.setSchemaHash(calculateSchemaHash(bean));
          getHibernateTemplate().saveOrUpdateCopy(bean);
-   	} else {
-   		throw new PersistenceException("Form name {0} exists", new Object[]{bean.getDescription()}, "description");
-   	}
+      }
+      else {
+         throw new PersistenceException("Form name {0} exists", new Object[]{bean.getDescription()}, "description");
+      }
       return bean;
    }
 
@@ -330,7 +308,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return schemaFactory.getSchema(new ByteArrayInputStream(sad.getSchema()));
    }
 
-   protected boolean sadExists(StructuredArtifactDefinitionBean sad) throws PersistenceException{
+   protected boolean sadExists(StructuredArtifactDefinitionBean sad) throws PersistenceException {
       return false;
       /*
       Map wkstHomes = getWorksiteHomes(getWorksiteManager().getCurrentWorksiteId());
@@ -355,7 +333,6 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    /**
-    *
     * @param sad
     * @param artifact
     * @throws OspException if artifact doesn't validate
@@ -376,12 +353,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 //      }
    }
 
-   protected void saveAll(StructuredArtifactDefinition sad, Collection artifacts){
+   protected void saveAll(StructuredArtifactDefinition sad, Collection artifacts) {
       for (Iterator i = artifacts.iterator(); i.hasNext();) {
          StructuredArtifact artifact = (StructuredArtifact) i.next();
          try {
             sad.store(artifact);
-         } catch (PersistenceException e) {
+         }
+         catch (PersistenceException e) {
             logger.error("problem saving artifact with id " + artifact.getId().getValue() + ":" + e);
          }
       }
@@ -393,7 +371,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     * This is necessary so that users won't be able to update artifacts while this is going on.
     * The system transforms every object in memory and validates before writing any artifact back out.
     * This way if something fails the existing data will stay intact.
-    *
+    * <p/>
     * TODO possible memory issues
     * TODO all this work need to be atomic
     *
@@ -434,11 +412,14 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
                validateAfterTransform(sad, artifact);
                // don't persist yet, in case error is found in some other artifact
                modifiedArtifacts.add(artifact);
-            } catch (TransformerException e) {
+            }
+            catch (TransformerException e) {
                throw new OspException("problem transforming item with id=" + artifact.getId().getValue(), e);
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                throw new OspException(e);
-            } catch (JDOMException e) {
+            }
+            catch (JDOMException e) {
                throw new OspException("problem with xsl file: " + e.getMessage(), e);
             }
          }
@@ -446,7 +427,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       } finally {
          // reset systemOnly state back to whatever if was
          // but only if there was an error
-         if (!originalSystemOnlyState && !finished){
+         if (!originalSystemOnlyState && !finished) {
             currentHome.setSystemOnly(false);
             getHibernateTemplate().saveOrUpdate(currentHome);
          }
@@ -475,7 +456,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       */
    }
 
-   public AuthenticationManager getAuthManager(){
+   public AuthenticationManager getAuthManager() {
       return (AuthenticationManager) ComponentManager.getInstance().get("authManager");
    }
 
@@ -510,7 +491,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public void setToolManager(ToolManager toolManager) {
       this.toolManager = toolManager;
    }
-		
+
    protected Id getToolId() {
       Placement placement = toolManager.getCurrentPlacement();
       return idManager.getId(placement.getId());
@@ -520,9 +501,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       // select all this worksites forms and create them for the new worksite
       Map homes = getWorksiteHomes(getIdManager().getId(fromTool.getSiteId()));
 
-      for (Iterator i=homes.entrySet().iterator();i.hasNext();) {
-         Map.Entry entry = (Map.Entry)i.next();
-         StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean)entry.getValue();
+      for (Iterator i = homes.entrySet().iterator(); i.hasNext();) {
+         Map.Entry entry = (Map.Entry) i.next();
+         StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) entry.getValue();
 
          if (fromTool.getSiteId().equals(bean.getSiteId())) {
             bean.setSiteId(toTool.getSiteId());
@@ -541,9 +522,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
    }
-                                                   
+
    protected void init() throws Exception {
-       // register functions
+      // register functions
       FunctionManager.registerFunction(SharedFunctionConstants.CREATE_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.EDIT_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
@@ -555,7 +536,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       List forms = getHibernateTemplate().find("from StructuredArtifactDefinitionBean a where " +
             "schema_hash is null");
 
-      for (Iterator i=forms.iterator();i.hasNext();) {
+      for (Iterator i = forms.iterator(); i.hasNext();) {
          StructuredArtifactDefinitionBean bean = (StructuredArtifactDefinitionBean) i.next();
          bean.setSchemaHash(calculateSchemaHash(bean));
          getHibernateTemplate().saveOrUpdateCopy(bean);
@@ -571,114 +552,114 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    }
 
    public void packageForDownload(Map params, OutputStream out) throws IOException {
-	   
-	   String[] formIdObj = (String[])params.get(DOWNLOAD_FORM_ID_PARAM);
-	   packageFormForExport(formIdObj[0], out);
+
+      String[] formIdObj = (String[]) params.get(DOWNLOAD_FORM_ID_PARAM);
+      packageFormForExport(formIdObj[0], out);
    }
-   
+
    public void packageFormForExport(String formId, OutputStream os)
-			throws IOException {
-		getAuthzManager().checkPermission(SharedFunctionConstants.EDIT_ARTIFACT_DEF,
-				getToolId());
+         throws IOException {
+      getAuthzManager().checkPermission(SharedFunctionConstants.EDIT_ARTIFACT_DEF,
+            getToolId());
 
-		CheckedOutputStream checksum = new CheckedOutputStream(os,
-				new Adler32());
-		ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(
-				checksum));
-		
-		StructuredArtifactDefinitionBean bean = loadHome(formId);
-		writeSADtoZip(bean, zos, "");
+      CheckedOutputStream checksum = new CheckedOutputStream(os,
+            new Adler32());
+      ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
 
-		zos.finish();
-		zos.flush();
-	}
-   
-   public Document exportSADAsXML(StructuredArtifactDefinitionBean bean)
-   {
-	    Element rootNode = new Element("metaobjForm");
-	    
-	    rootNode.setAttribute("formatVersion", "2.1");
-	    
-		Element attrNode = new Element("description");
-		attrNode.addContent(new CDATA(bean.getDescription()));
-		rootNode.addContent(attrNode);
-		    
-		attrNode = new Element("instruction");
-		attrNode.addContent(new CDATA(bean.getInstruction()));
-		rootNode.addContent(attrNode);
-		    
-		attrNode = new Element("documentRootNode");
-		attrNode.addContent(new CDATA(bean.getDocumentRoot()));
-		rootNode.addContent(attrNode);
-		
-		return new Document(rootNode);
-   }
-   
-   public void writeSADasXMLtoStream(StructuredArtifactDefinitionBean bean, OutputStream os) throws IOException
-   {
-	   	Document doc = exportSADAsXML(bean);
-		String docStr = (new XMLOutputter()).outputString(doc);
-		os.write(docStr.getBytes());
-   }
-   
-   public void writeSADtoZip(StructuredArtifactDefinitionBean bean, ZipOutputStream zos) throws IOException
-   {
-	   writeSADtoZip(bean, zos, "");
-   }
-   public void writeSADtoZip(StructuredArtifactDefinitionBean bean, ZipOutputStream zos, String path) throws IOException
-   {
-	   // if the path is a directory without an end slash, then add one
-	   if(!path.endsWith("/") && path.length() > 0)
-		   path += "/";
-	   ZipEntry definitionFile = new ZipEntry(path + "formDefinition.xml");
-		
-	   zos.putNextEntry(definitionFile);
-	   writeSADasXMLtoStream(bean, zos);
-	   zos.closeEntry();
+      StructuredArtifactDefinitionBean bean = loadHome(formId);
+      writeSADtoZip(bean, zos, "");
 
-	   ZipEntry schemeFile = new ZipEntry(path + "schema.xsd");
-		
-	   zos.putNextEntry(schemeFile);
-	   zos.write(bean.getSchema());
-	   zos.closeEntry();
-		
+      zos.finish();
+      zos.flush();
    }
-   
+
+   public Document exportSADAsXML(StructuredArtifactDefinitionBean bean) {
+      Element rootNode = new Element("metaobjForm");
+
+      rootNode.setAttribute("formatVersion", "2.1");
+
+      Element attrNode = new Element("description");
+      attrNode.addContent(new CDATA(bean.getDescription()));
+      rootNode.addContent(attrNode);
+
+      attrNode = new Element("instruction");
+      attrNode.addContent(new CDATA(bean.getInstruction()));
+      rootNode.addContent(attrNode);
+
+      attrNode = new Element("documentRootNode");
+      attrNode.addContent(new CDATA(bean.getDocumentRoot()));
+      rootNode.addContent(attrNode);
+
+      return new Document(rootNode);
+   }
+
+   public void writeSADasXMLtoStream(StructuredArtifactDefinitionBean bean, OutputStream os) throws IOException {
+      Document doc = exportSADAsXML(bean);
+      String docStr = (new XMLOutputter()).outputString(doc);
+      os.write(docStr.getBytes());
+   }
+
+   public void writeSADtoZip(StructuredArtifactDefinitionBean bean, ZipOutputStream zos) throws IOException {
+      writeSADtoZip(bean, zos, "");
+   }
+
+   public void writeSADtoZip(StructuredArtifactDefinitionBean bean, ZipOutputStream zos, String path) throws IOException {
+      // if the path is a directory without an end slash, then add one
+      if (!path.endsWith("/") && path.length() > 0) {
+         path += "/";
+      }
+      ZipEntry definitionFile = new ZipEntry(path + "formDefinition.xml");
+
+      zos.putNextEntry(definitionFile);
+      writeSADasXMLtoStream(bean, zos);
+      zos.closeEntry();
+
+      ZipEntry schemeFile = new ZipEntry(path + "schema.xsd");
+
+      zos.putNextEntry(schemeFile);
+      zos.write(bean.getSchema());
+      zos.closeEntry();
+
+   }
+
    /**
-	 * Given a resource id, this parses out the Form from its input stream.
-	 * Once the enties are found, they are inserted into the given worksite.
-	 * @param worksiteId Id
-	 * @param resourceId an String
+    * Given a resource id, this parses out the Form from its input stream.
+    * Once the enties are found, they are inserted into the given worksite.
+    *
+    * @param worksiteId   Id
+    * @param resourceId   an String
     * @param findExisting
-	 */
-	public boolean importSADResource(Id worksiteId, String resourceId, boolean findExisting)
-		throws IOException, ServerOverloadException
-	{
-		String id = getContentHosting().resolveUuid(resourceId);
-		
-		try{ 
-			ContentResource resource = getContentHosting().getResource(id);
-			MimeType  mimeType = new MimeType(resource.getContentType());
-	
-			if(mimeType.equals(new MimeType("application/zip")) || 
-					mimeType.equals(new MimeType("application/x-zip-compressed"))) {
+    */
+   public boolean importSADResource(Id worksiteId, String resourceId, boolean findExisting)
+         throws IOException, ServerOverloadException {
+      String id = getContentHosting().resolveUuid(resourceId);
+
+      try {
+         ContentResource resource = getContentHosting().getResource(id);
+         MimeType mimeType = new MimeType(resource.getContentType());
+
+         if (mimeType.equals(new MimeType("application/zip")) ||
+               mimeType.equals(new MimeType("application/x-zip-compressed"))) {
             InputStream zipContent = resource.streamContent();
-            StructuredArtifactDefinitionBean bean = importSad(
-                  worksiteId, zipContent, findExisting, false);
+            StructuredArtifactDefinitionBean bean = importSad(worksiteId, zipContent, findExisting, false);
 
             return bean != null;
-			} else {
-				throw new OspException("Unsupported file type");
-			}
-		} catch(PermissionException pe) {
-	         logger.error(pe);
-		} catch(TypeException te) {
-	         logger.error(te);
-		} catch(IdUnusedException iue) {
-	         logger.error(iue);
-		}
-		return false;
-	}
+         }
+         else {
+            throw new OspException("Unsupported file type");
+         }
+      }
+      catch (PermissionException pe) {
+         logger.error(pe);
+      }
+      catch (TypeException te) {
+         logger.error(te);
+      }
+      catch (IdUnusedException iue) {
+         logger.error(iue);
+      }
+      return false;
+   }
 
    public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
                                                      boolean findExisting, boolean publish)
@@ -686,7 +667,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       ZipInputStream zis = new ZipInputStream(in);
 
       StructuredArtifactDefinitionBean bean = readSADfromZip(zis, worksiteId.getValue(), publish);
-      if(bean != null) {
+      if (bean != null) {
          if (findExisting) {
             StructuredArtifactDefinitionBean found = findBean(bean);
             if (found != null) {
@@ -703,14 +684,14 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    protected StructuredArtifactDefinitionBean findBean(StructuredArtifactDefinitionBean bean) {
       String query = "from StructuredArtifactDefinitionBean where globalState = ? or " +
-         "(siteState = ?  and siteId = ?) and schema_hash = ?";
+            "(siteState = ?  and siteId = ?) and schema_hash = ?";
 
       Object[] params = new Object[]{new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      new Integer(StructuredArtifactDefinitionBean.STATE_PUBLISHED),
                                      bean.getSiteId(), bean.getSchemaHash()};
       List beans = getHibernateTemplate().find(query, params);
 
-      if (beans.size() > 0){
+      if (beans.size() > 0) {
          return (StructuredArtifactDefinitionBean) beans.get(0);
       }
       return null;
@@ -719,87 +700,85 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public StructuredArtifactDefinitionBean readSADfromZip(ZipInputStream zis,
                                                           String worksite, boolean publish)
-         throws IOException
-   {
-	   StructuredArtifactDefinitionBean bean = new StructuredArtifactDefinitionBean();
-	   boolean hasXML = false, hasXSD = false;
+         throws IOException {
+      StructuredArtifactDefinitionBean bean = new StructuredArtifactDefinitionBean();
+      boolean hasXML = false, hasXSD = false;
 
-       bean.setCreated(new Date(System.currentTimeMillis()));
-	   bean.setModified(bean.getCreated());
-	       
-	   bean.setOwner(getAuthManager().getAgent());
-	   bean.setSiteId(worksite);
-	   bean.setSiteState(
-         publish?StructuredArtifactDefinitionBean.STATE_PUBLISHED:
+      bean.setCreated(new Date(System.currentTimeMillis()));
+      bean.setModified(bean.getCreated());
+
+      bean.setOwner(getAuthManager().getAgent());
+      bean.setSiteId(worksite);
+      bean.setSiteState(publish ? StructuredArtifactDefinitionBean.STATE_PUBLISHED :
             StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
-	   
-	   ZipEntry currentEntry = zis.getNextEntry();
-       if(currentEntry != null) {
-		   if(currentEntry.getName().endsWith("xml")) {
-			   readSADfromXML(bean, zis);
-			   hasXML = true;
-		   }
-		   if(currentEntry.getName().endsWith("xsd")) {
-			   readSADSchemaFromXML(bean, zis);
-			   hasXSD = true;
-		   }
-	       zis.closeEntry();
-       }
-       currentEntry = zis.getNextEntry();
-       if(currentEntry != null) {
-		   if(currentEntry.getName().endsWith("xml")) {
-			   readSADfromXML(bean, zis);
-			   hasXML = true;
-		   }
-		   if(currentEntry.getName().endsWith("xsd")) {
-			   readSADSchemaFromXML(bean, zis);
-			   hasXSD = true;
-		   }
-	       zis.closeEntry();
-       }
-       if(!hasXML || !hasXSD)
-    	   return null;
 
-	   bean.setSchemaHash(calculateSchemaHash(bean));
-	   return bean;
+      ZipEntry currentEntry = zis.getNextEntry();
+      if (currentEntry != null) {
+         if (currentEntry.getName().endsWith("xml")) {
+            readSADfromXML(bean, zis);
+            hasXML = true;
+         }
+         if (currentEntry.getName().endsWith("xsd")) {
+            readSADSchemaFromXML(bean, zis);
+            hasXSD = true;
+         }
+         zis.closeEntry();
+      }
+      currentEntry = zis.getNextEntry();
+      if (currentEntry != null) {
+         if (currentEntry.getName().endsWith("xml")) {
+            readSADfromXML(bean, zis);
+            hasXML = true;
+         }
+         if (currentEntry.getName().endsWith("xsd")) {
+            readSADSchemaFromXML(bean, zis);
+            hasXSD = true;
+         }
+         zis.closeEntry();
+      }
+      if (!hasXML || !hasXSD) {
+         return null;
+      }
+
+      bean.setSchemaHash(calculateSchemaHash(bean));
+      return bean;
    }
-   private StructuredArtifactDefinitionBean readSADfromXML(StructuredArtifactDefinitionBean bean, InputStream inStream)
-   {
-		SAXBuilder builder = new SAXBuilder();
 
-		try {
-			byte []bytes = readStreamToBytes(inStream);
-		   Document document	= builder.build(new ByteArrayInputStream(bytes));
+   private StructuredArtifactDefinitionBean readSADfromXML(StructuredArtifactDefinitionBean bean, InputStream inStream) {
+      SAXBuilder builder = new SAXBuilder();
 
-		   Element topNode = document.getRootElement();
+      try {
+         byte[] bytes = readStreamToBytes(inStream);
+         Document document = builder.build(new ByteArrayInputStream(bytes));
 
-		   bean.setDescription(topNode.getChildTextTrim("description"));
-		   bean.setInstruction(topNode.getChildTextTrim("instruction"));
-		   bean.setDocumentRoot(topNode.getChildTextTrim("documentRootNode"));
-		} catch(Exception jdome) {
-	         logger.error(jdome);
-		}
-	   return bean;
+         Element topNode = document.getRootElement();
+
+         bean.setDescription(topNode.getChildTextTrim("description"));
+         bean.setInstruction(topNode.getChildTextTrim("instruction"));
+         bean.setDocumentRoot(topNode.getChildTextTrim("documentRootNode"));
+      }
+      catch (Exception jdome) {
+         logger.error(jdome);
+      }
+      return bean;
    }
-   
-   private byte[] readStreamToBytes(InputStream inStream) throws IOException
-   {
-	   ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-	   byte data[] = new byte[10*1024];
 
-       int count;
-       while ((count = inStream.read(data, 0, 10*1024)) != -1) {
-    	   bytes.write(data, 0, count);
-       }
-       byte []tmp = bytes.toByteArray();
-       bytes.close();
-       return tmp;
+   private byte[] readStreamToBytes(InputStream inStream) throws IOException {
+      ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+      byte data[] = new byte[10 * 1024];
+
+      int count;
+      while ((count = inStream.read(data, 0, 10 * 1024)) != -1) {
+         bytes.write(data, 0, count);
+      }
+      byte[] tmp = bytes.toByteArray();
+      bytes.close();
+      return tmp;
    }
-   
-   private StructuredArtifactDefinitionBean readSADSchemaFromXML(StructuredArtifactDefinitionBean bean, InputStream inStream) throws IOException
-   {
-       bean.setSchema(readStreamToBytes(inStream));
-	   return bean;
+
+   private StructuredArtifactDefinitionBean readSADSchemaFromXML(StructuredArtifactDefinitionBean bean, InputStream inStream) throws IOException {
+      bean.setSchema(readStreamToBytes(inStream));
+      return bean;
    }
 
    public List getGlobalSites() {
@@ -826,17 +805,22 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       ReadableObjectHome home = (ReadableObjectHome) art.getHome();
       if (home instanceof PresentableObjectHome) {
-         data.addContent(((PresentableObjectHome)home).getArtifactAsXml(art));
+         data.addContent(((PresentableObjectHome) home).getArtifactAsXml(art));
       }
 
-      Element returnUrlElement = new Element("returnUrl");
-      returnUrlElement.addContent(new CDATA(returnUrl));
       root.addContent(data);
-      root.addContent(returnUrlElement);
+
+      if (returnUrl != null) {
+         Element returnUrlElement = new Element("returnUrl");
+         returnUrlElement.addContent(new CDATA(returnUrl));
+         root.addContent(returnUrlElement);
+      }
 
       Element css = new Element("css");
       String skin = getCurrentSite().getSkin();
-      if (skin == null || skin.length() == 0) skin = ServerConfigurationService.getString("skin.default");
+      if (skin == null || skin.length() == 0) {
+         skin = ServerConfigurationService.getString("skin.default");
+      }
       String skinRepo = ServerConfigurationService.getString("skin.repo");
       Element uri = new Element("uri");
       uri.setText(skinRepo + "/tool_base.css");

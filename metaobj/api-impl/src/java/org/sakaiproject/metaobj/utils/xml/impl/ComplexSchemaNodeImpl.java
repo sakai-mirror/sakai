@@ -1,40 +1,32 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.xml.impl;
 
 import org.jdom.Attribute;
 import org.jdom.Element;
-import org.sakaiproject.metaobj.utils.xml.NormalizationException;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.ValidatedNode;
-import org.sakaiproject.metaobj.utils.xml.ValidationError;
+import org.sakaiproject.metaobj.utils.xml.*;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +63,7 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
       Element attributeParentElement = null;
 
       Element complexTypeElement =
-         getSchemaElement().getChild("complexType", xsdNamespace);
+            getSchemaElement().getChild("complexType", xsdNamespace);
 
       attributeParentElement = complexTypeElement;
 
@@ -109,11 +101,9 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
          childrenElements = new String[0];
       }
 
-      processAttributes(attributeParentElement.getChildren(
-         "attribute", xsdNamespace));
+      processAttributes(attributeParentElement.getChildren("attribute", xsdNamespace));
 
-      processAttributeGroups(attributeParentElement.getChildren(
-         "attributeGroup", xsdNamespace));
+      processAttributeGroups(attributeParentElement.getChildren("attributeGroup", xsdNamespace));
    }
 
    private void processAttributeGroups(List childList) {
@@ -141,7 +131,7 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
          }
 
          childrenAttributeMap.put(childrenAttributes[i],
-            createNode(currentElement, true));
+               createNode(currentElement, true));
       }
    }
 
@@ -160,7 +150,7 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
          }
 
          childrenMap.put(childrenElements[i],
-            createNode(currentElement));
+               createNode(currentElement));
       }
 
       // looking for sequence or all
@@ -182,7 +172,7 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
       setupAttributeGroups();
 
       ValidatedNodeImpl validatedNode =
-         new ValidatedNodeImpl(this, node);
+            new ValidatedNodeImpl(this, node);
 
       if (orderDependant) {
          // todo add ordering check here
@@ -191,36 +181,38 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
 
       for (int i = 0; i < childrenElements.length; i++) {
          SchemaNode currentSchemaNode =
-            (SchemaNode) childrenMap.get(childrenElements[i]);
+               (SchemaNode) childrenMap.get(childrenElements[i]);
 
          int actualNumberOfElements = node.getChildren(childrenElements[i]).size();
 
          if (actualNumberOfElements == 0 && currentSchemaNode.getMinOccurs() == 1) {
 
             ValidatedNodeImpl validatedChildNode =
-               new ValidatedNodeImpl(currentSchemaNode, null);
+                  new ValidatedNodeImpl(currentSchemaNode, null);
 
             validatedChildNode.getErrors().add(new ValidationError(validatedChildNode, "Required field: {0}",
-               new Object[]{childrenElements[i]}));
+                  new Object[]{childrenElements[i]}));
             validatedNode.getChildren().add(validatedChildNode);
-         } else if (actualNumberOfElements > currentSchemaNode.getMaxOccurs() &&
-            currentSchemaNode.getMaxOccurs() != -1) {
+         }
+         else if (actualNumberOfElements > currentSchemaNode.getMaxOccurs() &&
+               currentSchemaNode.getMaxOccurs() != -1) {
 
             ValidatedNodeImpl validatedChildNode =
-               new ValidatedNodeImpl(currentSchemaNode, null);
+                  new ValidatedNodeImpl(currentSchemaNode, null);
 
             validatedChildNode.getErrors().add(new ValidationError(validatedChildNode, "Too many elements {0}, {1}",
-               new Object[]{childrenElements[i],
-                            new Integer(getMaxOccurs())}));
+                  new Object[]{childrenElements[i],
+                               new Integer(getMaxOccurs())}));
             validatedNode.getChildren().add(validatedChildNode);
-         } else if (actualNumberOfElements < currentSchemaNode.getMinOccurs()) {
+         }
+         else if (actualNumberOfElements < currentSchemaNode.getMinOccurs()) {
 
             ValidatedNodeImpl validatedChildNode =
-               new ValidatedNodeImpl(currentSchemaNode, null);
+                  new ValidatedNodeImpl(currentSchemaNode, null);
 
             validatedChildNode.getErrors().add(new ValidationError(validatedChildNode, "Too few elements {0}, {1}",
-               new Object[]{childrenElements[i],
-                            new Integer(getMinOccurs())}));
+                  new Object[]{childrenElements[i],
+                               new Integer(getMinOccurs())}));
             validatedNode.getChildren().add(validatedChildNode);
          }
       }
@@ -234,8 +226,9 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
 
          if (currentSchemaNode == null) {
             validatedNode.getErrors().add(new ValidationError("Unkown node {0}",
-               new Object[]{currentElement.getName()}));
-         } else {
+                  new Object[]{currentElement.getName()}));
+         }
+         else {
             validatedNode.getChildren().add(currentSchemaNode.validateAndNormalize(currentElement));
          }
       }
@@ -249,8 +242,9 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
 
          if (currentSchemaNode == null) {
             validatedNode.getErrors().add(new ValidationError("Unkown node {0}",
-               new Object[]{currentAttribute.getName()}));
-         } else {
+                  new Object[]{currentAttribute.getName()}));
+         }
+         else {
             validatedNode.getChildren().add(currentSchemaNode.validateAndNormalize(currentAttribute));
          }
       }
@@ -265,23 +259,22 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
       attributeGroupsSetup = true;
       List newAttributes = new ArrayList();
 
-      for (int i=0;i<attributeGroupNames.length;i++) {
-         SchemaNode[] nodes = (SchemaNode[])getGlobalMaps().globalAttributeGroups.get(
-            attributeGroupNames[i]);
+      for (int i = 0; i < attributeGroupNames.length; i++) {
+         SchemaNode[] nodes = (SchemaNode[]) getGlobalMaps().globalAttributeGroups.get(attributeGroupNames[i]);
 
-         for (int j=0;j<nodes.length;j++) {
+         for (int j = 0; j < nodes.length; j++) {
             newAttributes.add(nodes[j]);
          }
       }
 
       String[] newAttributeNames = new String[childrenAttributes.length + newAttributes.size()];
 
-      System.arraycopy(childrenAttributes, 0, newAttributeNames,  0, childrenAttributes.length);
+      System.arraycopy(childrenAttributes, 0, newAttributeNames, 0, childrenAttributes.length);
 
       int index = childrenAttributes.length;
 
-      for (Iterator i=newAttributes.iterator();i.hasNext();) {
-         SchemaNode node = (SchemaNode)i.next();
+      for (Iterator i = newAttributes.iterator(); i.hasNext();) {
+         SchemaNode node = (SchemaNode) i.next();
          newAttributeNames[index] = node.getName();
          childrenAttributeMap.put(node.getName(), node);
          index++;
@@ -301,11 +294,11 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
          return (SchemaNode) childrenMap.get(elementName);
       }
       else if (this.getClass().isInstance(extensionType)) {
-            return extensionType.getChild(elementName);
+         return extensionType.getChild(elementName);
       }
 
       setupAttributeGroups();
-      return (SchemaNode)childrenAttributeMap.get(elementName);
+      return (SchemaNode) childrenAttributeMap.get(elementName);
    }
 
 
@@ -320,7 +313,8 @@ public class ComplexSchemaNodeImpl extends SchemaNodeImpl {
    public Class getObjectType() {
       if (this.getMaxOccurs() > 1) {
          return List.class;
-      } else {
+      }
+      else {
          return Map.class;
       }
    }

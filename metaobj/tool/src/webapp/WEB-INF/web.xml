@@ -8,33 +8,33 @@
          /web-context.properties
       </param-value>
    </context-param>
-   
-   <display-name>sakai-metaobj</display-name>
-    <description>Sakai Meta Object</description>
 
-    <filter>
-        <filter-name>sakai.request</filter-name>
-        <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
-        <init-param>
-            <param-name>upload.enabled</param-name>
-            <param-value>false</param-value>
-        </init-param>
-    </filter>
-    
-    <filter-mapping>
-        <filter-name>sakai.request</filter-name>
-        <servlet-name>sakai.metaobj</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-    </filter-mapping>
+   <display-name>sakai-metaobj</display-name>
+   <description>Sakai Meta Object</description>
+
+   <filter>
+      <filter-name>sakai.request</filter-name>
+      <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
+      <init-param>
+         <param-name>upload.enabled</param-name>
+         <param-value>false</param-value>
+      </init-param>
+   </filter>
 
    <filter-mapping>
-       <filter-name>sakai.request</filter-name>
-       <servlet-name>sakai.metaobj.formView</servlet-name>
-       <dispatcher>REQUEST</dispatcher>
-       <dispatcher>FORWARD</dispatcher>
-       <dispatcher>INCLUDE</dispatcher>
+      <filter-name>sakai.request</filter-name>
+      <servlet-name>sakai.metaobj</servlet-name>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+      <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>sakai.request</filter-name>
+      <servlet-name>sakai.metaobj.formView</servlet-name>
+      <dispatcher>REQUEST</dispatcher>
+      <dispatcher>FORWARD</dispatcher>
+      <dispatcher>INCLUDE</dispatcher>
    </filter-mapping>
 
    <!--
@@ -49,42 +49,42 @@
    <servlet>
       <servlet-name>springapp</servlet-name>
       <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-<!--       <servlet-class>org.sakaiproject.metaobj.shared.control.servlet.SakaiComponentDispatchServlet</servlet-class>-->
-		<load-on-startup>1</load-on-startup>
+      <!--       <servlet-class>org.sakaiproject.metaobj.shared.control.servlet.SakaiComponentDispatchServlet</servlet-class>-->
+      <load-on-startup>1</load-on-startup>
    </servlet>
 
    <servlet>
       <servlet-name>sakai.metaobj</servlet-name>
       <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
       <init-param>
-            <param-name>default</param-name>
-            <param-value>listStructuredArtifactDefinitions</param-value>
-        </init-param>
-        <init-param>
-            <param-name>path</param-name>
-            <param-value></param-value>
-        </init-param>
+         <param-name>default</param-name>
+         <param-value>listStructuredArtifactDefinitions</param-value>
+      </init-param>
+      <init-param>
+         <param-name>path</param-name>
+         <param-value></param-value>
+      </init-param>
       <load-on-startup>2</load-on-startup>
    </servlet>
 
    <servlet>
-     <servlet-name>sakai.metaobj.formView</servlet-name>
-     <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
-       <init-param>
-           <param-name>path</param-name>
-           <param-value></param-value>
-       </init-param>
-     <load-on-startup>2</load-on-startup>
+      <servlet-name>sakai.metaobj.formView</servlet-name>
+      <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
+      <init-param>
+         <param-name>path</param-name>
+         <param-value></param-value>
+      </init-param>
+      <load-on-startup>2</load-on-startup>
 
-       <init-param>
-           <param-name>default</param-name>
-           <param-value>formView</param-value>
-       </init-param>
-        <init-param>
-           <param-name>default.last.view</param-name>
-           <param-value>true</param-value>
-       </init-param>
-  </servlet>
+      <init-param>
+         <param-name>default</param-name>
+         <param-value>formView</param-value>
+      </init-param>
+      <init-param>
+         <param-name>default.last.view</param-name>
+         <param-value>true</param-value>
+      </init-param>
+   </servlet>
 
    <servlet>
       <servlet-name>repository</servlet-name>
@@ -92,25 +92,25 @@
       <load-on-startup>2</load-on-startup>
    </servlet>
 
-   
+
    <listener>
       <listener-class>org.sakaiproject.metaobj.utils.ioc.web.WebContextLoaderListener</listener-class>
    </listener>
-<!-- 
+   <!--
+      <listener>
+         <listener-class>org.sakaiproject.metaobj.utils.BeanFactory</listener-class>
+      </listener>
+    -->
    <listener>
-      <listener-class>org.sakaiproject.metaobj.utils.BeanFactory</listener-class>
+      <listener-class>org.sakaiproject.util.ToolListener</listener-class>
    </listener>
- -->
-    <listener>
-        <listener-class>org.sakaiproject.util.ToolListener</listener-class>
-    </listener>
-<!--     
-    <listener>
-        <listener-class>org.sakaiproject.metaobj.shared.control.SessionListener</listener-class>
-    </listener>
--->
+   <!--
+       <listener>
+           <listener-class>org.sakaiproject.metaobj.shared.control.SessionListener</listener-class>
+       </listener>
+   -->
 
-    <servlet-mapping>
+   <servlet-mapping>
       <servlet-name>springapp</servlet-name>
       <url-pattern>*.osp</url-pattern>
    </servlet-mapping>
@@ -124,11 +124,11 @@
       <taglib-uri>/spring</taglib-uri>
       <taglib-location>/WEB-INF/spring.tld</taglib-location>
    </taglib>
-   
+
    <servlet-mapping>
-     <servlet-name>repository</servlet-name>
-     <url-pattern>/repository/*</url-pattern>
-  </servlet-mapping>
+      <servlet-name>repository</servlet-name>
+      <url-pattern>/repository/*</url-pattern>
+   </servlet-mapping>
 
 
 </web-app>

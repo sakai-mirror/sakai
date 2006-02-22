@@ -1,41 +1,41 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-*
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-*
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
+import org.jdom.Attribute;
+import org.jdom.Element;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.ElementListBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.NormalizationException;
 import org.sakaiproject.metaobj.utils.mvc.intf.FieldValueWrapper;
-import org.jdom.Element;
-import org.jdom.Attribute;
+import org.sakaiproject.metaobj.utils.xml.NormalizationException;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 
-import java.util.List;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,9 +48,10 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
 
    /**
     * Validate this element from the root.
+    *
     * @param element filled in element to be validated.
     * @return list of ValidationError objects.  If this list is
-    * returned empty, then the element validated successfully
+    *         returned empty, then the element validated successfully
     * @see org.sakaiproject.metaobj.shared.model.ValidationError
     */
    public List validate(ElementBean element) {
@@ -61,11 +62,12 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
 
    /**
     * Validate this element from the root.
-    * @param element filled in element to be validated.
+    *
+    * @param element    filled in element to be validated.
     * @param parentName this is the name of the parent of this object.
-    * All fields that have errors will have this name prepended with a "."
+    *                   All fields that have errors will have this name prepended with a "."
     * @return list of ValidationError objects.  If this list is
-    * returned empty, then the element validated successfully
+    *         returned empty, then the element validated successfully
     * @see org.sakaiproject.metaobj.shared.model.ValidationError
     */
    public List validate(ElementBean element, String parentName) {
@@ -90,36 +92,36 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
             Object value = elementBean.get(childSchema.getName());
 
             if (value instanceof ElementBean) {
-               validate((ElementBean)value,
+               validate((ElementBean) value,
                      composeName(parentName, childSchema.getName()), errors);
                if (childSchema.isDataNode()) {
-                  ElementBean bean = (ElementBean)value;
+                  ElementBean bean = (ElementBean) value;
                   value = bean.currentElement().getTextTrim();
                   if (value.toString().length() == 0) {
                      value = null;
                   }
                   validateElement(rootElement, childSchema, value, parentName, errors);
                }
-            } else if (value instanceof ElementListBean) {
+            }
+            else if (value instanceof ElementListBean) {
                boolean found = false;
-               for (Iterator iter=((ElementListBean)value).iterator();iter.hasNext();) {
+               for (Iterator iter = ((ElementListBean) value).iterator(); iter.hasNext();) {
                   found = true;
                   Object currentValue = iter.next();
-                  validate((ElementBean)currentValue,
+                  validate((ElementBean) currentValue,
                         composeName(parentName, childSchema.getName()), errors);
                   if (childSchema.isDataNode()) {
-                     ElementBean bean = (ElementBean)currentValue;
+                     ElementBean bean = (ElementBean) currentValue;
                      currentValue = bean.currentElement().getTextTrim();
                      if (currentValue.toString().length() == 0) {
                         currentValue = null;
                      }
                      try {
                         validateChildElement(bean.currentElement(),
-                           childSchema, currentValue, parentName, errors);
+                              childSchema, currentValue, parentName, errors);
                      }
-                      catch (NormalizationException exp) {
-                        errors.add(new ValidationError(
-                              composeName(parentName, childSchema.getName()),
+                     catch (NormalizationException exp) {
+                        errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
                               exp.getErrorCode(),
                               exp.getErrorInfo(),
                               MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
@@ -129,17 +131,17 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                if (!found) {
                   try {
                      validateChildElement(null,
-                        childSchema, null, parentName, errors);
+                           childSchema, null, parentName, errors);
                   }
                   catch (NormalizationException exp) {
-                    errors.add(new ValidationError(
-                          composeName(parentName, childSchema.getName()),
-                          exp.getErrorCode(),
-                          exp.getErrorInfo(),
-                          MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
-                 }
+                     errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
+                           exp.getErrorCode(),
+                           exp.getErrorInfo(),
+                           MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
+                  }
                }
-            } else if (childSchema.isAttribute()) {
+            }
+            else if (childSchema.isAttribute()) {
                Attribute childAttribute = rootElement.getAttribute(childSchema.getName());
 
                if (childAttribute != null) {
@@ -150,19 +152,20 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
                   }
 
                   childAttribute.setValue(childSchema.getSchemaNormalizedValue(value));
-               } else if (childSchema.getMinOccurs() > 0) {
-                  errors.add(new ValidationError(
-                        composeName(parentName, childSchema.getName()),
+               }
+               else if (childSchema.getMinOccurs() > 0) {
+                  errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
                         NormalizationException.REQIRED_FIELD_ERROR_CODE,
                         new Object[0], NormalizationException.REQIRED_FIELD_ERROR_CODE));
                }
 
-            } else {
+            }
+            else {
                validateElement(rootElement, childSchema, value, parentName, errors);
             }
-         } catch (NormalizationException exp) {
-            errors.add(new ValidationError(
-                  composeName(parentName, childSchema.getName()),
+         }
+         catch (NormalizationException exp) {
+            errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
                   exp.getErrorCode(),
                   exp.getErrorInfo(),
                   MessageFormat.format(exp.getErrorCode(), exp.getErrorInfo())));
@@ -175,8 +178,8 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
    protected void validateChildElement(Element childElement, SchemaNode childSchema,
                                        Object value, String parentName, List errors) {
       if (childElement != null) {
-         if (value instanceof FieldValueWrapper){
-            value = ((FieldValueWrapper)value).getValue();
+         if (value instanceof FieldValueWrapper) {
+            value = ((FieldValueWrapper) value).getValue();
          }
 
          String stringValue = null;
@@ -186,9 +189,9 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
          }
 
          childElement.setText(childSchema.getSchemaNormalizedValue(value));
-      } else if (childSchema.getMinOccurs() > 0) {
-         errors.add(new ValidationError(
-               composeName(parentName, childSchema.getName()),
+      }
+      else if (childSchema.getMinOccurs() > 0) {
+         errors.add(new ValidationError(composeName(parentName, childSchema.getName()),
                NormalizationException.REQIRED_FIELD_ERROR_CODE,
                new Object[0], NormalizationException.REQIRED_FIELD_ERROR_CODE));
       }
@@ -197,7 +200,7 @@ public class StructuredArtifactValidationServiceImpl implements StructuredArtifa
    protected void validateElement(Element rootElement, SchemaNode childSchema,
                                   Object value, String parentName, List errors) {
       validateChildElement(rootElement.getChild(childSchema.getName()),
-         childSchema, value, parentName, errors);
+            childSchema, value, parentName, errors);
    }
 
    protected String composeName(String parentName, String name) {

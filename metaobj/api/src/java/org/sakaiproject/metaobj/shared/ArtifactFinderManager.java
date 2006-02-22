@@ -11,5 +11,6 @@ import java.util.Map;
  */
 public interface ArtifactFinderManager {
    ArtifactFinder getArtifactFinderByType(String key);
+
    Map getFinders();
 }

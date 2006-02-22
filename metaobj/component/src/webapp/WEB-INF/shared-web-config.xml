@@ -19,8 +19,12 @@
 
    <bean id="org.sakaiproject.metaobj.repository.PostFilePickerProcessor.documentRootPostProcessor"
       class="org.sakaiproject.metaobj.repository.control.DocumentRootPostProcessor">
-      <property name="fileArtifactHome"><ref bean="fileArtifactHome" /></property>
-      <property name="view"><value>/WEB-INF/jsp/repository/selectDocumentRoot.jsp</value></property>
+      <property name="fileArtifactHome">
+         <ref bean="fileArtifactHome"/>
+      </property>
+      <property name="view">
+         <value>/WEB-INF/jsp/repository/selectDocumentRoot.jsp</value>
+      </property>
       <property name="params">
          <map>
             <entry key="selectBoxName">
@@ -34,10 +38,18 @@
    <bean id="viewArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.sakaiproject.metaobj.shared.control.ViewArtifact">
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="homeFactory"><ref bean="homeFactory"/></property>
-            <property name="authzManager"><ref bean="authzManager"/></property>
-            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="idManager">
+               <ref bean="idManager"/>
+            </property>
+            <property name="homeFactory">
+               <ref bean="homeFactory"/>
+            </property>
+            <property name="authzManager">
+               <ref bean="authzManager"/>
+            </property>
+            <property name="authManager">
+               <ref bean="authManager"/>
+            </property>
             <property name="editViews">
                <props>
                   <prop key="fileArtifact">editFileArtifactForward</prop>
@@ -55,8 +67,12 @@
                   <prop key="org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactDefinition">viewXmlElementForward</prop>
                </props>
             </property>
-            <property name="defaultEditView"><value>defaultArtifactView</value></property>            
-            <property name="defaultReadOnlyView"><value>defaultArtifactView</value></property>            
+            <property name="defaultEditView">
+               <value>defaultArtifactView</value>
+            </property>
+            <property name="defaultReadOnlyView">
+               <value>defaultArtifactView</value>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -64,14 +80,18 @@
             <prop key="failure">viewArtifactFailed</prop>
          </props>
       </property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.sakaiproject.metaobj.shared.control.ViewArtifactForm</value></property>
+      <property name="commandName">
+         <value>bean</value>
+      </property>
+      <property name="commandClass">
+         <value>org.sakaiproject.metaobj.shared.control.ViewArtifactForm</value>
+      </property>
    </bean>
 
 
-<!--
-   <bean id="structuredArtifactDefinitionValidator" class="org.sakaiproject.metaobj.shared.control.StructuredArtifactDefinitionValidator"/>
--->
+   <!--
+      <bean id="structuredArtifactDefinitionValidator" class="org.sakaiproject.metaobj.shared.control.StructuredArtifactDefinitionValidator"/>
+   -->
    <bean id="org.springframework.web.servlet.HandlerInterceptor.SakaiStyleSheetInterceptor"
       class="org.sakaiproject.metaobj.shared.control.SakaiStyleSheetInterceptor">
       <property name="worksiteManager">
@@ -81,9 +101,11 @@
 
    <bean id="controllerFilterManager" class="org.sakaiproject.metaobj.utils.mvc.impl.ControllerFilterManager"/>
 
-	<bean id="org.springframework.web.servlet.HandlerExceptionResolver.errorHandler"
+   <bean id="org.springframework.web.servlet.HandlerExceptionResolver.errorHandler"
       class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<property name="defaultErrorView"><value>defaultErrorPage</value></property>
-	</bean>
+      <property name="defaultErrorView">
+         <value>defaultErrorPage</value>
+      </property>
+   </bean>
 
 </beans>

@@ -1,26 +1,23 @@
 package org.sakaiproject.test.metaobj;
 
-import org.springframework.test.AbstractTransactionalSpringContextTests;
-import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.sakaiproject.metaobj.shared.mgt.FieldValueWrapperFactory;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.ElementListBean;
 import org.sakaiproject.metaobj.shared.model.ValidationError;
-import org.jdom.output.XMLOutputter;
-import org.jdom.output.Format;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.springframework.test.AbstractDependencyInjectionSpringContextTests;
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.Date;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import junit.framework.TestResult;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,15 +34,14 @@ public class StucturedObjectTest extends AbstractDependencyInjectionSpringContex
    private StructuredArtifactValidationService validator;
 
    protected String[] getConfigLocations() {
-       String[] configLocations = {"spring-beans-test.xml"};
-       return configLocations;
+      String[] configLocations = {"spring-beans-test.xml"};
+      return configLocations;
    }
 
    protected void onSetUp() throws Exception {
       super.onSetUp();
       schemaFactory = SchemaFactory.getInstance();
-      validator = (StructuredArtifactValidationService) applicationContext.getBean(
-            "org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService");
+      validator = (StructuredArtifactValidationService) applicationContext.getBean("org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService");
    }
 
    public void testElementValidationGood() throws Exception {
@@ -57,7 +53,7 @@ public class StucturedObjectTest extends AbstractDependencyInjectionSpringContex
 
       bean.put("expires", new Date());
 
-      ElementBean emails = (ElementBean)bean.get("emails");
+      ElementBean emails = (ElementBean) bean.get("emails");
 
       // can set a simple list (eachi item in list is a data node) with a string array
       emails.put("email", new String[]{
@@ -85,8 +81,8 @@ public class StucturedObjectTest extends AbstractDependencyInjectionSpringContex
          log.error("No errors");
       }
 
-      for (Iterator i=errors.iterator();i.hasNext();) {
-         ValidationError error = (ValidationError)i.next();
+      for (Iterator i = errors.iterator(); i.hasNext();) {
+         ValidationError error = (ValidationError) i.next();
          log.error("found error " + error.getDefaultMessage());
       }
 
@@ -100,7 +96,7 @@ public class StucturedObjectTest extends AbstractDependencyInjectionSpringContex
       Format format = Format.getPrettyFormat();
       outputter.setFormat(format);
       outputter.output(bean.getBaseElement(),
-         os);
+            os);
 
       log.error(new String(os.toByteArray()));
    }
@@ -116,7 +112,7 @@ public class StucturedObjectTest extends AbstractDependencyInjectionSpringContex
 
       bean.put("expires", new Date());
 
-      ElementBean emails = (ElementBean)bean.get("emails");
+      ElementBean emails = (ElementBean) bean.get("emails");
 
       // can set a simple list (eachi item in list is a data node) with a string array
       emails.put("email", new String[]{
@@ -144,8 +140,8 @@ public class StucturedObjectTest extends AbstractDependencyInjectionSpringContex
          log.error("No errors");
       }
 
-      for (Iterator i=errors.iterator();i.hasNext();) {
-         ValidationError error = (ValidationError)i.next();
+      for (Iterator i = errors.iterator(); i.hasNext();) {
+         ValidationError error = (ValidationError) i.next();
          log.error("found error " + error.getDefaultMessage());
       }
 
@@ -156,8 +152,7 @@ public class StucturedObjectTest extends AbstractDependencyInjectionSpringContex
       SchemaNode node = schemaFactory.getSchema(getClass().getResourceAsStream("/testSchema.xsd"));
       ElementBean bean = new ElementBean("contactInfo",
             node.getChild("contactInfo"), true);
-      ElementBean.setWrapperFactory((FieldValueWrapperFactory) applicationContext.getBean(
-         "fieldValueWrapperFactory"));
+      ElementBean.setWrapperFactory((FieldValueWrapperFactory) applicationContext.getBean("fieldValueWrapperFactory"));
       return bean;
    }
 

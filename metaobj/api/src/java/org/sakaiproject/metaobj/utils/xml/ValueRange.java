@@ -22,8 +22,9 @@ public class ValueRange {
 
    /**
     * construct a new one
-    * @param max the max comparable object, null if there is no upper bound
-    * @param min the min comparable object, null if there is no lower bound
+    *
+    * @param max          the max comparable object, null if there is no upper bound
+    * @param min          the min comparable object, null if there is no lower bound
     * @param maxInclusive true if value can equal max
     * @param minInclusive true if value can equal min
     */
@@ -36,11 +37,14 @@ public class ValueRange {
 
    /**
     * test if the current value is in this range
+    *
     * @param value value to test
     * @return true if the supplied value is in range
     */
    public boolean inRange(Comparable value) {
-      if (max == null && min == null) return true;
+      if (max == null && min == null) {
+         return true;
+      }
 
       if (max == null) {
          return compartMin(value);
@@ -55,12 +59,12 @@ public class ValueRange {
 
    protected boolean compareMax(Comparable value) {
       int result = value.compareTo(max);
-      return (maxInclusive?result <= 0:result < 0);
+      return (maxInclusive ? result <= 0 : result < 0);
    }
 
    protected boolean compartMin(Comparable value) {
       int result = value.compareTo(min);
-      return (minInclusive?result >= 0:result > 0);
+      return (minInclusive ? result >= 0 : result > 0);
    }
 
    public Comparable getMax() {

@@ -1,33 +1,33 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.home;
 
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -62,14 +62,14 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
 
    /**
     * should be one of the following states
-    *
+    * <p/>
     * unpublished -> active
     */
    private int siteState;
 
    /**
     * should be one of the following states
-    *
+    * <p/>
     * unpublished -> waiting for approval-> active
     */
    private int globalState;
@@ -91,9 +91,11 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
 
    private static final MessageFormat format =
          new MessageFormat("<META HTTP-EQUIV=\"Refresh\" CONTENT=\"0;URL={0}/member/viewArtifact.osp?artifactId={1}&artifactType={2}\">");
-   
-   public StructuredArtifactDefinition() {;}
-   
+
+   public StructuredArtifactDefinition() {
+      ;
+   }
+
    public StructuredArtifactDefinition(StructuredArtifactDefinitionBean bean) {
       this.action = bean.getAction();
       this.created = bean.getCreated();
@@ -126,20 +128,20 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
       this.setExternalType(bean.getExternalType());
       this.setInstruction(bean.getInstruction());
    }
-   
-   public boolean equals(Object o){
+
+   public boolean equals(Object o) {
       if (!(o instanceof StructuredArtifactDefinition)) {
          return false;
       }
-      StructuredArtifactDefinition in = (StructuredArtifactDefinition)o;
+      StructuredArtifactDefinition in = (StructuredArtifactDefinition) o;
 
       if (getId() == null && in.getId() == null) {
          return true;
       }
-      if (getId() == null && in.getId() != null){
+      if (getId() == null && in.getId() != null) {
          return false;
       }
-                  
+
       return getId().equals(in.getId());
    }
 
@@ -253,22 +255,26 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
    }
 
    /**  todo implement conversion file stuff
-   public RepositoryNode getXslConversionFileNode() {
-      return (RepositoryNode) getRepositoryManager().getNode(getXslConversionFileId());
-   }
+    public RepositoryNode getXslConversionFileNode() {
+    return (RepositoryNode) getRepositoryManager().getNode(getXslConversionFileId());
+    }
 
-   public InputStream getXslConversionFileStream(){
-      return getXslConversionFileNode().getStream();
-   }
-   **/
+    public InputStream getXslConversionFileStream(){
+    return getXslConversionFileNode().getStream();
+    }
+    **/
 
    /**
     * @return Returns the type.
     */
    public Type getType() {
       Type type = new Type();
-      if (getId() != null) type.setId(getId());
-      if (getDescription() != null) type.setDescription(getDescription());
+      if (getId() != null) {
+         type.setId(getId());
+      }
+      if (getDescription() != null) {
+         type.setDescription(getDescription());
+      }
       type.setSystemOnly(isSystemOnly());
       return type;
    }
@@ -299,16 +305,16 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
    }
 
    /**
-   public StreamStore getStreamStore() {
-      return (StreamStore)BeanFactory.getInstance().getBean(
-         StreamStore.class.getName(), StreamStore.class);
-   }
-
-   public NodeMetadataService getNodeMetadataService() {
-      return (NodeMetadataService)BeanFactory.getInstance().getBean(
-         NodeMetadataService.class.getName(), NodeMetadataService.class);
-   }
-    **/
+    * public StreamStore getStreamStore() {
+    * return (StreamStore)BeanFactory.getInstance().getBean(
+    * StreamStore.class.getName(), StreamStore.class);
+    * }
+    * <p/>
+    * public NodeMetadataService getNodeMetadataService() {
+    * return (NodeMetadataService)BeanFactory.getInstance().getBean(
+    * NodeMetadataService.class.getName(), NodeMetadataService.class);
+    * }
+    */
 
    public String getDescription() {
       return description;
@@ -380,29 +386,32 @@ public class StructuredArtifactDefinition extends StructuredArtifactHome impleme
 
    /**
     * This method doesn't do any authz, it simply checks the state
+    *
     * @return true, if sad can be published to site.
     */
-   public boolean getCanPublish(){
-      return (siteState == STATE_UNPUBLISHED  && globalState != STATE_PUBLISHED);
+   public boolean getCanPublish() {
+      return (siteState == STATE_UNPUBLISHED && globalState != STATE_PUBLISHED);
    }
 
-   public boolean getCanGlobalPublish(){
+   public boolean getCanGlobalPublish() {
       return (globalState == STATE_UNPUBLISHED);
    }
 
    /**
     * This method doesn't do any authz, it simply checks the state
+    *
     * @return true, if sad can be suggested for global publish
     */
-   public boolean getCanSuggestGlobalPublish(){
+   public boolean getCanSuggestGlobalPublish() {
       return (globalState == STATE_UNPUBLISHED);
    }
 
    /**
     * This method doesn't do any authz, it simply checks the state
+    *
     * @return true, if sad can be published globally
     */
-   public boolean getCanApproveGlobalPublish(){
+   public boolean getCanApproveGlobalPublish() {
       return (globalState == STATE_WAITING_APPROVAL);
    }
 

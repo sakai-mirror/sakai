@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.id.guid;
 
 
@@ -71,7 +71,9 @@ public class Guid implements java.io.Serializable {
     */
    public boolean equals(Object o) {
       //1.
-      if (this == o) return true;
+      if (this == o) {
+         return true;
+      }
       //2.
       if (!(o instanceof Guid)) {
          // if o is null, we return here
@@ -80,8 +82,9 @@ public class Guid implements java.io.Serializable {
       //3.
       Guid guid = (Guid) o;
       //4.
-      if (this.toString().equals(guid.toString()))
+      if (this.toString().equals(guid.toString())) {
          return true;
+      }
 
       return false;
    }
@@ -104,7 +107,8 @@ public class Guid implements java.io.Serializable {
       if ((sGuid != null) && (sGuid.length()) == 32) {
          guid = fromHexString(sGuid);
          guidStr = internalToString();
-      } else {
+      }
+      else {
          throw new IllegalArgumentException("sGuid is either null or the wrong length");
       }
    }
@@ -126,9 +130,10 @@ public class Guid implements java.io.Serializable {
             guid[i] = inGuid[i];
          }
          guidStr = internalToString();
-      } else {
+      }
+      else {
          throw new IllegalArgumentException("GUID Passed in is not " + GUID_LEN +
-            " bytes - it is " + inGuid.length + " bytes");
+               " bytes - it is " + inGuid.length + " bytes");
       }
    }
 
@@ -172,8 +177,9 @@ public class Guid implements java.io.Serializable {
          //that we don't str doesn't equal things like 0xFFFF...
          val = ByteOrder.ubyte2int(guid[i]);
          hexStr = Integer.toHexString(val);
-         while (hexStr.length() < 2)
+         while (hexStr.length() < 2) {
             hexStr = "0" + hexStr;
+         }
          buf.append(hexStr);
       }
       return buf.toString().toUpperCase();
@@ -205,17 +211,19 @@ public class Guid implements java.io.Serializable {
     * not of the proper format.
     */
    public static byte[] fromHexString(String sguid)
-      throws IllegalArgumentException {
+         throws IllegalArgumentException {
       byte bytes[] = new byte[GUID_LEN];
       try {
          for (int i = 0; i < GUID_LEN; i++) {
             bytes[i] =
-               (byte) Integer.parseInt(sguid.substring(i * 2, (i * 2) + 2), HEX_RADIX);
+                  (byte) Integer.parseInt(sguid.substring(i * 2, (i * 2) + 2), HEX_RADIX);
          }
          return bytes;
-      } catch (NumberFormatException e) {
+      }
+      catch (NumberFormatException e) {
          throw new IllegalArgumentException();
-      } catch (IndexOutOfBoundsException e) {
+      }
+      catch (IndexOutOfBoundsException e) {
          throw new IllegalArgumentException();
       }
    }

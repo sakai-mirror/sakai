@@ -45,22 +45,22 @@ public class NumberValueRange extends ValueRange {
    }
 
    protected Integer createInteger(Comparable value) {
-      Number number = (Number)value;
+      Number number = (Number) value;
       return new Integer(number.intValue());
    }
 
    protected Long createLong(Comparable value) {
-      Number number = (Number)value;
+      Number number = (Number) value;
       return new Long(number.longValue());
    }
 
    protected Float createFloat(Comparable value) {
-      Number number = (Number)value;
+      Number number = (Number) value;
       return new Float(number.floatValue());
    }
 
    protected Double createDouble(Comparable value) {
-      Number number = (Number)value;
+      Number number = (Number) value;
       return new Double(number.doubleValue());
    }
 

@@ -5,13 +5,21 @@
 <beans default-lazy-init="true">
 
    <bean id="fileArtifactFinder" class="org.sakaiproject.metaobj.repository.mgt.impl.FileArtifactFinderImpl">
-      <property name="homeFactory"><ref bean="homeFactory" /></property>
-      <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+      <property name="homeFactory">
+         <ref bean="homeFactory"/>
+      </property>
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
    </bean>
 
    <bean id="artifactFinder" class="org.sakaiproject.metaobj.repository.mgt.impl.ArtifactFinderImpl">
-      <property name="homeFactory"><ref bean="homeFactory" /></property>
-      <property name="sessionFactory"><ref bean="sessionFactory"/></property>
+      <property name="homeFactory">
+         <ref bean="homeFactory"/>
+      </property>
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
    </bean>
-      
+
 </beans>

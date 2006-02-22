@@ -1,53 +1,53 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-*
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-*
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.mgt.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.jdom.CDATA;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.sakaiproject.exception.EmptyException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
-import org.sakaiproject.exception.EmptyException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
-import org.jdom.Element;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.CDATA;
-import org.jdom.input.SAXBuilder;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Iterator;
-import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -114,7 +114,7 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
    }
 
    public Element getArtifactAsXml(Artifact art) {
-      ContentResourceArtifact artifact = (ContentResourceArtifact)art;
+      ContentResourceArtifact artifact = (ContentResourceArtifact) art;
       Element root = new Element("artifact");
 
       root.addContent(getMetadata(artifact));
@@ -135,15 +135,13 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       Element data = new Element("structuredData");
       Element baseElement = null;
 
-	  byte[]  bytes = null;
-      try
-	  {
-		 bytes = artifact.getBase().getContent();
-	  }
-	  catch(ServerOverloadException e)
-	  {
-		  throw new RuntimeException(e);
-	  }
+      byte[] bytes = null;
+      try {
+         bytes = artifact.getBase().getContent();
+      }
+      catch (ServerOverloadException e) {
+         throw new RuntimeException(e);
+      }
       SAXBuilder builder = new SAXBuilder();
       Document doc = null;
 
@@ -162,7 +160,7 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       data.addContent(baseElement);
       root.addContent(data);
 
-      StructuredArtifactHomeInterface home = (StructuredArtifactHomeInterface)getHomeFactory().getHome(type);
+      StructuredArtifactHomeInterface home = (StructuredArtifactHomeInterface) getHomeFactory().getHome(type);
 
       Element schemaData = new Element("schema");
       schemaData.addContent(createInstructions(home));
@@ -184,8 +182,7 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       }
       schemaElement.setAttribute("minOccurs", schema.getMinOccurs() + "");
       schemaElement.setAttribute("maxOccurs", schema.getMaxOccurs() + "");
-      Element annotation = schema.getSchemaElement().getChild(
-         "annotation", schema.getSchemaElement().getNamespace());
+      Element annotation = schema.getSchemaElement().getChild("annotation", schema.getSchemaElement().getNamespace());
 
       if (annotation != null) {
          schemaElement.addContent(annotation.detach());
@@ -194,8 +191,8 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
       List children = schema.getChildren();
       Element childElement = new Element("children");
       boolean found = false;
-      for (Iterator i=children.iterator();i.hasNext();) {
-         childElement.addContent(addAnnotations((SchemaNode)i.next()));
+      for (Iterator i = children.iterator(); i.hasNext();) {
+         childElement.addContent(addAnnotations((SchemaNode) i.next()));
          found = true;
       }
 
@@ -233,14 +230,14 @@ public class ContentResourceHome implements ReadableObjectHome, PresentableObjec
             art.getBase().getProperties().getNamePropCreationDate());
       if (created != null) {
          repositoryNode.addContent(createNode("created",
-            created.toString()));
+               created.toString()));
       }
 
       Date modified = getDate(art.getBase(),
             art.getBase().getProperties().getNamePropModifiedDate());
       if (modified != null) {
          repositoryNode.addContent(createNode("modified",
-            modified.toString()));
+               modified.toString()));
       }
 
       repositoryNode.addContent(createNode("size", "" +

@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.id.guid;
 
 /*
@@ -118,7 +118,7 @@ import java.util.Random;
 
 public class RandomGUID extends Object {
    protected final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
-      .getLog(getClass());
+         .getLog(getClass());
 
    public String valueBeforeMD5 = "";
    public String valueAfterMD5 = "";
@@ -143,7 +143,8 @@ public class RandomGUID extends Object {
       myRand = new Random(secureInitializer);
       try {
          s_id = InetAddress.getLocalHost().toString();
-      } catch (UnknownHostException e) {
+      }
+      catch (UnknownHostException e) {
          e.printStackTrace();
       }
 
@@ -177,7 +178,8 @@ public class RandomGUID extends Object {
 
       try {
          md5 = MessageDigest.getInstance("MD5");
-      } catch (NoSuchAlgorithmException e) {
+      }
+      catch (NoSuchAlgorithmException e) {
          logger.error("Error: " + e);
       }
 
@@ -187,7 +189,8 @@ public class RandomGUID extends Object {
 
          if (secure) {
             rand = mySecureRand.nextLong();
-         } else {
+         }
+         else {
             rand = myRand.nextLong();
          }
 
@@ -210,14 +213,16 @@ public class RandomGUID extends Object {
          StringBuffer sb = new StringBuffer(32);
          for (int j = 0; j < array.length; ++j) {
             int b = array[j] & TWO_BYTES;
-            if (b < PAD_BELOW)
+            if (b < PAD_BELOW) {
                sb.append('0');
+            }
             sb.append(Integer.toHexString(b));
          }
 
          valueAfterMD5 = sb.toString();
 
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          logger.error("Error:" + e);
       }
    }

@@ -1,37 +1,37 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
-* $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
+ * $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.mvc.impl.beans;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.servlet.view.ResourceBundleViewResolver;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.PropertiesBeanDefinitionReader;
-import org.springframework.beans.BeansException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceEditor;
+import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 
 import java.util.*;
 
@@ -62,6 +62,7 @@ public class AddableResourceBundleViewResolver extends ResourceBundleViewResolve
     * default parent setting does not apply to a bean definition that
     * carries a class is there for backwards compatiblity reasons.
     * It still matches the typical use case.
+    *
     * @param defaultParentView the default parent view
     */
    public void setDefaultParentView(String defaultParentView) {
@@ -81,9 +82,9 @@ public class AddableResourceBundleViewResolver extends ResourceBundleViewResolve
       DefaultListableBeanFactory factory = new DefaultListableBeanFactory(getApplicationContext());
       PropertiesBeanDefinitionReader reader = new PropertiesBeanDefinitionReader(factory);
       reader.setDefaultParentBean(this.defaultParentView);
-      for (Iterator i=baseNames.iterator();i.hasNext();) {
-         ResourceBundle bundle = ResourceBundle.getBundle((String)i.next(), locale,
-            Thread.currentThread().getContextClassLoader());
+      for (Iterator i = baseNames.iterator(); i.hasNext();) {
+         ResourceBundle bundle = ResourceBundle.getBundle((String) i.next(), locale,
+               Thread.currentThread().getContextClassLoader());
          reader.registerBeanDefinitions(bundle);
       }
       factory.registerCustomEditor(Resource.class, new ResourceEditor(getApplicationContext()));

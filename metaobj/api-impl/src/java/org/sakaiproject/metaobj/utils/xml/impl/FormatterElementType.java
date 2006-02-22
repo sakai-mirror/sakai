@@ -1,25 +1,25 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.xml.impl;
 
 import org.jdom.Element;
@@ -58,15 +58,16 @@ public abstract class FormatterElementType extends BaseElementType {
 
       if (!getObjectType().isInstance(value)) {
          throw new NormalizationException("Invalid object type",
-            NormalizationException.INVALID_TYPE_ERROR_CODE,
-            new Object[]{value, getObjectType()});
+               NormalizationException.INVALID_TYPE_ERROR_CODE,
+               new Object[]{value, getObjectType()});
       }
 
       value = checkConstraints(value);
 
       try {
          return getFormatter().format(value);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          throw new NormalizationException(e);
       }
    }
@@ -80,9 +81,11 @@ public abstract class FormatterElementType extends BaseElementType {
 
       try {
          return getFormatter().format(checkConstraints(getFormatter().parseObject(value)));
-      } catch (ParseException e) {
+      }
+      catch (ParseException e) {
          return parserException(value, e);
-      } catch (Exception e) {
+      }
+      catch (Exception e) {
          throw new NormalizationException(e);
       }
    }
@@ -103,7 +106,8 @@ public abstract class FormatterElementType extends BaseElementType {
    public Object getActualNormalizedValue(String value) {
       try {
          return checkConstraints(getFormatter().parseObject(value));
-      } catch (ParseException e) {
+      }
+      catch (ParseException e) {
          return parserException(value, e);
       }
    }

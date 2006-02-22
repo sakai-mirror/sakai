@@ -11,7 +11,7 @@
       </id>
       <property name="siteId" length="32" column="site_id" not-null="false"/>
       <property name="toolId" length="32" column="tool_id" not-null="false"/>
-      <property name="listenerId" column="listener_id" not-null="false"/>                  
+      <property name="listenerId" column="listener_id" not-null="false"/>
    </class>
 
 </hibernate-mapping>

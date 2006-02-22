@@ -6,23 +6,23 @@
             <xs:element name="activity" minOccurs="0">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">activity</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
             <xs:element name="skills">
                <xs:simpleType>
                   <xs:restriction base="xs:string">
-                     <xs:maxLength value="65535" />
+                     <xs:maxLength value="65535"/>
                   </xs:restriction>
                </xs:simpleType>
                <xs:annotation>
                   <xs:documentation source="ospi.label">skills</xs:documentation>
-                  <xs:documentation source="ospi.description" />
+                  <xs:documentation source="ospi.description"/>
                </xs:annotation>
             </xs:element>
          </xs:sequence>

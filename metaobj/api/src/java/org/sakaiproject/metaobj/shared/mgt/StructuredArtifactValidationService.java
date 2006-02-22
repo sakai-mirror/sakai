@@ -19,22 +19,24 @@ public interface StructuredArtifactValidationService {
 
    /**
     * Validate this element from the root.
+    *
     * @param element filled in element to be validated.
     * @return list of ValidationError objects.  If this list is
-    * returned empty, then the element validated successfully
+    *         returned empty, then the element validated successfully
     * @see org.sakaiproject.metaobj.shared.model.ValidationError
     */
    public List validate(ElementBean element);
 
    /**
     * Validate this element from the root.
-    * @param element filled in element to be validated.
+    *
+    * @param element    filled in element to be validated.
     * @param parentName this is the name of the parent of this object.
-    * All fields that have errors will have this name prepended with a "."
+    *                   All fields that have errors will have this name prepended with a "."
     * @return list of ValidationError objects.  If this list is
-    * returned empty, then the element validated successfully
+    *         returned empty, then the element validated successfully
     * @see org.sakaiproject.metaobj.shared.model.ValidationError
     */
    public List validate(ElementBean element, String parentName);
-   
+
 }

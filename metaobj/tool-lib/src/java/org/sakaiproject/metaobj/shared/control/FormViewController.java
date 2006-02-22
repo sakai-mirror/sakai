@@ -1,26 +1,24 @@
 /**********************************************************************************
-* $URL$
-* $Id$
-***********************************************************************************
-*
-* Copyright (c) 2006 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-**********************************************************************************/
+ * $URL$
+ * $Id$
+ ***********************************************************************************
+ *
+ * Copyright (c) 2006 The Sakai Foundation.
+ *
+ * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.opensource.org/licenses/ecl1.php
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
-
-import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -31,6 +29,8 @@ import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,8 +48,7 @@ public class FormViewController implements Controller {
       String formId = (String) session.get(ResourceEditingHelper.ATTACHMENT_ID);
 
       Tool tool = ToolManager.getCurrentTool();
-      String url = (String) session.get(
-            tool.getId() + Tool.HELPER_DONE_URL);
+      String url = (String) session.get(tool.getId() + Tool.HELPER_DONE_URL);
       session.remove(tool.getId() + Tool.HELPER_DONE_URL);
 
       Element root = getStructuredArtifactDefinitionManager().createFormViewXml(formId, url);

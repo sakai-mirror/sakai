@@ -1,37 +1,36 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
-* $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
+ * $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.shared.control;
 
-import org.springframework.validation.Errors;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
-//import org.sakaiproject.metaobj.shared.mgt.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.springframework.validation.Errors;
 
 import java.util.Map;
 
-public class EditStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController implements LoadObjectController{
+public class EditStructuredArtifactDefinitionController extends AddStructuredArtifactDefinitionController implements LoadObjectController {
    //private ArtifactFinderManager artifactFinderManager;
 
 //TODO removed reference to ArtifactFinderManager
@@ -45,7 +44,7 @@ public class EditStructuredArtifactDefinitionController extends AddStructuredArt
       return home;
    }
 
-   protected void save(StructuredArtifactDefinitionBean sad, Errors errors){
+   protected void save(StructuredArtifactDefinitionBean sad, Errors errors) {
       //check to see if you have edit permissions
       checkPermission(SharedFunctionConstants.EDIT_ARTIFACT_DEF);
 
@@ -96,9 +95,10 @@ public class EditStructuredArtifactDefinitionController extends AddStructuredArt
       }
       */
 
-      try{
-      	getStructuredArtifactDefinitionManager().save(sad);
-      } catch (PersistenceException e){
+      try {
+         getStructuredArtifactDefinitionManager().save(sad);
+      }
+      catch (PersistenceException e) {
          errors.rejectValue(e.getField(), e.getErrorCode(), e.getErrorInfo(),
                e.getDefaultMessage());
       }

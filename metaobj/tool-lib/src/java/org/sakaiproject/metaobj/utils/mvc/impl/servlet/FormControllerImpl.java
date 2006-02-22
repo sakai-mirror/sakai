@@ -1,44 +1,40 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
-* $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
-***********************************************************************************
-*
-* Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
-*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
-* 
-* Licensed under the Educational Community License Version 1.0 (the "License");
-* By obtaining, using and/or copying this Original Work, you agree that you have read,
-* understand, and will comply with the terms and conditions of the Educational Community License.
-* You may obtain a copy of the License at:
-* 
-*      http://cvs.sakaiproject.org/licenses/license_1_0.html
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*
-**********************************************************************************/
+ * $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy-service/service/src/java/org/sakaiproject/exception/InconsistentException.java $
+ * $Id: InconsistentException.java 632 2005-07-14 21:22:50Z janderse@umich.edu $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
+ *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+ *
+ * Licensed under the Educational Community License Version 1.0 (the "License");
+ * By obtaining, using and/or copying this Original Work, you agree that you have read,
+ * understand, and will comply with the terms and conditions of the Educational Community License.
+ * You may obtain a copy of the License at:
+ *
+ *      http://cvs.sakaiproject.org/licenses/license_1_0.html
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ **********************************************************************************/
 package org.sakaiproject.metaobj.utils.mvc.impl.servlet;
 
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.utils.mvc.impl.ControllerFilterManager;
+import org.sakaiproject.metaobj.utils.mvc.impl.HttpServletHelper;
+import org.sakaiproject.metaobj.utils.mvc.intf.*;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.sakaiproject.metaobj.utils.mvc.impl.HttpServletHelper;
-import org.sakaiproject.metaobj.utils.mvc.impl.ControllerFilterManager;
-import org.sakaiproject.metaobj.utils.mvc.intf.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,10 +64,11 @@ public class FormControllerImpl extends SimpleFormController {
       ModelAndView returnedMv;
 
       if (controller instanceof CancelableController &&
-              ((CancelableController) controller).isCancel(requestMap)){
+            ((CancelableController) controller).isCancel(requestMap)) {
          returnedMv = ((CancelableController) controller).processCancel(requestMap, session,
-            application, command, errors);
-      } else {
+               application, command, errors);
+      }
+      else {
          returnedMv = controller.handleRequest(command, requestMap, session, application, errors);
       }
 
@@ -93,7 +90,7 @@ public class FormControllerImpl extends SimpleFormController {
 
          //getControllerFilterManager().processFilters(requestMap, session, application, returnedMv, mappedView);
 
-         returnedMv =  new ModelAndView(mappedView, returnedMv.getModel());
+         returnedMv = new ModelAndView(mappedView, returnedMv.getModel());
       }
 
       HttpServletHelper.getInstance().reloadApplicationMap(request, application);
@@ -104,7 +101,7 @@ public class FormControllerImpl extends SimpleFormController {
    }
 
    protected Map referenceData(HttpServletRequest request, Object command, Errors errors) {
-      if (getController() instanceof FormController){
+      if (getController() instanceof FormController) {
          Map requestMap = HttpServletHelper.getInstance().createRequestMap(request);
          Map referenceData = ((FormController) getController()).referenceData(requestMap, command, errors);
          HttpServletHelper.getInstance().reloadRequestMap(request, requestMap);
@@ -115,13 +112,13 @@ public class FormControllerImpl extends SimpleFormController {
 
    protected boolean isFormSubmission(HttpServletRequest request) {
       if (getFormMethod() != null &&
-         getFormMethod().equalsIgnoreCase("get") &&
-         request.getMethod().equalsIgnoreCase("get")) {
+            getFormMethod().equalsIgnoreCase("get") &&
+            request.getMethod().equalsIgnoreCase("get")) {
          return true;
       }
       if (getFormMethod() != null &&
-         getFormMethod().equalsIgnoreCase("post") &&
-         request.getMethod().equalsIgnoreCase("post")) {
+            getFormMethod().equalsIgnoreCase("post") &&
+            request.getMethod().equalsIgnoreCase("post")) {
          return true;
       }
       return super.isFormSubmission(request);
@@ -135,8 +132,9 @@ public class FormControllerImpl extends SimpleFormController {
       Object lightObject = null;
 
       if (controller instanceof CustomCommandController) {
-         lightObject = ((CustomCommandController)controller).formBackingObject(requestMap, session, application);
-      } else {
+         lightObject = ((CustomCommandController) controller).formBackingObject(requestMap, session, application);
+      }
+      else {
          lightObject = super.formBackingObject(request);
       }
 
@@ -152,13 +150,13 @@ public class FormControllerImpl extends SimpleFormController {
          returned = ((LoadObjectController) controller).fillBackingObject(lightObject, requestMap, session, application);
       }
 
-         /*
-      if (controller instanceof ContextAwareController){
-         ((ContextAwareController) controller).addContexts(getHelpManager().getActiveContexts(session), requestMap, getFormView());
-      } else {
-         getHelpManager().addContexts(session, getFormView());
-      }
-           */
+      /*
+   if (controller instanceof ContextAwareController){
+      ((ContextAwareController) controller).addContexts(getHelpManager().getActiveContexts(session), requestMap, getFormView());
+   } else {
+      getHelpManager().addContexts(session, getFormView());
+   }
+        */
       //getControllerFilterManager().processFilters(requestMap, session, application, null, getFormView());
 
       HttpServletHelper.getInstance().reloadApplicationMap(request, application);
@@ -245,7 +243,7 @@ public class FormControllerImpl extends SimpleFormController {
       this.requiredFields = requiredFields;
    }
 
-   protected ControllerFilterManager getControllerFilterManager()  {
+   protected ControllerFilterManager getControllerFilterManager() {
       return (ControllerFilterManager) ComponentManager.getInstance().get("controllerFilterManager");
    }
 }
