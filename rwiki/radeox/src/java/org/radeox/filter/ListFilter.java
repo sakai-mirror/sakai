@@ -120,6 +120,7 @@ public class ListFilter extends LocaleRegexTokenFilter implements CacheFilter {
         continue;
       }
 
+      // if the line doesn't contain a space ignore it. (it shouldn't have matched!)
       int bulletEnd = line.indexOf(' ');
       if (bulletEnd < 1) {
         continue;
@@ -140,12 +141,17 @@ public class ListFilter extends LocaleRegexTokenFilter implements CacheFilter {
 
       for (int i = sharedPrefixEnd; i < lastBullet.length; i++) {
         //Logger.log("closing " + lastBullet[i]);
-        buffer.append(closeList.get(new Character(lastBullet[i]))).append("\n");
+    	  if (lastBullet[i] != '.') {
+    	        buffer.append(closeList.get(new Character(lastBullet[i]))).append("\n");    		  
+    	  }
+
       }
 
       for (int i = sharedPrefixEnd; i < bullet.length; i++) {
         //Logger.log("opening " + bullet[i]);
-        buffer.append(openList.get(new Character(bullet[i]))).append("\n");
+    	  if (bullet[i] != '.') {
+    		  buffer.append(openList.get(new Character(bullet[i]))).append("\n");
+    	  }
       }
       buffer.append("<li>");
       buffer.append(line.substring(line.indexOf(' ') + 1));
@@ -155,7 +161,9 @@ public class ListFilter extends LocaleRegexTokenFilter implements CacheFilter {
 
     for (int i = lastBullet.length - 1; i >= 0; i--) {
       //Logger.log("closing " + lastBullet[i]);
-      buffer.append(closeList.get(new Character(lastBullet[i])));
+  	  if (lastBullet[i] != '.') {
+  		  buffer.append(closeList.get(new Character(lastBullet[i])));
+  	  }
     }
   }
 }
