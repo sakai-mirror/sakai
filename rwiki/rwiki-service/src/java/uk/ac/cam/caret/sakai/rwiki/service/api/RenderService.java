@@ -35,6 +35,6 @@ public interface RenderService {
      * @param plr
      * @return
      */
-    String renderPage(RWikiObject rwo, String user, String pageSpace, PageLinkRenderer plr);
+    String renderPage(RWikiObject rwo,  String pageSpace, PageLinkRenderer plr);
     // SAK-2519
 }

@@ -24,18 +24,23 @@ package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
 import java.util.List;
 
-import javax.servlet.ServletRequest;
-
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.portal.PortalService;
+import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteService;
 
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException;
+import uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger;
 
 /**
  * @author andrew
@@ -64,10 +69,11 @@ public class RWikiSecurityServiceImpl implements RWikiSecurityService {
     
     private SiteService siteService;
     
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#getRealm(javax.servlet.http.HttpServletRequest)
+    /**
+     * {@inheritDoc}
+     * @return
      */
-    public String getRealm(ServletRequest request) {
+    public String getSiteReference() {
         try {
             Site currentSite = siteService.getSite(portalService.getCurrentSiteId());
             return currentSite.getReference();
@@ -80,46 +86,28 @@ public class RWikiSecurityServiceImpl implements RWikiSecurityService {
         return portalService.getCurrentSiteId();
     }
     
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkGetPermission(java.lang.String, java.lang.String)
-     */
-    public boolean checkGetPermission(String user, String realm) {
-        return (securityService.unlock(SECURE_READ,realm));
+    public boolean checkGetPermission(String reference) {
+        return (securityService.unlock(SECURE_READ,reference));
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkUpdatePermission(java.lang.String, java.lang.String)
-     */
-    public boolean checkUpdatePermission(String user, String realm) {
-        return (securityService.unlock(SECURE_UPDATE, realm));
+    public boolean checkUpdatePermission(String reference) {
+        return (securityService.unlock(SECURE_UPDATE, reference));
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkAdminPermission(java.lang.String, java.lang.String)
-     */
-    public boolean checkAdminPermission(String user, String realm) {
-        return securityService.unlock(SECURE_ADMIN, realm);
+    public boolean checkAdminPermission(String reference) {
+        return securityService.unlock(SECURE_ADMIN, reference);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkSuperAdminPermission(java.lang.String, java.lang.String)
-     */
-    public boolean checkSuperAdminPermission(String user, String realm) {
-        return securityService.unlock(SECURE_SUPER_ADMIN, realm);
+    public boolean checkSuperAdminPermission(String reference) {
+        return securityService.unlock(SECURE_SUPER_ADMIN, reference);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkCreatePermission(java.lang.String, java.lang.String)
-     */
-    public boolean checkCreatePermission(String user, String realm) {
-        return securityService.unlock(SECURE_CREATE, realm);
+    public boolean checkCreatePermission(String reference) {
+        return securityService.unlock(SECURE_CREATE, reference);
     }
 
-    /* (non-Javadoc)
-     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkSearchPermission(java.lang.String, java.lang.String)
-     */
-    public boolean checkSearchPermission(String user, String realm) {
-        return securityService.unlock(SECURE_READ, realm);
+    public boolean checkSearchPermission(String reference) {
+        return securityService.unlock(SECURE_READ, reference);
     }
 
     public PortalService getPortalService() {
@@ -153,5 +141,164 @@ public class RWikiSecurityServiceImpl implements RWikiSecurityService {
 	public void setLog(Logger log) {
 		this.log = log;
 	}
+
+	public String createPermissionsReference(String pageSpace) {
+		// Page space is assumed to be a ppage space reference
+		// Turn into an entity and then get a reference
+		// TODO Auto-generated method stub
+		Reference ref = EntityManager.newReference(RWikiObjectService.REFERENCE_ROOT+pageSpace);
+		return ref.getReference();
+	}
+	
+	
+	public boolean checkRead(RWikiEntity rwe) {
+		RWikiObject rwo = rwe.getRWikiObject();
+		String progress = "";
+		long start = System.currentTimeMillis();
+		try {
+			
+			String user = SessionManager.getCurrentSessionUserId();
+
+			if (log.isDebugEnabled()) {
+				log.debug("checkRead for " + rwo.getName() + " by user: "
+						+ user);
+			}
+		
+			
+			if (user != null && user.equals(rwo.getOwner())
+					&& (rwo.getOwnerRead() || rwo.getOwnerAdmin())) {
+				if (log.isDebugEnabled()) {
+					log.debug("User is owner and allowed to read");
+				}
+				progress = progress + "1";
+				return true;
+			}
+
+			String permissionsReference = rwe.getReference();
+			if ((rwo.getGroupRead() && checkGetPermission(permissionsReference))
+					|| (rwo.getGroupWrite() && 
+							checkUpdatePermission(permissionsReference))
+					|| (rwo.getGroupAdmin())
+					&& checkAdminPermission(permissionsReference)) {
+				if (log.isDebugEnabled()) {
+					log.debug("User is in group and allowed to read");
+				}
+				progress = progress + "2";
+				return true;
+			}
+
+			if (rwo.getPublicRead()) {
+				if (log.isDebugEnabled()) {
+					log.debug("Object is public read");
+				}
+				progress = progress + "3";
+				return true;
+			}
+
+			if (checkSuperAdminPermission(permissionsReference)) {
+				if (log.isDebugEnabled()) {
+					log
+							.debug("User is SuperAdmin for Realm thus default allowed to update");
+				}
+				progress = progress + "4";
+				return true;
+			}
+
+			if (log.isDebugEnabled()) {
+				log.debug("Permission denied to read " + rwo.getName()
+						+ " by user: " + user);
+			}
+			progress = progress + "5";
+			return false;
+		} finally {
+			long finish = System.currentTimeMillis();
+			TimeLogger.printTimer("canRead: " + progress, start, finish);
+		}
+	}
+
+	public boolean checkUpdate(RWikiEntity rwe) {
+		String user = SessionManager.getCurrentSessionUserId();
+		RWikiObject rwo = rwe.getRWikiObject();
+		if (log.isDebugEnabled()) {
+			log.debug("checkUpdate for " + rwo.getName() + " by user: " + user);
+		}
+		if (user != null && user.equals(rwo.getOwner())
+				&& (rwo.getOwnerWrite() || rwo.getOwnerAdmin())) {
+			if (log.isDebugEnabled()) {
+				log.debug("User is owner and allowed to update");
+			}
+			return true;
+		}
+
+		String permissionsReference = rwe.getReference();
+		if ((rwo.getGroupWrite() && checkUpdatePermission(permissionsReference))
+				|| (rwo.getGroupAdmin())
+				&& checkAdminPermission(permissionsReference)) {
+			if (log.isDebugEnabled()) {
+				log.debug("User is in group and allowed to update");
+			}
+			return true;
+		}
+
+		if (rwo.getPublicWrite()) {
+			if (log.isDebugEnabled()) {
+				log.debug("Object is public write");
+			}
+			return true;
+		}
+
+		if (checkSuperAdminPermission(permissionsReference)) {
+			if (log.isDebugEnabled()) {
+				log
+						.debug("User is SuperAdmin for Realm thus default allowed to update");
+			}
+			return true;
+		}
+
+		if (log.isDebugEnabled()) {
+			log.debug("Permission denied to update " + rwo.getName()
+					+ " by user: " + user);
+		}
+		return false;
+	}
+
+	public boolean checkAdmin(RWikiEntity rwe) {
+		String user = SessionManager.getCurrentSessionUserId();
+		RWikiObject rwo = rwe.getRWikiObject();
+
+		if (log.isDebugEnabled()) {
+			log.debug("checkAdmin for " + rwo.getName() + " by user: " + user);
+		}
+		if (user != null && user.equals(rwo.getOwner()) && rwo.getOwnerAdmin()) {
+			if (log.isDebugEnabled()) {
+				log.debug("User is owner and allowed to admin");
+			}
+			return true;
+		}
+		
+		String permissionsReference = rwe.getReference();
+		if (rwo.getGroupAdmin()
+				&& checkAdminPermission(permissionsReference)) {
+			if (log.isDebugEnabled()) {
+				log.debug("User is in group and allowed to admin");
+			}
+			return true;
+		}
+
+		if (checkSuperAdminPermission(permissionsReference)) {
+			if (log.isDebugEnabled()) {
+				log
+						.debug("User is Super Admin for Realm thus default allowed to admin");
+			}
+			return true;
+		}
+
+		if (log.isDebugEnabled()) {
+			log.debug("Permission denied to admin " + rwo.getName()
+					+ " by user: " + user);
+		}
+		return false;
+	}
+
 
 }

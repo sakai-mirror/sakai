@@ -102,7 +102,7 @@ public class ViewParamsHelperBean {
         
         localSpace = request.getParameter(SearchBean.REALM_PARAM);
         
-        defaultRealm = securityService.getRealm(request);
+        defaultRealm = securityService.getSiteReference();
 
         if (localSpace == null || localSpace.equals("")) {
             localSpace = defaultRealm;

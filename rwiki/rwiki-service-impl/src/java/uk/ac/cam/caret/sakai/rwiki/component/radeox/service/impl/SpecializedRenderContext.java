@@ -51,11 +51,11 @@ public class SpecializedRenderContext extends BaseRenderContext implements Cacha
     
     private RWikiSecurityService securityService;
 
-    private String user;
+   
     
-    public SpecializedRenderContext(RWikiObject rwikiObject, String user, RWikiObjectService objectService,  RWikiSecurityService securityService) {
+    public SpecializedRenderContext(RWikiObject rwikiObject,  RWikiObjectService objectService,  RWikiSecurityService securityService) {
         this.rwikiObject = rwikiObject;
-        this.user = user;
+   
         this.objectService = objectService;
         this.securityService = securityService;
     }
@@ -84,10 +84,12 @@ public class SpecializedRenderContext extends BaseRenderContext implements Cacha
         this.securityService = securityService;
     }
 
+    /*
     public String getUser() {
     		cachable = false;
         return user;
     }
+    */
     /**
      * 
      * @return true if the render operation is cachable (after rendering)

@@ -84,7 +84,6 @@ public class SaveCommand implements HttpCommand {
         ViewParamsHelperBean vphb = (ViewParamsHelperBean) rssb
                 .getNameHelperBean();
 
-        String user = rssb.getCurrentUser();
 
         String content = vphb.getContent();
         String save = vphb.getSaveType();
@@ -149,7 +148,7 @@ public class SaveCommand implements HttpCommand {
         Date versionDate = new Date(Long.parseLong(version));
 
         try {
-            doUpdate(name, user, realm, versionDate, content);
+            doUpdate(name,  realm, versionDate, content);
         } catch (VersionException e) {
             // The page has changed underneath us...
 
@@ -171,9 +170,9 @@ public class SaveCommand implements HttpCommand {
 
     }
 
-    protected void doUpdate(String name, String user, String realm,
+    protected void doUpdate(String name, String realm,
             Date versionDate, String content) {
-        objectService.update(name, user, realm, versionDate, content);
+        objectService.update(name, realm, versionDate, content);
     }
 
     private void cancelDispatch(HttpServletRequest request,

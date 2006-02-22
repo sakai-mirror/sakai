@@ -19,10 +19,9 @@ public class PresenceBeanHelper {
      * @param currentPageSpace
      * @return
      */
-    public static PresenceBean createRealmBean(MessageService messageService, String currentUser, String currentPageName, String currentPageSpace) {
+    public static PresenceBean createRealmBean(MessageService messageService, String currentPageName, String currentPageSpace) {
         PresenceBean pb = new PresenceBean();
         pb.setMessageService(messageService);
-        pb.setUser(currentUser);
         pb.setPageName(currentPageName);
         pb.setPageSpace(currentPageSpace);
         return pb;

@@ -69,14 +69,7 @@ public class PreferenceServiceImpl implements PreferenceService {
 			
 				if ( selected == null ||  p.getPrefcontext().length() > selected.getPrefcontext().length() ) {
 					selected = p;
-					System.out.println("sel "+p.getPrefcontext());
-
-				} else {
-					System.out.println("rej "+p.getPrefcontext());	
 				}
-			} else {
-				System.out.println("ig "+p.getPrefcontext());	
-				
 			}
 		}
 		if ( selected == null ) return null;

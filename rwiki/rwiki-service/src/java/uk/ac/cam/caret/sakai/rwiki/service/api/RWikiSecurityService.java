@@ -22,27 +22,74 @@
  **********************************************************************************/
 package uk.ac.cam.caret.sakai.rwiki.service.api;
 
-import javax.servlet.ServletRequest;
+import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 
 //FIXME: Service
 
 public interface RWikiSecurityService {
 
-    String getRealm(ServletRequest request);
+	/**
+	 * Get the current site reference, must be called in a request cycle to work
+	 * @return
+	 */
+    String getSiteReference();
 
-    boolean checkGetPermission(String user, String realm);
+    /**
+     * Check for get permission (rwiki.read) on the reference which must point to a resolvable entity.
+     * This check is performed for the current user
+     * @param reference
+     * @return
+     */
+    boolean checkGetPermission(String reference);
+    /**
+     * Check for update permission (rwiki.update) on the reference which must point to a resolvable entity.
+     * This check is performed for the current user
+     * @param reference
+     * @return
+     */
+    boolean checkUpdatePermission(String reference);
+    /**
+     * Check for admin permission (rwiki.admin) on the reference which must point to a resolvable entity.
+     * This check is performed for the current user
+     * @param reference
+     * @return
+     */
+    boolean checkAdminPermission(String reference);
+    /**
+     * Check for super admin permission (rwiki.superadmin) on the reference which must point to a resolvable entity.
+     * This check is performed for the current user
+     * @param reference
+     * @return
+     */
+    boolean checkSuperAdminPermission(String reference);
+    /**
+     * Check for super create permission (rwiki.create) on the reference which must point to a resolvable entity.
+     * This check is performed for the current user
+     * @param reference
+     * @return
+     */
+    boolean checkCreatePermission(String reference);
+    /**
+     * Check for search permission (rwiki.search) on the reference which must point to a resolvable entity.
+     * This check is performed for the current user
+     * @param reference
+     * @return
+     */
+    boolean checkSearchPermission(String reference);
+   
 
-    boolean checkUpdatePermission(String user, String realm);
-
-    boolean checkAdminPermission(String user, String realm);
-
-    boolean checkSuperAdminPermission(String user, String realm);
-
-    boolean checkCreatePermission(String user, String realm);
-
-    boolean checkSearchPermission(String user, String realm);
-
+    /**
+     * Get the current site ID
+     * @return
+     */
     String getSiteId();
+    
+    /**
+     * generate a default reference to a permission from the page space URL
+     * @param pageSpace
+     * @return
+     */
+    String createPermissionsReference(String pageSpace);
     
     /** Security function name for create. required to create */
     public static final String SECURE_CREATE = "rwiki.create";
@@ -61,6 +108,34 @@ public interface RWikiSecurityService {
     
     /** Security function name for admin. Having this is required to do admin on objects */
     public static final String SECURE_ADMIN = "rwiki.admin";
+    
+    /**
+	 * Check for read permission
+	 * 
+	 * @param rwo
+	 * @param user
+	 * @return
+	 */
+	boolean checkRead(RWikiEntity rwe);
+
+	/**
+	 * check for update permission
+	 * 
+	 * @param rwo
+	 * @param user
+	 * @return
+	 */
+	boolean checkUpdate(RWikiEntity rwe);
+
+	/**
+	 * check for admin permission
+	 * 
+	 * @param rwo
+	 * @param user
+	 * @return
+	 */
+	boolean checkAdmin(RWikiEntity rwe);
+
 
 
 }

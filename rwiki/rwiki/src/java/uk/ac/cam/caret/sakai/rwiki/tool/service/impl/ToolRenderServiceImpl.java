@@ -43,36 +43,36 @@ public class ToolRenderServiceImpl implements ToolRenderService {
      *  (non-Javadoc)
      * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderService#publicRenderPage(uk.ac.cam.caret.sakai.rwiki.service.api.api.model.RWikiObject, java.lang.String)
      */
-	public String renderPublicPage(RWikiObject rwo, String user, boolean withBreadCrumbs) {
-		return renderPublicPage(rwo, user, rwo.getRealm(), withBreadCrumbs);
+	public String renderPublicPage(RWikiObject rwo, boolean withBreadCrumbs) {
+		return renderPublicPage(rwo, rwo.getRealm(), withBreadCrumbs);
 	}
 
 	/*
 	 *  (non-Javadoc)
 	 * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderService#publicRenderPage(uk.ac.cam.caret.sakai.rwiki.service.api.api.model.RWikiObject, java.lang.String, java.lang.String)
 	 */
-	public String renderPublicPage(RWikiObject rwo, String user, String defaultRealm, boolean withBreadCrumbs) {
+	public String renderPublicPage(RWikiObject rwo,  String defaultRealm, boolean withBreadCrumbs) {
 	    // SAK-2519
         String localSpace = NameHelper.localizeSpace(rwo.getName(), defaultRealm);
 		PublicPageLinkRendererImpl plr = new PublicPageLinkRendererImpl(localSpace, defaultRealm, withBreadCrumbs);
-		return renderService.renderPage(rwo,user, localSpace, plr);
+		return renderService.renderPage(rwo, localSpace, plr);
 	}
     
     /* (non-Javadoc)
      * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderService#renderPage(uk.ac.cam.caret.sakai.rwiki.tool.service.RWikiObject)
      */
-    public String renderPage(RWikiObject rwo, String user) {
-        return renderPage(rwo, user, true);
+    public String renderPage(RWikiObject rwo) {
+        return renderPage(rwo, true);
     }
 
     /* (non-Javadoc)
      * @see uk.ac.cam.caret.sakai.rwiki.service.api.RenderService#renderPage(uk.ac.cam.caret.sakai.rwiki.tool.service.RWikiObject, java.lang.String)
      */
-    public String renderPage(RWikiObject rwo, String user, String defaultRealm) {
+    public String renderPage(RWikiObject rwo,  String defaultRealm) {
         // SAK-2519
         String localSpace = NameHelper.localizeSpace(rwo.getName(), defaultRealm);
         PageLinkRendererImpl plr = new PageLinkRendererImpl(localSpace, defaultRealm);
-        return renderService.renderPage(rwo, user, localSpace, plr);
+        return renderService.renderPage(rwo,  localSpace, plr);
     }
 
 
@@ -84,13 +84,13 @@ public class ToolRenderServiceImpl implements ToolRenderService {
 		this.log = log;
 	}
 
-	public String renderPage(RWikiObject rwo, String user, boolean cachable) {
+	public String renderPage(RWikiObject rwo,   boolean cachable) {
         //SAK-2519
         String localSpace = NameHelper.localizeSpace(rwo.getName(), rwo.getRealm());
         PageLinkRendererImpl plr = new PageLinkRendererImpl(localSpace, rwo.getRealm());
         plr.setUseCache(cachable);
         plr.setCachable(cachable);
-        return renderService.renderPage(rwo, user, localSpace, plr);
+        return renderService.renderPage(rwo,  localSpace, plr);
 	}
 
     /**

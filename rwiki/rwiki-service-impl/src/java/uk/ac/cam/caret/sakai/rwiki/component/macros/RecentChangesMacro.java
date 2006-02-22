@@ -81,7 +81,6 @@ public class RecentChangesMacro extends BaseMacro {
 	    	    
 	    RWikiObjectService objectService = context.getObjectService();
         
-        String user = context.getUser();
         
         String realm = context.getRWikiObject().getRealm();
         
@@ -130,14 +129,14 @@ public class RecentChangesMacro extends BaseMacro {
 	    
     	try {
             
-			List wikiObjects = objectService.findChangedSince(since, user, realm);
+			List wikiObjects = objectService.findChangedSince(since,  realm);
 
 			writer.write("<div class=\"list\">");
 
 			Iterator iterator = wikiObjects.iterator();
 			while (iterator.hasNext()) {
 				RWikiObject object = (RWikiObject) iterator.next();
-				if ( objectService.checkRead(object,user) ) {
+				if ( objectService.checkRead(object) ) {
 					//SAK-2671 We should localize against the renderspace not the object's realm!
 					writer.write("\n* [" + NameHelper.localizeName(object.getName(), localRenderSpace) + "]");
 

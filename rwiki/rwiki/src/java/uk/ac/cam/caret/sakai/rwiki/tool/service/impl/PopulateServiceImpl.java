@@ -131,7 +131,7 @@ public class PopulateServiceImpl implements PopulateService {
                         log.debug("Populate with Owner "+owner);
                         rwo.setUser(owner);
                         rwo.setOwner(owner);
-                        updateReferences(rwo,owner,space);
+                        updateReferences(rwo,space);
 						rwo.setName(name);
 						rwo.setRealm(group);
 						dao.update(rwo,null);
@@ -189,7 +189,7 @@ public class PopulateServiceImpl implements PopulateService {
    }
 	
    // SAK-2470
-   private void updateReferences(RWikiCurrentObject rwo, String user, String space) {
+   private void updateReferences(RWikiCurrentObject rwo,  String space) {
 
            // render to get a list of links
            final HashSet referenced = new HashSet();
@@ -230,7 +230,7 @@ public class PopulateServiceImpl implements PopulateService {
 
            };
 
-           renderService.renderPage(rwo, user, space, plr);
+           renderService.renderPage(rwo,  space, plr);
 
            // process the references
            StringBuffer sb = new StringBuffer();

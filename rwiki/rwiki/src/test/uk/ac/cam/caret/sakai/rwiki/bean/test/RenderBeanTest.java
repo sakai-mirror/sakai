@@ -15,7 +15,6 @@ public class RenderBeanTest extends TestCase {
     String realm = "bar";
     String globalName = "bar.Foo";
     String otherRealm = "realm";
-    String user = "user";
     String value = "value";
 
     ToolRenderService mockToolRenderService;
@@ -41,12 +40,12 @@ public class RenderBeanTest extends TestCase {
         mockObject = (RWikiObject) rwikiObjectControl.getMock();
         //mockObject = new RWikiObjectImpl();
 
-        mockObjectService.checkUpdate(mockObject,user);
+        mockObjectService.checkUpdate(mockObject);
         objectServiceControl.setReturnValue(false);
         objectServiceControl.replay();
         
         
-        rb = new RenderBean(mockObject,user, mockToolRenderService, mockObjectService,true); 
+        rb = new RenderBean(mockObject, mockToolRenderService, mockObjectService,true); 
         
     }
 
@@ -56,7 +55,7 @@ public class RenderBeanTest extends TestCase {
      * Test method for 'uk.ac.cam.caret.sakai.rwiki.tool.bean.RenderBean.renderPage()'
      */
     public void testRenderPage() {
-        mockToolRenderService.renderPage(mockObject, user);
+        mockToolRenderService.renderPage(mockObject);
         renderServiceControl.setReturnValue(value);
         rwikiObjectControl.replay();
         renderServiceControl.replay();

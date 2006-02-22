@@ -71,7 +71,6 @@ public class RevertCommand implements HttpCommand {
         
         ViewParamsHelperBean vphb = rssb.getNameHelperBean();
 
-        String user = rssb.getCurrentUser();
 
         String revision = request.getParameter(HistoryBean.REVISION_PARAM);
         String version = request.getParameter(HistoryBean.VERSION_PARAM);
@@ -84,7 +83,7 @@ public class RevertCommand implements HttpCommand {
         String realm = vphb.getLocalSpace();
 
         try {
-            objectService.revert(name, user, realm, versionDate, revisionInt);
+            objectService.revert(name, realm, versionDate, revisionInt);
             //objectService.update(name, user, realm, versionDate, content);
         } catch (VersionException e) {
             // treat like a save that hasn't completed properly.

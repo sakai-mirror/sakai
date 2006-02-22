@@ -12,7 +12,6 @@ import uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService;
  *
  */
 public class PresenceBean {
-    private String user;
     private String pageName;
     private String pageSpace;
     private MessageService messageService;
@@ -39,18 +38,6 @@ public class PresenceBean {
      */
     public void setPageSpace(String pageSpace) {
         this.pageSpace = pageSpace;
-    }
-    /**
-     * @return Returns the user.
-     */
-    public String getUser() {
-        return user;
-    }
-    /**
-     * @param user The user to set.
-     */
-    public void setUser(String user) {
-        this.user = user;
     }
     /**
      * @return Returns the messageService.

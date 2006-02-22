@@ -220,7 +220,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 			String pageSpace = NameHelper.localizeSpace(pageName, realm);
 			ComponentPageLinkRenderImpl cplr = new ComponentPageLinkRenderImpl(
 					pageSpace);
-			content = renderService.renderPage(rwikiObject, user, pageSpace,
+			content = renderService.renderPage(rwikiObject, pageSpace,
 					cplr);
 			content = FormattedText.convertFormattedTextToPlaintext(content);
 			if ( content.length() > 1000 ) {

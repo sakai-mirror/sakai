@@ -69,7 +69,6 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 		if (!(entity instanceof RWikiEntity))
 			return;
 
-		String user = request.getRemoteUser();
 		try {
 			PrintWriter pw = res.getWriter();
 			Map rheaders = getResponseHeaders();
@@ -220,14 +219,14 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 							SchemaNames.EL_RENDEREDCONTENT,
 							SchemaNames.EL_NSRENDEREDCONTENT, dummyAttributes);
 
-					renderToXML(rwo, ch, user);
+					renderToXML(rwo, ch);
 					ch.endElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_RENDEREDCONTENT,
 							SchemaNames.EL_NSRENDEREDCONTENT);
 					ch.startElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_CHANGES, SchemaNames.EL_NSCHANGES,
 							dummyAttributes);
-					changeHistoryToXML(rwo, ch, user);
+					changeHistoryToXML(rwo, ch);
 					ch.endElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_CHANGES, SchemaNames.EL_NSCHANGES);
 
@@ -235,7 +234,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 					ch.startElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_CHANGES, SchemaNames.EL_NSCHANGES,
 							dummyAttributes);
-					recentChangesToXML(rwe, ch, user);
+					recentChangesToXML(rwe, ch);
 					ch.endElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_CHANGES, SchemaNames.EL_NSCHANGES);
 
@@ -257,8 +256,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 		}
 	}
 
-	public void changeHistoryToXML(RWikiObject rwo, ContentHandler ch,
-			String user) throws Exception {
+	public void changeHistoryToXML(RWikiObject rwo, ContentHandler ch) throws Exception {
 
 		List changes = rwikObjectService.findRWikiHistoryObjectsInReverse(rwo);
 		if ( changes == null ) return;
@@ -289,22 +287,21 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 
 			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
 					SchemaNames.EL_NSCHANGE, propA);
-			renderToXML(rwco,ch,user);
+			renderToXML(rwco,ch);
 			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
 					SchemaNames.EL_NSCHANGE);
 		}
 
 	}
 
-	public void recentChangesToXML(RWikiEntity rwe, ContentHandler ch,
-			String user) throws Exception {
+	public void recentChangesToXML(RWikiEntity rwe, ContentHandler ch) throws Exception {
 		GregorianCalendar g = new GregorianCalendar();
 		g.setTime(new Date());
 		g.add(GregorianCalendar.YEAR, -1);
 
 		Decoded d = decode(rwe.getReference()+getMinorType());
 		String basepath = d.getContext() + d.getContainer();
-		List changes = rwikObjectService.findAllChangedSince(g.getTime(), user,
+		List changes = rwikObjectService.findAllChangedSince(g.getTime(),
 				basepath);
 		int nchanges = 0;
 		for (Iterator i = changes.iterator(); i.hasNext() && nchanges < 20;) {
@@ -334,7 +331,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 							.getVersion()));
 			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
 					SchemaNames.EL_NSCHANGE, propA);
-			renderToXML(rwco,ch,user);
+			renderToXML(rwco,ch);
 			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_CHANGE,
 					SchemaNames.EL_NSCHANGE);
 		}

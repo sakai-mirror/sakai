@@ -167,7 +167,6 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		if (!(entity instanceof RWikiEntity))
 			return;
 
-		String user = request.getRemoteUser();
 		try {
 			PrintWriter pw = res.getWriter();
 
@@ -289,7 +288,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 					ch.startElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_RENDEREDCONTENT,
 							SchemaNames.EL_NSRENDEREDCONTENT, dummyAttributes);
-					renderToXML(rwo, ch, user);
+					renderToXML(rwo, ch);
 					ch.endElement(SchemaNames.NS_CONTAINER,
 							SchemaNames.EL_RENDEREDCONTENT,
 							SchemaNames.EL_NSRENDEREDCONTENT);
@@ -358,8 +357,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * @param rwo
 	 * @param ch
 	 */
-	public void renderToXML(RWikiObject rwo, final ContentHandler ch,
-			String user) throws SAXException, IOException {
+	public void renderToXML(RWikiObject rwo, final ContentHandler ch) throws SAXException, IOException {
 
 		/**
 		 * create a proxy for the stream, filtering out the start element and
@@ -432,7 +430,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			char[] c = rwo.getContent().toCharArray();
 			ch.characters(c, 0, c.length);
 		} else {
-			String renderedPage = renderService.renderPage(rwo, user,
+			String renderedPage = renderService.renderPage(rwo, 
 					localSpace, plr);
 			String contentDigest = FormattedText.convertFormattedTextToPlaintext(renderedPage);
 			if ( contentDigest.length() > 500 ) {
@@ -496,7 +494,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 				String root = authZPrefix + Entity.SEPARATOR + paths[1]
 						+ Entity.SEPARATOR;
-				rv.add(root);
+				//rv.add(root);
 
 				for (int next = 2; next < paths.length; next++) {
 					root = root + paths[next];
@@ -515,8 +513,14 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 						.getUserSiteId(parts[3])));
 			}
 
+			// TODO: At the moment we cant use ref.addSiteContextAuthzGroup since ref context is
+			// /site/siteid and should be siteid need to look into this
+			// 
 			// site
-			ref.addSiteContextAuthzGroup(rv);
+			rv.add(SiteService.siteReference(parts[2]));
+
+			// site helper
+			rv.add("!site.helper");
 		} catch (Throwable e) {
 			logger.error(this + " Problem ", e);
 		}

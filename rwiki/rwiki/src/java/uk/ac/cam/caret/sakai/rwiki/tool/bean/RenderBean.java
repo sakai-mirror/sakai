@@ -45,8 +45,6 @@ public class RenderBean {
 
     private RWikiObjectService objectService;
 
-    private String user;
-
     private RWikiObject rwo;
     
     private boolean withBreadcrumbs = true;
@@ -72,14 +70,13 @@ public class RenderBean {
      * @param objectService
      *            the RWikiObjectService
      */
-    public RenderBean(RWikiObject rwo, String user,
+    public RenderBean(RWikiObject rwo, 
             ToolRenderService toolRenderService, RWikiObjectService objectService, boolean withBreadcrumbs) {
-        this.user = user;
         this.rwo = rwo;
         this.toolRenderService = toolRenderService;
         this.objectService = objectService;
         this.withBreadcrumbs = withBreadcrumbs;
-        this.canEdit = objectService.checkUpdate(rwo,user);
+        this.canEdit = objectService.checkUpdate(rwo);
     }
 
     /**
@@ -96,17 +93,16 @@ public class RenderBean {
      * @param objectService
      *            the RWikiObjectService
      */
-    public RenderBean(String name, String user, String defaultRealm,
+    public RenderBean(String name, String defaultRealm,
             ToolRenderService toolRenderService, RWikiObjectService objectService, boolean withBreadcrumbs) {
         this.objectService = objectService;
         this.toolRenderService = toolRenderService;
-        this.user = user;
         this.withBreadcrumbs = withBreadcrumbs;
         String pageName = NameHelper.globaliseName(name, defaultRealm);
         String pageRealm = defaultRealm;
         try {
-            this.rwo = objectService.getRWikiObject(pageName, user, pageRealm);
-            this.canEdit = objectService.checkUpdate(rwo,user);
+            this.rwo = objectService.getRWikiObject(pageName,  pageRealm);
+            this.canEdit = objectService.checkUpdate(rwo);
         } catch (PermissionException e) {
             this.rwo = objectService.createNewRWikiCurrentObject();
             rwo.setName(pageName);
@@ -153,7 +149,7 @@ public class RenderBean {
 
     }
     public String getPreviewPage() {
-        return toolRenderService.renderPage(rwo, user, false);
+        return toolRenderService.renderPage(rwo,  false);
     }
 
     /**
@@ -163,7 +159,7 @@ public class RenderBean {
      *         RWikiObject
      */
     public String getRenderedPage() {
-        return toolRenderService.renderPage(rwo, user);
+        return toolRenderService.renderPage(rwo);
     }
     /**
      * Render the current RWikiObject with public links
@@ -171,7 +167,7 @@ public class RenderBean {
      * RWikiObject
      */
     public String getPublicRenderedPage() {
-    		return toolRenderService.renderPublicPage(rwo,user,withBreadcrumbs);
+    		return toolRenderService.renderPublicPage(rwo,withBreadcrumbs);
     }
 
     /**
@@ -181,7 +177,7 @@ public class RenderBean {
      *         RWikiObject
      */
     public String renderPage() {
-        return toolRenderService.renderPage(rwo, user);
+        return toolRenderService.renderPage(rwo);
     }
     /**
      * Render the current RWikiObject with public links
@@ -189,7 +185,7 @@ public class RenderBean {
      * RWikiObject
      */
     public String publicRenderedPage() {
-    		return toolRenderService.renderPublicPage(rwo,user,withBreadcrumbs);
+    		return toolRenderService.renderPublicPage(rwo,withBreadcrumbs);
     }
 
     /**
@@ -206,14 +202,14 @@ public class RenderBean {
         String pageRealm = NameHelper.localizeSpace(pageName, defaultRealm);
 
         try {
-            RWikiObject page = objectService.getRWikiObject(pageName, user,
+            RWikiObject page = objectService.getRWikiObject(pageName, 
                     pageRealm);
-            return toolRenderService.renderPage(page, user, defaultRealm);
+            return toolRenderService.renderPage(page,  defaultRealm);
         } catch (PermissionException e) {
             RWikiObject page = objectService.createNewRWikiCurrentObject();
             page.setName(pageName);
             page.setContent(PERMISSION_PROBLEM);
-            return toolRenderService.renderPage(page, user, defaultRealm);
+            return toolRenderService.renderPage(page, defaultRealm);
         }
 
     }
@@ -231,14 +227,14 @@ public class RenderBean {
         String pageSpace = NameHelper.localizeSpace(pageName, defaultRealm);
 
         try {
-            RWikiObject page = objectService.getRWikiObject(pageName, user,
+            RWikiObject page = objectService.getRWikiObject(pageName, 
                     pageSpace);
-            return toolRenderService.renderPublicPage(page, user, defaultRealm, withBreadcrumbs);
+            return toolRenderService.renderPublicPage(page, defaultRealm, withBreadcrumbs);
         } catch (PermissionException e) {
             RWikiObject page = objectService.createNewRWikiCurrentObject();
             page.setName(pageName);
             page.setContent(PERMISSION_PROBLEM);
-            return toolRenderService.renderPublicPage(page, user, defaultRealm, withBreadcrumbs);
+            return toolRenderService.renderPublicPage(page, defaultRealm, withBreadcrumbs);
         }
 
     }
@@ -296,7 +292,7 @@ public class RenderBean {
         ObjectProxy lop = new ObjectProxy() {
             public Object proxyObject(Object o) {
                 if ( o instanceof RWikiObject ) {
-                    RenderBean rb = new RenderBean((RWikiObject)o,user,toolRenderService,objectService,withBreadcrumbs);
+                    RenderBean rb = new RenderBean((RWikiObject)o,toolRenderService,objectService,withBreadcrumbs);
                     
                     return rb;
                 }

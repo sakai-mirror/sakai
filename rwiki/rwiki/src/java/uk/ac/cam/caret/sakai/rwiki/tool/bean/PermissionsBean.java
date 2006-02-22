@@ -48,10 +48,6 @@ public class PermissionsBean {
      */
     private RWikiObjectService objectService;
 
-    /**
-     * The current user
-     */
-    private String currentUser;
 
     public PermissionsBean() {
 
@@ -64,10 +60,9 @@ public class PermissionsBean {
      * @param currentUser
      * @param objectService
      */
-    public PermissionsBean(RWikiObject rwikiObject, String currentUser,
+    public PermissionsBean(RWikiObject rwikiObject, 
             RWikiObjectService objectService) {
         this.rwikiObject = rwikiObject;
-        this.currentUser = currentUser;
         this.objectService = objectService;
     }
 
@@ -114,7 +109,7 @@ public class PermissionsBean {
      * @return true if the currentUser has admin rights on this rwikiObject.
      */
     public boolean isAdminAllowed() {
-        return objectService.checkAdmin(rwikiObject, currentUser);
+        return objectService.checkAdmin(rwikiObject);
     }
 
     /**
@@ -124,7 +119,7 @@ public class PermissionsBean {
      * @return true if the currentUser has update rights on this rwikiObject
      */
     public boolean isUpdateAllowed() {
-        return objectService.checkUpdate(rwikiObject, currentUser);
+        return objectService.checkUpdate(rwikiObject);
     }
 
     /**
@@ -134,6 +129,6 @@ public class PermissionsBean {
      * @return true if the currentUser has read rights on this rwikiObject.
      */
     public boolean isReadAllowed() {
-        return objectService.checkRead(rwikiObject, currentUser);
+        return objectService.checkRead(rwikiObject);
     }
 }

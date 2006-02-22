@@ -55,10 +55,6 @@ public class SearchBean {
      */
     private String realm;
 
-    /**
-     * the current user
-     */
-    private String user;
 
     /**
      * RWikiObjectService to use
@@ -73,11 +69,10 @@ public class SearchBean {
      * @param realm
      * @param objectService
      */
-    public SearchBean(String search, String user, String realm,
+    public SearchBean(String search, String realm,
             RWikiObjectService objectService) {
         this.search = search;
         this.realm = realm;
-        this.user = user;
         this.objectService = objectService;
     }
 
@@ -123,6 +118,6 @@ public class SearchBean {
      */
     public List search() {
         // FIXME should we use PageLinkRenderer-like thing?
-        return objectService.search(search, user, realm);
+        return objectService.search(search,  realm);
     }
 }

@@ -80,7 +80,6 @@ public class UpdatePermissionsCommand implements HttpCommand {
 
         UpdatePermissionsBean upb = rssb.getUpdatePermissionsBean();
 
-        String user = rssb.getCurrentUser();
         String version = vphb.getSubmittedVersion();
         Date versionDate = new Date(Long.parseLong(version));
         String name = vphb.getGlobalName();
@@ -96,7 +95,7 @@ public class UpdatePermissionsCommand implements HttpCommand {
         }
         
         try {
-            objectService.update(name, user, realm, versionDate, perms);
+            objectService.update(name,  realm, versionDate, perms);
         } catch (VersionException e) {
             // The page has changed underneath us...
 

@@ -45,10 +45,10 @@ public class RenderContextFactoryImpl implements RenderContextFactory {
     /* (non-Javadoc)
      * @see uk.ac.cam.caret.sakai.rwiki.service.api.api.radeox.RenderContextFactory#getRenderContext(uk.ac.cam.caret.sakai.rwiki.tool.service.RWikiObject, org.radeox.api.engine.RenderEngine)
      */
-    public RenderContext getRenderContext(RWikiObject rwo, String user,
+    public RenderContext getRenderContext(RWikiObject rwo, 
             RenderEngine renderEngine) {
         
-        SpecializedRenderContext context = new SpecializedRenderContext(rwo, user, objectService, securityService);
+        SpecializedRenderContext context = new SpecializedRenderContext(rwo,  objectService, securityService);
         context.setRenderEngine(renderEngine);
         return context;
     }

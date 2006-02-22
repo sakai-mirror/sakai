@@ -69,24 +69,22 @@ public interface RWikiObjectService extends EntityProducer {
 	 * Gets the current object
 	 * 
 	 * @param name
-	 * @param user
 	 * @param realm
 	 * @return
 	 * @throws PermissionException
 	 */
-	RWikiCurrentObject getRWikiObject(String name, String user, String realm)
+	RWikiCurrentObject getRWikiObject(String name, String realm)
 			throws PermissionException;
     /**
      * Gets the current object using a named template if it does not exist
      * 
      * @param name
-     * @param user
-     * @param realm
+     * @param realm the page space the page is in, used to localise and globalise the name
      * @param templateName
      * @return
      * @throws PermissionException
      */
-    RWikiCurrentObject getRWikiObject(String name, String user, String realm, String templateName)
+    RWikiCurrentObject getRWikiObject(String name, String realm, RWikiObject ignore,  String templateName)
             throws PermissionException;
 
 	/**
@@ -102,46 +100,18 @@ public interface RWikiObjectService extends EntityProducer {
 	 * Search on current objects
 	 * 
 	 * @param criteria
-	 * @param user
 	 * @param realm
 	 * @return
 	 * @throws PermissionException
 	 */
-	List search(String criteria, String user, String realm)
+	List search(String criteria, String realm)
 			throws PermissionException;
 
-	/**
-	 * Check for read permission
-	 * 
-	 * @param rwo
-	 * @param user
-	 * @return
-	 */
-	boolean checkRead(RWikiObject rwo, String user);
-
-	/**
-	 * check for update permission
-	 * 
-	 * @param rwo
-	 * @param user
-	 * @return
-	 */
-	boolean checkUpdate(RWikiObject rwo, String user);
-
-	/**
-	 * check for admin permission
-	 * 
-	 * @param rwo
-	 * @param user
-	 * @return
-	 */
-	boolean checkAdmin(RWikiObject rwo, String user);
-
+	
 	/**
 	 * Update the named page, with permissions
 	 * 
 	 * @param name
-	 * @param user
 	 * @param realm
 	 * @param version
 	 * @param content
@@ -149,7 +119,7 @@ public interface RWikiObjectService extends EntityProducer {
 	 * @throws PermissionException
 	 * @throws VersionException
 	 */
-	void update(String name, String user, String realm, Date version,
+	void update(String name, String realm, Date version,
 			String content, RWikiPermissions permissions)
 			throws PermissionException, VersionException;
 
@@ -157,14 +127,13 @@ public interface RWikiObjectService extends EntityProducer {
 	 * Update the name page, no permissions
 	 * 
 	 * @param name
-	 * @param user
 	 * @param realm
 	 * @param version
 	 * @param content
 	 * @throws PermissionException
 	 * @throws VersionException
 	 */
-	void update(String name, String user, String realm, Date version,
+	void update(String name, String realm, Date version,
 			String content) throws PermissionException, VersionException;
 
     
@@ -172,14 +141,13 @@ public interface RWikiObjectService extends EntityProducer {
 	 * Update the name page's permissions
 	 * 
 	 * @param name
-	 * @param user
 	 * @param realm
 	 * @param version
 	 * @param permissions
 	 * @throws PermissionException
 	 * @throws VersionException
 	 */
-	void update(String name, String user, String realm, Date version,
+	void update(String name, String realm, Date version,
 			RWikiPermissions permissions) throws PermissionException,
 			VersionException;
 
@@ -196,11 +164,10 @@ public interface RWikiObjectService extends EntityProducer {
 	 * A list of pages that have changed since (current versions)
 	 * 
 	 * @param since
-	 * @param user
 	 * @param realm
 	 * @return a list containing RWikiCurrentObjects
 	 */
-	List findChangedSince(Date since, String user, String realm);
+	List findChangedSince(Date since,  String realm);
 
 	/**
 	 * Finds pages that reference the given page name
@@ -214,12 +181,11 @@ public interface RWikiObjectService extends EntityProducer {
 	 * Revert current revision to a named revision, creates a new revision
 	 * 
 	 * @param name
-	 * @param user
 	 * @param realm
 	 * @param version
 	 * @param revision
 	 */
-	void revert(String name, String user, String realm, Date version,
+	void revert(String name,  String realm, Date version,
 			int revision);
 
 	/**
@@ -259,14 +225,13 @@ public interface RWikiObjectService extends EntityProducer {
      * Updates and creates a new comment on the page
      * 
      * @param name
-     * @param user
      * @param realm
      * @param version
      * @param content
      * @throws PermissionException
      * @throws VersionException
      */
-    void updateNewComment(String name, String user, String realm, Date version,
+    void updateNewComment(String name, String realm, Date version,
             String content) throws PermissionException, VersionException;
 	/**
 	 * Create a list proxy based on the List and Object Proxy
@@ -307,12 +272,33 @@ public interface RWikiObjectService extends EntityProducer {
 	/**
 	 * Find all the changes under this point and under since the time specified
 	 * @param time the time after which to consider changes
-	 * @param user the user
 	 * @param basepath the base path
 	 * @return a list of RWikiCurrentObjects
 	 */
-	List findAllChangedSince(Date time, String user, String basepath);
+	List findAllChangedSince(Date time,  String basepath);
 
-    
+	 /**
+	 * Check for read permission
+	 * 
+	 * @param rwo
+	 * @return
+	 */
+	boolean checkRead(RWikiObject rwo);
+
+	/**
+	 * check for update permission
+	 * 
+	 * @param rwo
+	 * @return
+	 */
+	boolean checkUpdate(RWikiObject rwo);
+
+	/**
+	 * check for admin permission
+	 * 
+	 * @param rwo
+	 * @return
+	 */
+	boolean checkAdmin(RWikiObject rwo);
     
 }

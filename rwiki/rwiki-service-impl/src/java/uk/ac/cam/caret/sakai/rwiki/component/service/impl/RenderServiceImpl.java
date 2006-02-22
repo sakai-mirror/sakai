@@ -58,7 +58,7 @@ public class RenderServiceImpl implements RenderService {
 	
 	
 	
-    public String renderPage(RWikiObject rwo, String user, String pageSpace, PageLinkRenderer plr) {
+    public String renderPage(RWikiObject rwo,  String pageSpace, PageLinkRenderer plr) {
         
         long start = System.currentTimeMillis();
         String renderedPage = null;
@@ -77,7 +77,7 @@ public class RenderServiceImpl implements RenderService {
             	  log.debug("Render Cache Disabled");
             }
             RenderEngine renderEngine = renderEngineFactory.getRenderEngine(pageSpace, plr);
-            RenderContext renderContext = renderContextFactory.getRenderContext(rwo, user, renderEngine);
+            RenderContext renderContext = renderContextFactory.getRenderContext(rwo,  renderEngine);
             renderedPage = renderEngine.render(rwo.getContent(), renderContext);
             boolean canCache = false;
             if ( renderContext instanceof CachableRenderContext ) {

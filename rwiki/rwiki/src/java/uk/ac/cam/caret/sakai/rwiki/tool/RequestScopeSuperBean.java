@@ -243,7 +243,7 @@ public class RequestScopeSuperBean {
         if (map.get(key) == null) {
 
             RWikiObject rwo = objectService.getRWikiObject(
-                    getCurrentPageName(), getCurrentUser(),
+                    getCurrentPageName(),
                     getCurrentLocalSpace());
             map.put(key, rwo);
         }
@@ -275,8 +275,8 @@ public class RequestScopeSuperBean {
     public RenderBean getRenderBean() {
         String key = "renderBean";
         if (map.get(key) == null) {
-            RenderBean rb = new RenderBean(getCurrentRWikiObject(),
-                    getCurrentUser(), toolRenderService, objectService, getWithBreadcrumbs());
+            RenderBean rb = new RenderBean(getCurrentRWikiObject()
+                    , toolRenderService, objectService, getWithBreadcrumbs());
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -334,7 +334,7 @@ public class RequestScopeSuperBean {
         String key = "searchBean";
         if (map.get(key) == null) {
             SearchBean sb = new SearchBean(getCurrentSearch(),
-                    getCurrentUser(), getCurrentLocalSpace(), objectService);
+                    getCurrentLocalSpace(), objectService);
             map.put(key, sb);
         }
         return (SearchBean) map.get(key);
@@ -344,7 +344,7 @@ public class RequestScopeSuperBean {
         String key = "permissionsBean";
         if (map.get(key) == null) {
             PermissionsBean pb = new PermissionsBean(getCurrentRWikiObject(),
-                    getCurrentUser(), objectService);
+                     objectService);
             map.put(key, pb);
         }
         return (PermissionsBean) map.get(key);
@@ -388,8 +388,7 @@ public class RequestScopeSuperBean {
     public RenderBean getReviewRenderBean() {
         String key = "reviewRenderBean";
         if (map.get(key) == null) {
-            RenderBean rb = new RenderBean(getReviewHelperBean().getMock(),
-                    getCurrentUser(), toolRenderService, objectService,getWithBreadcrumbs());
+            RenderBean rb = new RenderBean(getReviewHelperBean().getMock(), toolRenderService, objectService,getWithBreadcrumbs());
             map.put(key, rb);
         }
         return (RenderBean) map.get(key);
@@ -400,7 +399,7 @@ public class RequestScopeSuperBean {
         String key = "viewRightRenderBean";
         if (map.get(key) == null) {
             String pageName = "view_right";
-            RenderBean rb = new RenderBean(pageName, getCurrentUser(),
+            RenderBean rb = new RenderBean(pageName,
                     getCurrentDefaultRealm(), toolRenderService, objectService, getWithBreadcrumbs());
             map.put(key, rb);
         }
@@ -411,7 +410,7 @@ public class RequestScopeSuperBean {
         String key = "editRightRenderBean";
         if (map.get(key) == null) {
             String pageName = "edit_right";
-            RenderBean rb = new RenderBean(pageName, getCurrentUser(),
+            RenderBean rb = new RenderBean(pageName,
                     getCurrentDefaultRealm(), toolRenderService, objectService,getWithBreadcrumbs());
             map.put(key, rb);
         }
@@ -422,7 +421,7 @@ public class RequestScopeSuperBean {
         String key = "infoRightRenderBean";
         if (map.get(key) == null) {
             String pageName = "info_right";
-            RenderBean rb = new RenderBean(pageName, getCurrentUser(),
+            RenderBean rb = new RenderBean(pageName,
                     getCurrentDefaultRealm(), toolRenderService, objectService,getWithBreadcrumbs());
             map.put(key, rb);
         }
@@ -433,7 +432,7 @@ public class RequestScopeSuperBean {
         String key = "reviewRightRenderBean";
         if (map.get(key) == null) {
             String pageName = "review_right";
-            RenderBean rb = new RenderBean(pageName, getCurrentUser(),
+            RenderBean rb = new RenderBean(pageName, 
                     getCurrentDefaultRealm(), toolRenderService, objectService, getWithBreadcrumbs());
             map.put(key, rb);
         }
@@ -444,7 +443,7 @@ public class RequestScopeSuperBean {
         String key = "diffRightRenderBean";
         if (map.get(key) == null) {
             String pageName = "diff_right";
-            RenderBean rb = new RenderBean(pageName, getCurrentUser(),
+            RenderBean rb = new RenderBean(pageName,
                     getCurrentDefaultRealm(), toolRenderService, objectService, getWithBreadcrumbs());
             map.put(key, rb);
         }
@@ -455,7 +454,7 @@ public class RequestScopeSuperBean {
         String key = "searchRightRenderBean";
         if (map.get(key) == null) {
             String pageName = "search_right";
-            RenderBean rb = new RenderBean(pageName, getCurrentUser(),
+            RenderBean rb = new RenderBean(pageName, 
                     getCurrentDefaultRealm(), toolRenderService, objectService, getWithBreadcrumbs());
             map.put(key, rb);
         }
@@ -466,7 +465,7 @@ public class RequestScopeSuperBean {
         String key = "previewRightRenderBean";
         if (map.get(key) == null) {
             String pageName = "preview_right";
-            RenderBean rb = new RenderBean(pageName, getCurrentUser(),
+            RenderBean rb = new RenderBean(pageName, 
                     getCurrentDefaultRealm(), toolRenderService, objectService, getWithBreadcrumbs());
             map.put(key, rb);
         }
@@ -537,7 +536,7 @@ public class RequestScopeSuperBean {
         String key = "presenceBean";
         PresenceBean pb = (PresenceBean) map.get(key);
         if (pb == null) {
-            pb = PresenceBeanHelper.createRealmBean(messageService, getCurrentUser(), getCurrentPageName(), getCurrentPageSpace());
+            pb = PresenceBeanHelper.createRealmBean(messageService,  getCurrentPageName(), getCurrentPageSpace());
             map.put(key, pb);
         }
         return pb;

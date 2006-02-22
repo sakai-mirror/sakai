@@ -38,6 +38,6 @@ public interface RenderContextFactory {
 	 * @param renderEngine The Render engine performing the render
 	 * @return A Render Context suitable fo use with the RenderEngine
 	 */
-    RenderContext getRenderContext(RWikiObject rwo, String user, RenderEngine renderEngine);
+    RenderContext getRenderContext(RWikiObject rwo,  RenderEngine renderEngine);
     
 }
