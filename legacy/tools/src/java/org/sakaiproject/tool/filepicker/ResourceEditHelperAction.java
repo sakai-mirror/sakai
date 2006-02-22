@@ -46,7 +46,7 @@ public class ResourceEditHelperAction extends FilePickerAction {
       sstate.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
       if (toolSession.getAttribute(ResourceEditingHelper.ATTACHMENT_ID) != null) {
          sstate.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_EDIT_ITEM);
-         sstate.setAttribute(ResourcesAction.STATE_ATTACH_ITEM_ID,
+         sstate.setAttribute(ResourcesAction.STATE_EDIT_ID,
                toolSession.getAttribute(ResourceEditingHelper.ATTACHMENT_ID));
          sstate.setAttribute(ResourcesAction.STATE_STRUCTOBJ_TYPE_READONLY, Boolean.TRUE.toString());
          if (ResourceEditingHelper.CREATE_TYPE_FORM.equals(createType)) {

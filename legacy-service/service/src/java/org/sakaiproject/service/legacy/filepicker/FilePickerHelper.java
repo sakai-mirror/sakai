@@ -20,10 +20,18 @@ public interface FilePickerHelper {
     **/
    public static final String FILE_PICKER_CANCEL = "sakaiproject.filepicker.cancel";
 
-   /** Name of the attribute used in the tool session to tell the
-    * picker the the message after "Attachments for:", set by the client tool.
-    **/
-   public static final String FILE_PICKER_FROM_TEXT = "sakaiproject.filepicker.from";
+   /**
+    * @deprecated use FILE_PICKER_TITLE_TEXT and FILE_PICKER_INSTRUCTION_TEXT instead
+    */
+   public static final String  FILE_PICKER_FROM_TEXT = "sakaiproject.filepicker.from";
+
+   /** title for the file selection helper
+    */
+   public static final String FILE_PICKER_TITLE_TEXT = "sakaiproject.filepicker.title";
+
+   public static final String FILE_PICKER_INSTRUCTION_TEXT = "sakaiproject.filepicker.instructions";
+
+   public static final String FILE_PICKER_SUBTITLE_TEXT = "sakaiproject.filepicker.subtitle";
 
    /**
 	 *  The name of the state attribute indicating that the file picker should return links to
@@ -37,5 +45,7 @@ public interface FilePickerHelper {
     * be selectable and viewable
     */
    public static final String FILE_PICKER_RESOURCE_FILTER = "sakaiproject.filepicker.contentResourceFilter";
+
+   public static final String FILE_PICKER_MAX_ATTACHMENTS = "sakaiproject.filepicker.maxAttachments";   
 
 }

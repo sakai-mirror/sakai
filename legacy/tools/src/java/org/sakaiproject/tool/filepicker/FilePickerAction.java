@@ -19,6 +19,7 @@ import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.tool.content.ResourcesAction;
+import org.sakaiproject.util.java.ResourceLoader;
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,6 +29,9 @@ import org.sakaiproject.tool.content.ResourcesAction;
  * To change this template use File | Settings | File Templates.
  */
 public class FilePickerAction extends VelocityPortletPaneledAction {
+
+   /** Resource bundle using current language locale */
+    private static ResourceLoader rb = new ResourceLoader("helper");
 
    protected void toolModeDispatch(String methodBase, String methodExt,
                                    HttpServletRequest req, HttpServletResponse res) throws ToolException {
@@ -109,6 +113,11 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
          toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS);
       }
 
+      if (toolSession.getAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS) != null) {
+         sstate.setAttribute(ResourcesAction.STATE_ATTACH_CARDINALITY,
+            toolSession.getAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS));
+      }
+
       return ResourcesAction.MODE_HELPER;
    }
 
@@ -130,11 +139,19 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
    }
 
    protected void initMessage(ToolSession toolSession, SessionState sstate) {
-      String message = (String)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_FROM_TEXT);
-      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_FROM_TEXT);
-      if (message != null) {
-         sstate.setAttribute(ResourcesAction.STATE_FROM_TEXT, message);
+      String message = (String)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT);
+      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_TITLE_TEXT);
+      if (message == null) {
+         message = (String) rb.get(FilePickerHelper.FILE_PICKER_TITLE_TEXT);
       }
+      sstate.setAttribute(ResourcesAction.STATE_ATTACH_TITLE, message);
+
+      message = (String)toolSession.getAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT);
+      toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT);
+      if (message == null) {
+         message = (String) rb.get(FilePickerHelper.FILE_PICKER_INSTRUCTION_TEXT);
+      }
+      sstate.setAttribute(ResourcesAction.STATE_ATTACH_INSTRUCTION, message);
    }
 
 }
