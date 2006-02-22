@@ -96,20 +96,12 @@
 							value="$!{tag.value}" />
 					#elseif("$!tag.widget" == "$!ANYURI")
 						#set ($size = 0)
-					#if($sysout)
-					<!-- $sysout.println("building anyuri tag: *$tag.label*   tag: $tag") -->
-					#end
 						#if (!$tag.value.isEmpty())
 							#set ($props = false)
 							#set ($size = $tag.value.size())
-					#if($sysout)
-					<!-- $sysout.println("         anyuri tag: *$tag.label*  size: $size") -->
-					#end
 							<ul class="attachList">
 								#foreach ($attachment in $tag.value)
 									#set ($props = $attachment.Properties)
-									<!-- $sysout.println("                 ${attachment.url}") -->
-									##<!-- $sysout.println("                 $attachment.Properties.getPropertyFormatted('DAV:displayname')") -->
 									#if (!$props)
 										#if ($size > 0) #set ($size = $size - 1) #end
 									#else

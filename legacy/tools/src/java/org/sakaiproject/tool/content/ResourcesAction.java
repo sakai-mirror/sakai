@@ -922,8 +922,6 @@ public class ResourcesAction
 			state.setAttribute(ResourcesAction.STATE_MODE_RESOURCES, ResourcesAction.MODE_HELPER);
 		}
 		
-		context.put("sysout", System.out);
-		
 		Set selectedItems = (Set) state.getAttribute(STATE_LIST_SELECTIONS);
 		if(selectedItems == null)
 		{
@@ -1224,11 +1222,11 @@ public class ResourcesAction
 
 		if(TYPE_FORM.equals(itemType))
 		{
-			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			List listOfHomes = (List) current_stack_frame.get(STATE_STRUCTOBJ_HOMES);
 			if(listOfHomes == null)
 			{
 				setupStructuredObjects(state);
-				listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+				listOfHomes = (List) current_stack_frame.get(STATE_STRUCTOBJ_HOMES);
 			}
 			context.put("homes", listOfHomes);
 			
@@ -2105,7 +2103,12 @@ public class ResourcesAction
 			context.put("formtype", item.getFormtype());
 			current_stack_frame.put(STATE_STACK_STRUCTOBJ_TYPE, item.getFormtype());
 			
-			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			List listOfHomes = (List) current_stack_frame.get(STATE_STRUCTOBJ_HOMES);
+			if(listOfHomes == null)
+			{
+				ResourcesAction.setupStructuredObjects(state);
+				listOfHomes = (List) current_stack_frame.get(STATE_STRUCTOBJ_HOMES);
+			}
 			context.put("homes", listOfHomes);
 			
 			String formtype_readonly = (String) current_stack_frame.get(STATE_STACK_STRUCTOBJ_TYPE_READONLY);
@@ -2328,7 +2331,6 @@ public class ResourcesAction
 		state.setAttribute(STATE_CREATE_ALERTS, new HashSet());
 		current_stack_frame.put(STATE_CREATE_MISSING_ITEM, new HashSet());
 		current_stack_frame.remove(STATE_STACK_STRUCTOBJ_TYPE);
-		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
 		
 		current_stack_frame.put(STATE_RESOURCES_HELPER_MODE, MODE_ATTACHMENT_CREATE_INIT);
 		state.setAttribute(STATE_RESOURCES_HELPER_MODE, MODE_ATTACHMENT_CREATE_INIT);
@@ -2696,6 +2698,8 @@ public class ResourcesAction
 	{
 		ParameterParser params = data.getParameters ();
 		
+		Map current_stack_frame = peekAtStack(state);
+		
 		String field = params.getString("field");
 		if(field == null)
 		{
@@ -2703,7 +2707,7 @@ public class ResourcesAction
 		}
 		else
 		{
-			state.setAttribute(ResourcesAction.STATE_ATTACH_FORM_FIELD, field);
+			current_stack_frame.put(ResourcesAction.STATE_ATTACH_FORM_FIELD, field);
 		}
 		
 		//state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
@@ -3720,6 +3724,7 @@ public class ResourcesAction
 					AttachItem item = new AttachItem(attachment.getId(), filename, containerId, accessUrl);
 					item.setContentType(contentType);
 					new_items.add(item);
+					//check -- jim
 					state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 					
 					current_stack_frame.put(STATE_HELPER_NEW_ITEMS, new_items);
@@ -4002,6 +4007,7 @@ public class ResourcesAction
 		// if there is at least one attachment
 		if (attachments.size() > 0)
 		{
+			//check -- jim
 			state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
 			field = (String) current_stack_frame.get(STATE_ATTACH_FORM_FIELD);
 		}
@@ -4020,8 +4026,6 @@ public class ResourcesAction
 				fieldname = matcher.group(0);
 				index = Integer.parseInt(matcher.group(1));
 			}
-			
-			String fieldvalue = "";
 			
 			// we are trying to attach a link to a form field and there is at least one attachment
 			new_items = (List) current_stack_frame.get(ResourcesAction.STATE_HELPER_NEW_ITEMS);
@@ -4043,24 +4047,8 @@ public class ResourcesAction
 			}
 			if(edit_item != null)
 			{
-				//AttachItem new_item = (AttachItem) new_items.get(0);
-				
-				/*
-				List tags = edit_item.getProperties();
-				Iterator tagIt = tags.iterator();
-				while(tagIt.hasNext())
-				{
-					ResourcesMetadata tag = (ResourcesMetadata) tagIt.next();
-					String tagname = tag.getDottedname();
-					if(tagname.equals(field))
-					{
-						tag.setValue(0, attachments.get(0));
-					}
-				}
-				*/
 				Reference ref = (Reference) attachments.get(0);
 				edit_item.setValue(fieldname, index, ref);
-				edit_item.setValue(fieldname, ref);
 			}
 		}
 	}
@@ -4591,11 +4579,11 @@ public class ResourcesAction
 		
 		if(TYPE_FORM.equals(itemType))
 		{
-			List listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+			List listOfHomes = (List) current_stack_frame.get(STATE_STRUCTOBJ_HOMES);
 			if(listOfHomes == null)
 			{
 				setupStructuredObjects(state);
-				listOfHomes = (List) state.getAttribute(STATE_STRUCTOBJ_HOMES);
+				listOfHomes = (List) current_stack_frame.get(STATE_STRUCTOBJ_HOMES);
 			}
 			context.put("homes", listOfHomes);
 			
@@ -5737,7 +5725,7 @@ public class ResourcesAction
 			catch(Exception ignore)
 			{}
 		}
-		state.setAttribute(STATE_STRUCTOBJ_HOMES, listOfHomes);
+		current_stack_frame.put(STATE_STRUCTOBJ_HOMES, listOfHomes);
 		
 		StructuredArtifactHomeInterface home = null;
 		SchemaBean rootSchema = null;
@@ -5772,6 +5760,7 @@ public class ResourcesAction
 			elements = new ResourcesMetadata("", docRoot, "", "", ResourcesMetadata.WIDGET_NESTED, ResourcesMetadata.WIDGET_NESTED);
 			elements.setDottedparts(docRoot);
 			elements.setContainer(null);
+			
 			elements = createHierarchicalList(elements, fields, 1);
 			
 			String instruction = home.getInstruction();
@@ -5797,6 +5786,8 @@ public class ResourcesAction
 				
 				for(int i = 0; i < number.intValue(); i++)
 				{
+					//%%%%% doing this wipes out data that's been stored previously
+					
 					EditItem item = (EditItem) new_items.get(i);
 					item.setRootname(docRoot);
 					item.setFormtype(formtype);
@@ -7144,6 +7135,8 @@ public class ResourcesAction
 			//Map new_stack_frame = pushOnStack(state);
 			//new_stack_frame.put(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 			state.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
+			
+			return;
 		}
 		
 
@@ -8004,6 +7997,7 @@ public class ResourcesAction
 				member.setCopied(member_copied);
 			}
 		}
+		// check -- jim
 		state.setAttribute(STATE_COLLECTION_ROOTS, roots);
 
 	}	// setCopyFlags
@@ -8115,8 +8109,6 @@ public class ResourcesAction
 		state.removeAttribute(STATE_SORT_BY);
 		state.removeAttribute(STATE_STACK_STRUCTOBJ_TYPE);
 		state.removeAttribute(STATE_STACK_STRUCTOBJ_TYPE_READONLY);
-		state.removeAttribute(STATE_STRUCTOBJ_HOMES);
-		// popFromStack(state);
 		state.removeAttribute(STATE_INITIALIZED);
 		state.removeAttribute(VelocityPortletPaneledAction.STATE_HELPER);
 

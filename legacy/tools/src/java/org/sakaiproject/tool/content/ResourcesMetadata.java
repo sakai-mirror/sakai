@@ -1056,7 +1056,6 @@ public class ResourcesMetadata
 	 */
 	public Object getValue(int index)
 	{
-		System.out.println("----> RM.getValues(" + index + ") tag: " + getLabel() + " --> " + m_currentValues.size());
 		Object rv = null;
 		try
 		{
@@ -1100,7 +1099,6 @@ public class ResourcesMetadata
 	 */
 	public void setValue(int index, Object value)
 	{
-		System.out.println("----> RM.setValue(" + index + ", " + value + ") tag: " + getLabel() + " --> (1) " + m_currentValues.size());
 		try
 		{
 			m_currentValues.set(index, value);
@@ -1109,7 +1107,6 @@ public class ResourcesMetadata
 		{
 			m_currentValues.add(value);
 		}
-		System.out.println("----> RM.setValue(" + index + ", " + value + ") tag: " + getLabel() + " --> (2) " + m_currentValues.size());
 	}
 	
 	/**
