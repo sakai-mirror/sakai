@@ -477,6 +477,11 @@ public class IFrameAction extends VelocityPortletPaneledAction
 				state.setAttribute(HEIGHT, height);
 				placement.getPlacementConfig().setProperty(HEIGHT, height);
 			}
+			else
+			{
+				addAlert(state,rb.getString("java.alert.pleentval"));
+				return;
+			}
 		}
 		else
 		{
