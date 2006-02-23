@@ -323,6 +323,9 @@ public class ResourcesAction
 	/** The name of the state attribute indicating that the list of new items has changed */
 	private static final String STATE_HELPER_CHANGED = "resources.helper_changed";
 	
+	/** the name of the state attribute indicating that the user canceled out of the helper.  Is set only if the user canceled out of the helper. */
+	public static final String STATE_HELPER_CANCELED_BY_USER = "resources.user_canceled_helper";
+	
 	/** The name of the state attribute indicating which dropbox(es) the items should be saved in */
 	public static final String STATE_SAVE_ATTACHMENT_IN_DROPBOX = "resources.save_attachment_in_dropbox";
 	
@@ -915,6 +918,10 @@ public class ResourcesAction
 		if(state.getAttribute(STATE_INITIALIZED) == null)
 		{
 			initStateAttributes(state, portlet);
+			if(state.getAttribute(ResourcesAction.STATE_HELPER_CANCELED_BY_USER) != null)
+			{
+				state.removeAttribute(ResourcesAction.STATE_HELPER_CANCELED_BY_USER);
+			}
 		}
 		String mode = (String) state.getAttribute(STATE_MODE);
 		if(state.getAttribute(STATE_MODE_RESOURCES) == null && MODE_HELPER.equals(mode))
@@ -1364,6 +1371,14 @@ public class ResourcesAction
 		if(! operations_stack.isEmpty())
 		{
 			current_stack_frame = (Map) operations_stack.pop();
+			if(operations_stack.isEmpty())
+			{
+				String canceled = (String) current_stack_frame.get(STATE_HELPER_CANCELED_BY_USER);
+				if(canceled != null)
+				{
+					state.setAttribute(STATE_HELPER_CANCELED_BY_USER, canceled);
+				}
+			}
 		}
 		return current_stack_frame;
 		
@@ -4908,6 +4923,10 @@ public class ResourcesAction
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
+		
+		Map current_stack_frame = peekAtStack(state);
+		current_stack_frame.put(STATE_HELPER_CANCELED_BY_USER, Boolean.TRUE.toString());
+		
 		popFromStack(state);
 		resetCurrentMode(state);
 
