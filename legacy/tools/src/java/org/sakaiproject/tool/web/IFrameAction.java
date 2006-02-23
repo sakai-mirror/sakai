@@ -462,22 +462,28 @@ public class IFrameAction extends VelocityPortletPaneledAction
 
 		// height
 		String height = data.getParameters().getString(HEIGHT);
-		
 		if (height.equals(rb.getString("gen.heisomelse")))
 		{
 			String customHeight = data.getParameters().getString(CUSTOM_HEIGHT);
-			state.setAttribute(HEIGHT, customHeight);
-			if (!checkDigits(customHeight))
+			if ((customHeight != null) && (!customHeight.equals("")))
 			{
-				addAlert(state,rb.getString("java.alert.pleentval"));
-				return;
+				if (!checkDigits(customHeight))
+				{
+					addAlert(state,rb.getString("java.alert.pleentval"));
+					return;
+				}
+				state.setAttribute(HEIGHT, customHeight);
+				height = customHeight + "px";
+				state.setAttribute(HEIGHT, height);
+				placement.getPlacementConfig().setProperty(HEIGHT, height);
 			}
-			height = customHeight + "px";
 		}
-
-		state.setAttribute(HEIGHT, height);
-		placement.getPlacementConfig().setProperty(HEIGHT, height);
-
+		else
+		{
+			state.setAttribute(HEIGHT, height);
+			placement.getPlacementConfig().setProperty(HEIGHT, height);
+		}
+		
 		// title
 		String title = data.getParameters().getString(TITLE);
 		//state.setAttribute(TITLE, title);
