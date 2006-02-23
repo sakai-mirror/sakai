@@ -14,7 +14,12 @@ public class AuthZGroupEditBeanHelper {
     
     public static AuthZGroupEditBean createRealmEditBean(HttpServletRequest request, ViewBean vb) {
         HttpSession session = request.getSession();
-        AuthZGroupEditBean rb = (AuthZGroupEditBean) session.getAttribute(REALM_EDIT_BEAN_ATTR);
+        
+        AuthZGroupEditBean rb = null;
+        try { 
+        		rb = (AuthZGroupEditBean) session.getAttribute(REALM_EDIT_BEAN_ATTR);
+        } catch ( ClassCastException ex ) {
+        }
         
         if (rb == null) {
             rb = new AuthZGroupEditBean(vb.getPageName(), vb.getLocalSpace());

@@ -11,7 +11,7 @@
   <c:set var="rightRenderBean"
     value="${requestScope.rsacMap.infoRightRenderBean}" />
   <c:set var="homeBean" value="${requestScope.rsacMap.homeBean}"/>
-  <c:set var="realmEditBean" value="${requestScope.rsacMap.realmEditBean}"/>
+  <c:set var="realmBean" value="${requestScope.rsacMap.realmBean}"/>
   <c:set var="realmCollectionBean" value="${requestScope.rsacMap.authZGroupCollectionBean}"/>
   <c:set var="errorBean" value="${requestScope.rsacMap.errorBean}"/>
   <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -50,7 +50,7 @@
 	  <!-- Main page -->
 	  <div id="${rwikiContentStyle}" >
 
-	    <h3>Edit Section: <c:out value="${realmEditBean.localSpace}" /></h3>
+	    <h3>Edit ACL's Controlling Page Permissions: <c:out value="${realmBean.pageName}" /></h3>
 	    <c:if test="${fn:length(errorBean.errors) gt 0}">
 	      <!-- XXX This is hideous -->
 	      <p class="validation" style="clear: none;">
@@ -70,7 +70,7 @@
 		<c:forEach var="realm" items="${realmCollectionBean.realms}">
 		  <!--<td><c:out value="${realm.path}"/></td>-->
 		  <tr>
-		    <td><c:out value="${realm.id}"/></td>
+		    <td><h4><c:out value="${realm.realmId}"/></h4></td>
 		  </tr>
 		  <tr>
 		    <td>

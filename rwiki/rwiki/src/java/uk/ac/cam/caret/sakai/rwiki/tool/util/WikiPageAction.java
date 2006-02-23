@@ -57,6 +57,8 @@ public class WikiPageAction {
     
     public static final WikiPageAction EDIT_REALM_ACTION = new WikiPageAction("editRealm");
 
+    public static final WikiPageAction EDIT_REALM_MANY_ACTION = new WikiPageAction("editRealm-many");
+
     public static final WikiPageAction NEWCOMMENT_ACTION = new WikiPageAction("commentnew");
     
     public static final WikiPageAction EDITCOMMENT_ACTION = new WikiPageAction("commentedit");

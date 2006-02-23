@@ -41,8 +41,8 @@ import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
 
 public class AuthZGroupBean extends ViewBean {
 
-	private AuthzGroup currentRealm;
-	private String realmId;
+	private AuthzGroup currentRealm = null;
+	private String realmId = null;
     private boolean siteUpdateAllowed;
 
 	public AuthZGroupBean(String pageName, String localSpace) {
@@ -73,11 +73,17 @@ public class AuthZGroupBean extends ViewBean {
 		}
 		
 	}
+    
+    public boolean isActiveAuthZGroup() {
+    		return ( currentRealm != null);
+    }
 	
     public String getEditRealmUrl() {
         return this.getPageUrl(getPageName(), WikiPageAction.EDIT_REALM_ACTION.getName());
     }
-    
+    public String getEditRealmManyUrl() {
+        return this.getPageUrl(getPageName(), WikiPageAction.EDIT_REALM_MANY_ACTION.getName());
+    }
     public AuthzGroup getRealmEdit() {
         return currentRealm;
     }

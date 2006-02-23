@@ -27,19 +27,24 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.sakaiproject.api.section.coursemanagement.CourseSection;
+import org.sakaiproject.component.section.cover.SectionAwareness;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.text.FormattedText;
@@ -492,17 +497,24 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			boolean container = ref.getId().endsWith(Entity.SEPARATOR);
 			if (paths.length > 1) {
 
-				String root = authZPrefix + Entity.SEPARATOR + paths[1]
+				String root =  Entity.SEPARATOR + paths[1]
 						+ Entity.SEPARATOR;
 				//rv.add(root);
 
+				
+				List al = new ArrayList();
 				for (int next = 2; next < paths.length; next++) {
 					root = root + paths[next];
 					if ((next < paths.length - 1) || container) {
 						root = root + Entity.SEPARATOR;
 					}
-					rv.add(root);
+					al.add(root);
 				}
+				for ( int i = al.size()-1; i >= 0; i-- ) {
+					// add in the sections authzgroup
+					rv.add(authZPrefix+al.get(i));
+				}
+				
 			}
 
 			// special check for group-user : the grant's in the user's My
@@ -511,6 +523,50 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			if ((parts.length > 3) && (parts[1].equals("group-user"))) {
 				rv.add(SiteService.siteReference(SiteService
 						.getUserSiteId(parts[3])));
+			}
+			//. how do we get a section by ID, I assume that the
+			if ( paths.length > 4 && ("group".equals(paths[3]) || "section".equals(paths[3])) ) {
+				// paths 2 is the site id, which will be of the same form as a group id
+				String[] testuuid = paths[2].split("-");
+				String[] uuidparts = paths[4].split("-");
+				boolean isuuid = false;
+				String sectionID = Entity.SEPARATOR 
+						+ paths[1]
+						         + Entity.SEPARATOR 
+						         + paths[2] 
+						                 + Entity.SEPARATOR 
+						                 + paths[3] 
+						                         + Entity.SEPARATOR 
+						                         + paths[4];
+;
+				if ( testuuid.length > 0 && testuuid.length == uuidparts.length ) {
+					isuuid = true;
+					for ( int i = 0; i < testuuid.length; i++  ) {
+						if ( testuuid[i].length() != uuidparts[i].length() ) {
+							isuuid = false;
+						}
+					}
+				
+				}
+				if ( !isuuid ) {
+					// could be a section name
+					Reference siteRef = EntityManager.newReference(ref.getContext());
+					List l = SectionAwareness.getSections(siteRef.getId());
+					for ( Iterator is = l.iterator(); is.hasNext(); ) {
+						CourseSection cs = (CourseSection)is.next();
+						if ( paths[4].equalsIgnoreCase(cs.getTitle()) ) {
+							sectionID = cs.getUuid();
+							logger.debug("Found Match "+sectionID);
+							break;
+						}
+					}
+					logger.debug("Converted ID "+sectionID);
+					
+				} else {
+					logger.debug("Raw ID "+sectionID);
+				}
+				rv.add(sectionID );
+				
 			}
 
 			// TODO: At the moment we cant use ref.addSiteContextAuthzGroup since ref context is

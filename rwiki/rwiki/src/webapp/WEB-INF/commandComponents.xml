@@ -27,7 +27,8 @@
     <entry key="helper"><ref bean="helperCommand"/></entry>
     <entry key="addAttachmentReturnLink"><ref bean="addAttachmentReturnLinkCommand"/></entry>
     <entry key="addAttachmentReturnEmbed"><ref bean="addAttachmentReturnEmbedCommand"/></entry>
-	<!--<entry key=""><ref bean="Command"/></entry>-->
+        <entry key="editRealmMany"><ref bean="editRealmManyCommand"/></entry>
+        <!--<entry key=""><ref bean="Command"/></entry>-->
       </map>
     </property>
   </bean>
@@ -167,6 +168,19 @@
 	</property>
 	<property name="editPath"><value>/WEB-INF/command-pages/edit.jsp</value></property>
 
+  </bean>
+
+  <!-- Real/AuthZgroups edit command -->
+  <bean id="editRealmManyCommand"
+    class="uk.ac.cam.caret.sakai.rwiki.tool.command.EditManyAuthZGroupCommand">
+    <property name="log"><ref bean="rwiki-logger"/></property>
+    <property name="realmService"><ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"/></property>
+    <property name="cancelEditPath"><value>/WEB-INF/command-pages/info.jsp</value></property>
+    <property name="editRealmPath"><value>/WEB-INF/command-pages/editRealm-many.jsp</value></property>
+    <property name="idInUsePath"><value>/WEB-INF/command-pages/realmIdInUse.jsp</value></property>
+    <property name="permissionPath"><value>/WEB-INF/command-pages/permission.jsp</value></property>
+    <property name="successfulPath"><value>/WEB-INF/command-pages/info.jsp</value></property>		
+    <property name="unknownRealmPath"><value>/WEB-INF/command-pages/realmUnknown.jsp</value></property>		
   </bean>
 
 </beans>

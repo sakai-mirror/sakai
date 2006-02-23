@@ -89,7 +89,7 @@ public class EditManyAuthZGroupCommand implements HttpCommand {
 		.getFromRequest(request);
 		
 		ViewParamsHelperBean vphb = rssb.getNameHelperBean();
-		AuthZGroupCollectionBean collectionsBean = rssb.getAuthZCollectionBean();
+		AuthZGroupCollectionBean collectionsBean = rssb.getAuthZGroupCollectionBean();
 		//String requestedRealmId = realmEditBean.getLocalSpace();
 		
 		String saveType = vphb.getSaveType();

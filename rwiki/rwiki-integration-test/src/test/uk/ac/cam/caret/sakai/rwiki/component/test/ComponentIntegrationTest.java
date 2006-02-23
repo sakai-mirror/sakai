@@ -438,7 +438,18 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 			"/wiki/site/SITEID/changedURL.09.rss",
 			"/wiki/site/SITEID/changedURL.10.rss",
 			"/wiki/site/SITEID/changedURL.20.rss",
-			"/wiki/site/SITEID/changedURL.atom" };
+			"/wiki/site/SITEID/changedURL.atom",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/group/63452017-766c-43f8-00ea-c4e666e48f74/home.html",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/section/63452017-766c-43f8-00ea-c4e666e48f74/home.html",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/group/Studio1/home.html",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/section/Studio1/home.html",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/group/Studio2/home.html",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/section/Studio2/home.html",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/group/Studio3/home.html",
+			"/wiki/site/8e2f826d-5a12-4b64-00f1-8cb328cd1443/section/Studio3/home.html"
+	};
+
+	
 
 	/**
 	 * some page names to populate

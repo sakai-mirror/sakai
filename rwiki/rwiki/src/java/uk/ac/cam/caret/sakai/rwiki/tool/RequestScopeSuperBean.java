@@ -523,7 +523,7 @@ public class RequestScopeSuperBean {
         return (AuthZGroupEditBean) map.get(key);
     }
 
-    public AuthZGroupCollectionBean getAuthZCollectionBean() {
+    public AuthZGroupCollectionBean getAuthZGroupCollectionBean() {
         String key = "authZGroupCollectionBean";
         if (map.get(key) == null) {
             AuthZGroupCollectionBean cb = AuthZGroupCollectionBeanHelper.createAuthZCollectionBean(realmService, getCurrentRWikiObject(), getViewBean(), objectService); 
