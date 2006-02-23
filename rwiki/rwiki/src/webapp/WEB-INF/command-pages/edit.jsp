@@ -138,8 +138,16 @@
 		<input type="hidden" name="action" value="save"/>
 		<input type="hidden" name="panel" value="Main"/>
 		<input type="hidden" name="version" value="${(editBean.saveType eq 'preview' or fn:startsWith(editBean.saveType, 'attach') )? editBean.previousVersion : currentRWikiObject.version.time}"/>
-		<input type="hidden" name="pageName" value="${currentRWikiObject.name}" />
-		<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
+		<jsp:element name="input">
+		  <jsp:attribute name="type">hidden</jsp:attribute>
+		  <jsp:attribute name="name">pageName</jsp:attribute>
+		  <jsp:attribute name="value"><c:out value="${currentRWikiObject.name}"/></jsp:attribute>
+		</jsp:element>
+		<jsp:element name="input">
+		  <jsp:attribute name="type">hidden</jsp:attribute>
+		  <jsp:attribute name="name">realm</jsp:attribute>
+		  <jsp:attribute name="value"><c:out value="${currentRWikiObject.realm}"/></jsp:attribute>		
+		</jsp:element>
 	    </div>
 	    <div class="rwiki_editControl" id="editControl">
 		<p class="act">
