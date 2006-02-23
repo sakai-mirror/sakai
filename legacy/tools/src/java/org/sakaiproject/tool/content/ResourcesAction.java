@@ -962,6 +962,7 @@ public class ResourcesAction
 			current_stack_frame.put(STATE_STACK_EDIT_INTENT, INTENT_REVISE_FILE);
 
 			state.setAttribute(VelocityPortletPaneledAction.STATE_HELPER, ResourcesAction.class.getName());
+			state.setAttribute(STATE_RESOURCES_HELPER_MODE, helper_mode);
 			
 			if(MODE_ATTACHMENT_EDIT_ITEM_INIT.equals(helper_mode))
 			{
@@ -2687,11 +2688,11 @@ public class ResourcesAction
 		
 		if(pop)
 		{
+			List new_items = (List) current_stack_frame.get(ResourcesAction.STATE_HELPER_NEW_ITEMS);
 			String helper_changed = (String) state.getAttribute(STATE_HELPER_CHANGED);
 			if(Boolean.TRUE.toString().equals(helper_changed))
 			{
 				// get list of attachments?
-				List new_items = (List) current_stack_frame.get(ResourcesAction.STATE_HELPER_NEW_ITEMS);
 				if(new_items != null)
 				{
 					List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
@@ -2711,6 +2712,18 @@ public class ResourcesAction
 			}
 			popFromStack(state);
 			resetCurrentMode(state);
+			
+			if(!ResourcesAction.isStackEmpty(state) && new_items != null)
+			{
+				current_stack_frame = peekAtStack(state);
+				List old_items = (List) current_stack_frame.get(STATE_HELPER_NEW_ITEMS);
+				if(old_items == null)
+				{
+					old_items = new Vector();
+					current_stack_frame.put(STATE_HELPER_NEW_ITEMS, old_items);
+				}
+				old_items.addAll(new_items);
+			}
 		}
 				
 	}	// doCreateitem
@@ -3930,16 +3943,14 @@ public class ResourcesAction
 			if(removed == null)
 			{
 				removed = new Vector();
+				state.setAttribute(STATE_REMOVED_ATTACHMENTS, removed);
 			}
 			removed.add(item);
 			
 			state.setAttribute(STATE_HELPER_CHANGED, Boolean.TRUE.toString());
 		}
 
-		// popFromStack(state);
-		// resetCurrentMode(state);
-
-	}
+	}	// doRemoveitem
 	
 	public static void doAddattachments(RunData data)
 	{
