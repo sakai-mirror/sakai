@@ -2687,7 +2687,28 @@ public class ResourcesAction
 		
 		if(pop)
 		{
-			// get list of attachments?
+			String helper_changed = (String) state.getAttribute(STATE_HELPER_CHANGED);
+			if(Boolean.TRUE.toString().equals(helper_changed))
+			{
+				// get list of attachments?
+				List new_items = (List) current_stack_frame.get(ResourcesAction.STATE_HELPER_NEW_ITEMS);
+				if(new_items != null)
+				{
+					List attachments = (List) state.getAttribute(STATE_ATTACHMENTS);
+					if(attachments == null)
+					{
+						attachments = EntityManager.newReferenceList();
+						state.setAttribute(STATE_ATTACHMENTS, attachments);
+					}
+					Iterator it = new_items.iterator();
+					while(it.hasNext())
+					{
+						AttachItem item = (AttachItem) it.next();
+						Reference ref = EntityManager.newReference(ContentHostingService.getReference(item.getId()));
+						attachments.add(ref);
+					}
+				}
+			}
 			popFromStack(state);
 			resetCurrentMode(state);
 		}
@@ -7066,8 +7087,11 @@ public class ResourcesAction
 			else if(ResourcesMetadata.WIDGET_ANYURI.equals(prop.getWidget()))
 			{
 				String value = params.getString(propname);
-				Reference ref = EntityManager.newReference(ContentHostingService.getReference(value));
-				prop.setValue(0, ref);
+				if(value != null && ! value.trim().equals(""))
+				{
+					Reference ref = EntityManager.newReference(ContentHostingService.getReference(value));
+					prop.setValue(0, ref);
+				}
 			}
 			else
 			{
