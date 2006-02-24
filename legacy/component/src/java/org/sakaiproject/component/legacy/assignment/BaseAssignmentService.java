@@ -50,6 +50,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
+import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
@@ -89,7 +90,9 @@ import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
@@ -107,7 +110,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 
 /**
 * <p>BaseAssignmentService is the abstract service class for Assignments.</p>
@@ -483,6 +485,7 @@ public abstract class BaseAssignmentService
 		m_entityManager.registerEntityProducer(this, REFERENCE_ROOT);
 
 		// register functions
+		FunctionManager.registerFunction(SECURE_ALL_GROUPS);
 		FunctionManager.registerFunction(SECURE_ADD_ASSIGNMENT);
 		FunctionManager.registerFunction(SECURE_ADD_ASSIGNMENT_SUBMISSION);
 		FunctionManager.registerFunction(SECURE_REMOVE_ASSIGNMENT);
@@ -806,11 +809,60 @@ public abstract class BaseAssignmentService
 //				}
 //			}
 		}
+		
+		List rv = new Vector();
+		Collection allowedGroups = getGroupsAllowGetAssignment(context);
+		Assignment tempAssignment = null;
+		for(int x = 0; x < assignments.size(); x++)
+		{
+			tempAssignment = (Assignment) assignments.get(x);
+			if (tempAssignment.getAccess() == Assignment.AssignmentAccess.GROUPED)
+			{
+				// if grouped, check that the end user has get access to any of this assignment's groups; reject if not
+				
+				// check the assignment's groups to the allowed (get) groups for the current user
+				Collection asgGroups = tempAssignment.getGroups();
 
-		return assignments;
+				// add if there is intersection
+				if (isIntersectionGroupRefsToGroups(asgGroups, allowedGroups))
+				{
+					rv.add(tempAssignment);
+				}
+			}
+			else
+			{
+				// for site assignment, add it
+				rv.add(tempAssignment);
+			}
+		}
+
+		return rv;
 
 	}   // getAssignments
 
+	/**
+	 * See if the collection of group reference strings has at least one group that is in the collection of Group objects.
+	 * @param groupRefs The collection (String) of group references.
+	 * @param groups The collection (Group) of group objects.
+	 * @return true if there is interesection, false if not.
+	 */
+	protected boolean isIntersectionGroupRefsToGroups(Collection groupRefs, Collection groups)
+	{
+		for (Iterator iRefs = groupRefs.iterator(); iRefs.hasNext();)
+		{
+			String findThisGroupRef = (String) iRefs.next();
+			for (Iterator iGroups = groups.iterator(); iGroups.hasNext();)
+			{
+				String thisGroupRef = ((Group) iGroups.next()).getReference();
+				if (thisGroupRef.equals(findThisGroupRef))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 	
 	/**
 	* Get a locked assignment object for editing.  Must commitEdit() to make official, or cancelEdit() when done!
@@ -1994,7 +2046,32 @@ public abstract class BaseAssignmentService
 
 	}	//  addLiveProperties
 
+	
+	/**
+	* check permissions for addAssignment().
+	* @param context - Describes the portlet context - generated with DefaultId.getChannel()	
+	* @return true if the user is allowed to addAssignment(...), false if not.
+	*/
+	public boolean allowAddGroupAssignment(String context)
+	{
+		// base the check for SECURE_ADD on the site, any of the site's groups, and the channel
+		// if the user can SECURE_ADD anywhere in that mix, they can add an assignment
+		// this stack is not the normal azg set for channels, so use a special refernce to get this behavior
+		String resourceString = getAccessPoint(true) + Entity.SEPARATOR
+					+ REF_TYPE_ASSIGNMENT_GROUPS + Entity.SEPARATOR + "a" + Entity.SEPARATOR + context + Entity.SEPARATOR;
 
+		if(m_logger.isDebugEnabled())
+		{
+			m_logger.debug("Entering allow add Assignment with resource string : " + resourceString);
+			m_logger.debug("                                    context string : " + context);
+		}
+
+		// check security on the channel (throws if not permitted)
+		return unlockCheck(SECURE_ADD_ASSIGNMENT, resourceString);
+
+	} // allowAddGroupAssignment
+
+	
 	/**
 	 * Check permissions for adding an Assignment.
 	 * @param context - Describes the portlet context - generated with DefaultId.getChannel().
@@ -2003,13 +2080,52 @@ public abstract class BaseAssignmentService
 	public boolean allowAddAssignment(String context)
 	{
 		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR + context + Entity.SEPARATOR;
+		// base the check for SECURE_ADD_ASSIGNMENT on the site and any of the site's groups
+		// if the user can SECURE_ADD_ASSIGNMENT anywhere in that mix, they can add an assignment
+		// this stack is not the normal azg set for site, so use a special refernce to get this behavior
+
+		String specialReference = getAccessPoint(true)
+					+ Entity.SEPARATOR 
+					+ "a"
+					+ Entity.SEPARATOR
+					+ REF_TYPE_SITE_GROUPS
+					+ Entity.SEPARATOR
+					+ context;
 
 		if(m_logger.isDebugEnabled())
 		{
 			m_logger.debug("Entering allow add Assignment with resource string : " + resourceString);
 			m_logger.debug("                                    context string : " + context);
 		}
+		
 		return unlockCheck(SECURE_ADD_ASSIGNMENT, resourceString);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public boolean allowAddSiteAssignment(String context)
+	{
+		// check for assignments that will be site-wide:
+		// base the check for SECURE_ADD_ASSIGNMENT on the site only (not the groups).
+		String resourceString = getAccessPoint(true) + Entity.SEPARATOR + "a" + Entity.SEPARATOR + context;
+
+		if(m_logger.isDebugEnabled())
+		{
+			m_logger.debug("Entering allow add Assignment with resource string : " + resourceString);
+			m_logger.debug("                                    context string : " + context);
+		}
+		
+		// check security on the channel (throws if not permitted)
+		return unlockCheck(SECURE_ADD_ASSIGNMENT, resourceString);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public Collection getGroupsAllowAddAssignment(String context)
+	{
+		return getGroupsAllowFunction(SECURE_ADD_ASSIGNMENT, context);
 	}
 
 	/**
@@ -2023,6 +2139,14 @@ public abstract class BaseAssignmentService
 			m_logger.debug("Entering allow get Assignment with reference string : " + assignmentReference);
 		
 		return unlockCheck(SECURE_ACCESS_ASSIGNMENT, assignmentReference);
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public Collection getGroupsAllowGetAssignment(String assignmentReference)
+	{
+		return getGroupsAllowFunction(SECURE_ACCESS_ASSIGNMENT, assignmentReference);
 	}
 
 	/**
@@ -2039,6 +2163,14 @@ public abstract class BaseAssignmentService
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	public Collection getGroupsAllowUpdateAssignment(String assignmentReference)
+	{
+		return getGroupsAllowFunction(SECURE_UPDATE_ASSIGNMENT, assignmentReference);
+	}
+	
+	/**
 	 * Check permissions for removing an Assignment.
 	 * @param assignmentReference - The Assignment's reference.
 	 * @return True if the current User is allowed to remove the Assignment, false if not.
@@ -2052,6 +2184,74 @@ public abstract class BaseAssignmentService
 		return unlockCheck(SECURE_REMOVE_ASSIGNMENT, assignmentReference);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public Collection getGroupsAllowRemoveAssignment(String assignmentReference)
+	{
+		return getGroupsAllowFunction(SECURE_REMOVE_ASSIGNMENT, assignmentReference);
+	}
+	
+	/**
+	 * Get the groups of this channel's contex-site that the end user has permission to "function" in.
+	 * @param function The function to check
+	 */
+	protected Collection getGroupsAllowFunction(String function, String reference)
+	{
+		Collection rv = new Vector();
+
+		String siteId = "";
+		ToolSession ts = SessionManager.getCurrentToolSession();
+		if (ts != null)
+		{
+			ToolConfiguration tool = SiteService.findTool(ts.getPlacementId());
+			if (tool != null)
+			{
+				siteId = tool.getSiteId();
+			}
+		}
+		
+		try
+		{
+			// get the channel's site's groups
+			Site site = SiteService.getSite(siteId);
+			Collection groups = site.getGroups();
+			
+			// if the user has "all group" permission for the site, and the function for the site, select all site groups
+			if (unlockCheck(SECURE_ALL_GROUPS, assignmentReference(siteId, "")))
+			{
+				return groups;
+			}
+
+			// otherwise, check the groups for function
+
+			// get a list of the group refs, which are authzGroup ids
+			Collection groupRefs = new Vector();
+			for (Iterator i = groups.iterator(); i.hasNext();)
+			{
+				Group group = (Group) i.next();
+				groupRefs.add(group.getReference());
+			}
+		
+			// ask the authzGroup service to filter them down based on function
+			groupRefs = AuthzGroupService.getAuthzGroupsIsAllowed(UserDirectoryService.getCurrentUser().getId(), function, groupRefs);
+			
+			// pick the Group objects from the site's groups to return, those that are in the groupRefs list
+			for (Iterator i = groups.iterator(); i.hasNext();)
+			{
+				Group group = (Group) i.next();
+				if (groupRefs.contains(group.getReference()))
+				{
+					rv.add(group);
+				}
+			}
+		}
+		catch (IdUnusedException e) {}
+
+		return rv;
+	}
+	
+	/*************************************************check permissions for AssignmentContent object ********************************************/
 	/**
 	 * Check permissions for get AssignmentContent
 	 * @param contentReference - The AssignmentContent reference.
@@ -2920,7 +3120,7 @@ public abstract class BaseAssignmentService
 				// assignment node has already kept the context info
 				contentEl.removeAttribute("context");
 				
-				// collect message attachments
+				// collect attachments
 				List atts = content.getAttachments();
 				
 				for (int i = 0; i < atts.size(); i++)
@@ -3413,7 +3613,12 @@ public abstract class BaseAssignmentService
 		protected List m_authors;
 		protected boolean m_draft;
 		
-
+		/** The Collection of groups (authorization group id strings). */
+		protected Collection m_groups = new Vector();
+		
+		/** The assignment access. */
+		protected AssignmentAccess m_access = AssignmentAccess.SITE;
+		
 		/**
 		 * Copy constructor
 		 */
@@ -3437,6 +3642,7 @@ public abstract class BaseAssignmentService
 			m_section = "";
 			m_authors = new Vector();
 			m_draft = true;
+			m_groups = new Vector();
 		}
 
 		/**
@@ -3523,6 +3729,19 @@ public abstract class BaseAssignmentService
 					// re-create properties
 					m_properties = new BaseResourcePropertiesEdit(element);
 				}
+				
+				// look for an group
+				else	 if (element.getTagName().equals("group"))
+				{
+					m_groups.add(element.getAttribute("authzGroup"));
+				}
+			}
+			
+			//extract access
+			AssignmentAccess access = AssignmentAccess.fromString(el.getAttribute("access"));
+			if (access != null)
+			{
+				m_access = access;
 			}
 
 			if(m_logger.isDebugEnabled())
@@ -3591,8 +3810,22 @@ public abstract class BaseAssignmentService
 				}
 			}
 
+			// add groups
+			if ((m_groups != null) && (m_groups.size() > 0))
+			{
+				for (Iterator i = m_groups.iterator(); i.hasNext();)
+				{
+					String group = (String) i.next();
+					Element sect = doc.createElement("group");
+					assignment.appendChild(sect);
+					sect.setAttribute("authzGroup", group);
+				}
+			}
 
-				// SAVE THE PROPERTIES
+			// add access
+			assignment.setAttribute("access", m_access.toString());
+
+			// SAVE THE PROPERTIES
 			m_properties.toXml(doc, stack);
 			m_logger.debug("ASSIGNMENT : BASE SERVICE : BASE ASSIGNMENT : TOXML : SAVED PROPERTIES");
 			stack.pop();
@@ -3622,6 +3855,8 @@ public abstract class BaseAssignmentService
 				m_draft = assignment.getDraft();
 				m_properties = new BaseResourcePropertiesEdit();
 				m_properties.addAll(assignment.getProperties());
+				m_groups = assignment.getGroups();
+				m_access = assignment.getAccess();
 			}
 		}
 
@@ -3866,6 +4101,22 @@ public abstract class BaseAssignmentService
 			return m_draft;
 		}
 
+		/**
+		* @inheritDoc
+		*/
+		public Collection getGroups()
+		{
+			return new Vector(m_groups);
+		}
+		
+		/**
+		* @inheritDoc
+		*/
+		public AssignmentAccess getAccess()
+		{
+			return m_access;
+		}
+		
 		/**
 		* Are these objects equal?  If they are both Assignment objects, and they have
 		* matching id's, they are.
@@ -4136,6 +4387,55 @@ public abstract class BaseAssignmentService
 			m_active = false;
 
 		}	// closeEdit
+		
+		/*******************************************************************************
+		* Group awareness implementation
+		*******************************************************************************/
+		/**
+		* @inheritDoc
+		*/
+		public void setAccess(AssignmentAccess access)
+		{
+			m_access = access;
+		}
+		
+		/**
+		* @inheritDoc
+		*/
+		public void addGroup(Group group) throws PermissionException
+		{
+			if (group == null) throw new PermissionException(SECURE_ADD_ASSIGNMENT, "null");
+
+			// does the current user have SECURE_ADD permission in this group's authorization group, or SECURE_ALL_GROUPS in the site?
+			if (!unlockCheck(SECURE_ADD_ASSIGNMENT, group.getReference()))
+			{
+				if (!unlockCheck(SECURE_ALL_GROUPS, getReference()))
+				{
+					throw new PermissionException(SECURE_ADD_ASSIGNMENT, group.getReference());					
+				}
+			}
+
+			if (!m_groups.contains(group.getReference())) m_groups.add(group.getReference());
+		}
+		
+		/**
+		* @inheritDoc
+		*/
+		public void removeGroup(Group group) throws PermissionException
+		{
+			if (group == null) throw new PermissionException(SECURE_ADD_ASSIGNMENT, "null");
+
+			// does the current user have SECURE_ADD permission in this group's authorization group, or SECURE_ALL_GROUPS in the channel?
+			if (!unlockCheck(SECURE_ADD_ASSIGNMENT, group.getReference()))
+			{
+				if (!unlockCheck(SECURE_ALL_GROUPS, getReference()))
+				{
+					throw new PermissionException(SECURE_ADD_ASSIGNMENT,  group.getReference());					
+				}
+			}
+
+			if (m_groups.contains(group.getReference())) m_groups.remove(group.getReference());
+		}
 
 		/*******************************************************************************
 		* SessionBindingListener implementation
