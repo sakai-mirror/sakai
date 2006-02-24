@@ -74,11 +74,14 @@ public class AddAttachmentReturnCommand implements HttpCommand {
                 .get(EditBean.STORED_CARET_POSITION));
         String pageName = retrieveString(storedParameters
                 .get(ViewBean.PAGE_NAME_PARAM));
-
-        if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null) {
-            content = generateNewContent(session, content, caretPosition);
-            
-            
+        
+        
+        List refs = (List) session
+                .getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+        
+        if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null && refs != null && refs.size() > 0) {
+        	// File Picking was successful.
+            content = generateNewContent(refs, content, caretPosition);
         } else {
             ErrorBean errorBean = rssb.getErrorBean();
             // FIXME internationalise this!
@@ -107,7 +110,7 @@ public class AddAttachmentReturnCommand implements HttpCommand {
         
     }
 
-    private String generateNewContent(ToolSession session, String content, String caretPosition) {
+    private String generateNewContent(List refs, String content, String caretPosition) {
         char[] charContent = content.toCharArray();            
         
         int startPos = charContent.length;
@@ -153,9 +156,7 @@ public class AddAttachmentReturnCommand implements HttpCommand {
         }
 
         
-        // File Picking was successful.
-        List refs = (List) session
-                .getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+
         if (refs.size() > 1) {
             return multipleRefsContent(charContent, startPos, endPos, refs);
         } else {
