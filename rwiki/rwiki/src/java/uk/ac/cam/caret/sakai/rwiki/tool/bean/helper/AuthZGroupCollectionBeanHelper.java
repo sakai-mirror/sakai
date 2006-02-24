@@ -40,7 +40,7 @@ public class AuthZGroupCollectionBeanHelper {
             } catch (IdUnusedException e) {
             	   Logger.info("Id Unused: " + groupRef + " doesnt exist for this user . ");
             }
-            
+             
             groups.add(ab);
         }
         
