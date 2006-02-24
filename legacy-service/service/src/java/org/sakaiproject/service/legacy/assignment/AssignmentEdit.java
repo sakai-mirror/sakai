@@ -25,8 +25,11 @@
 package org.sakaiproject.service.legacy.assignment;
 
 // import
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.entity.Edit;
 import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.message.MessageHeader.MessageAccess;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.time.Time;
 
 /**
@@ -114,6 +117,34 @@ public interface AssignmentEdit
 	 * @param title - The Assignment's title.
 	 */
 	public void setTitle(String title);
+	
+	/**
+	 * Add a Group to the list of groups for this assignment.
+	 * 
+	 * @param group
+	 *        The Group to add to those for this assignment.
+	 * @throws PermissionException
+	 *         if the end user does not have permission to do this.
+	 */
+	void addGroup(Group group) throws PermissionException;
+
+	/**
+	 * Remove this Group from the list of groups for this assignment.
+	 * 
+	 * @param group
+	 *        The Group to remove from those for this assignment.
+	 * @throws PermissionException
+	 *         if the end user does not have permission to do this.
+	 */
+	void removeGroup(Group group) throws PermissionException;
+	
+	/**
+	 * Set the access mode for the assignment - how we compute who has access to the assignment.
+	 * 
+	 * @param access
+	 *        The AssignmentAccess access mode for the message.
+	 */
+	void setAccess(AssignmentAccess access);
 
 }	// AssignmentEdit
 

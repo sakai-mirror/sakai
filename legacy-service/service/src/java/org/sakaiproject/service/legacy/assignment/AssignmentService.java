@@ -25,6 +25,7 @@
 package org.sakaiproject.service.legacy.assignment;
 
 // import
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -100,9 +101,18 @@ public interface AssignmentService
 	
 	/** Security lock for grading submission */
 	public static final String SECURE_GRADE_ASSIGNMENT_SUBMISSION = "asn.grade";
+	
+	/** Security function giving the user permission to all groups, if granted to at the site level. */
+	public static final String SECURE_ALL_GROUPS = "asn.all.groups";
+	
+	/** The Reference type for a site where site groups are to be considered in security computation. */
+	public static final String REF_TYPE_SITE_GROUPS = "site-groups";
 
 	/** The Reference type for an assignment. */
 	public static final String REF_TYPE_ASSIGNMENT = "a";
+	
+	/** The Reference type for an assignment where site groups are to be considered in security computation. */
+	public static final String REF_TYPE_ASSIGNMENT_GROUPS = "a-groups";
 
 	/** The Reference type for a submission. */
 	public static final String REF_TYPE_SUBMISSION = "s";
@@ -122,6 +132,13 @@ public interface AssignmentService
 	 * @return True if the current User is allowed to add an Assignment, false if not.
 	 */
 	public boolean allowAddAssignment(String context);
+	
+	/**
+	 * Check if the user has permission to add a site-wide (not grouped) assignment.
+	 * @param context - Describes the portlet context - generated with DefaultId.getChannel(). 
+	 * @return true if the user has permission to add a channel-wide (not grouped) assignment.
+	 */
+	boolean allowAddSiteAssignment(String context);
 
 	/**
 	 * Check permissions for reading an Assignment.
@@ -129,6 +146,13 @@ public interface AssignmentService
 	 * @return True if the current User is allowed to get the Assignment, false if not.
 	 */
 	public boolean allowGetAssignment(String assignmentReference);
+	
+	/**
+	 * Get the collection of Groups defined for the context of this site that the end user has add assignment permissions in.
+	 * @param context - Describes the portlet context - generated with DefaultId.getChannel().
+	 * @return The Collection (Group) of groups defined for the context of this site that the end user has add assignment permissions in, empty if none.
+	 */
+	Collection getGroupsAllowAddAssignment(String context);
 
 	/**
 	 * Check permissions for updating an Assignment.
