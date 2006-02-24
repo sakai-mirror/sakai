@@ -97,6 +97,7 @@ public class DataLineTag extends UIComponentTag
     TagUtil.setString(component, "onmouseup", onmouseup);
     TagUtil.setString(component, "style", style);
     TagUtil.setString(component, "styleClass", styleClass);
+    TagUtil.setString(component, "separator", separator);
   }
   /**
    *
