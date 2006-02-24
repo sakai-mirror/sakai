@@ -55,6 +55,7 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
+import uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
@@ -74,23 +75,27 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 
 	private RWikiObjectService rwikiObjectService = null;
 
+	private PreferenceService preferenceService = null;
+	
 	/**
 	 * Construct.
 	 */
 	public SiteEmailNotificationRWiki(RWikiObjectService rwikiObjectService,
-			RenderService renderService) {
+			RenderService renderService, PreferenceService preferenceService) {
 		this.renderService = renderService;
 		this.rwikiObjectService = rwikiObjectService;
+		this.preferenceService = preferenceService;
 	}
 
 	/**
 	 * Construct.
 	 */
 	public SiteEmailNotificationRWiki(RWikiObjectService rwikiObjectService,
-			RenderService renderService, String siteId) {
+			RenderService renderService, PreferenceService preferenceService, String siteId) {
 		super(siteId);
 		this.renderService = renderService;
 		this.rwikiObjectService = rwikiObjectService;
+		this.preferenceService = preferenceService;
 	}
 
 	/**
@@ -161,7 +166,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 	 */
 	public NotificationAction getClone() {
 		SiteEmailNotificationRWiki clone = new SiteEmailNotificationRWiki(
-				rwikiObjectService, renderService);
+				rwikiObjectService, renderService, preferenceService);
 		clone.set(this);
 
 		return clone;
@@ -187,7 +192,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 		ResourceProperties props = ref.getProperties();
 
 		// get the function
-		String function = event.getEvent();
+		//String function = event.getEvent();
 
 		// use either the configured site, or if not configured, the site
 		// (context) of the resource
@@ -203,7 +208,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 		}
 
 		// get the URL and resource name.
-		StringBuffer buf = new StringBuffer();
+		//StringBuffer buf = new StringBuffer();
 		String url = ServerConfigurationService.getAccessUrl() + ref.getUrl();
 
 		String pageName = props.getProperty(RWikiEntity.RP_NAME);
@@ -426,7 +431,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 			// use either the configured site, or if not configured, the site
 			// (context) of the resource
 			Reference ref = EntityManager.newReference(event.getResource());
-			Entity r = ref.getEntity();
+			//Entity r = ref.getEntity();
 			String title = (getSite() != null) ? getSite() : getSiteId(ref
 					.getContext());
 
@@ -503,5 +508,41 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 			}
 		}
 	}
+
+	protected int getOption(User user, Notification notification, Event event) {
+		
+		// FIXME I don't think this should be here, but it certainly shouldn't be in preferenceService
+		// We really want a entity reference to page name, without going via the db!
+		String resourceReference = event.getResource();
+								
+		if (resourceReference == null 
+				|| !resourceReference.startsWith(RWikiObjectService.REFERENCE_ROOT) 
+				|| resourceReference.length() == RWikiObjectService.REFERENCE_ROOT.length()) { 
+			return NotificationService.PREF_IMMEDIATE;
+		}
+		
+		resourceReference = resourceReference.substring(RWikiObjectService.REFERENCE_ROOT.length(), resourceReference.lastIndexOf('.'));
+		
+		String preference = preferenceService.findPreferenceAt(user.getId(), resourceReference, PreferenceService.MAIL_NOTIFCIATION );
+		
+		if (preference == null || "".equals(preference)) {
+			return NotificationService.PREF_NONE;
+		}
+		
+		if (PreferenceService.NONE_PREFERENCE.equals(preference)) {
+			return NotificationService.PREF_IGNORE;
+		}
+		
+		if (PreferenceService.DIGEST_PREFERENCE.equals(preference)) {
+			return NotificationService.PREF_DIGEST;
+		} 
+		
+		if (PreferenceService.SEPARATE_PREFERENCE.equals(preference)) {
+			return NotificationService.PREF_IMMEDIATE;
+		}
+		
+		return NotificationService.PREF_NONE;
+	}
+	
 
 }

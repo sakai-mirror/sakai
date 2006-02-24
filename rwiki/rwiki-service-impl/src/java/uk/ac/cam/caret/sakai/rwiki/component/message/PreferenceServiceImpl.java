@@ -75,7 +75,7 @@ public class PreferenceServiceImpl implements PreferenceService {
 		if ( selected == null ) return null;
 		return selected.getPreference();
 	}
-
+	
 	/**
 	 * @return Returns the logger.
 	 */

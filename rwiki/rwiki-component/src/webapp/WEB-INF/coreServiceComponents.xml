@@ -61,6 +61,7 @@
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
     <property name="RWikiCurrentObjectDao"><ref bean="rwikiCurrentObjectDao"/></property>
     <property name="RWikiHistoryObjectDao"><ref bean="rwikiHistoryObjectDao"/></property>
+    <property name="preferenceService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService"/></property>
     <property name="securityService"><ref bean="securityService"/></property>
     <property name="handlers">
       <map>

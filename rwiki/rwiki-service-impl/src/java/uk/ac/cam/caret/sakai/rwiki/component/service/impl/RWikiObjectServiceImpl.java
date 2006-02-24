@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
-
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -79,6 +78,7 @@ import uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.ReadPermissionException;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.UpdatePermissionException;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.VersionException;
+import uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger;
 
@@ -99,6 +99,8 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	private RWikiSecurityService securityService;
 
 	private RenderService renderService;
+	
+	private PreferenceService preferenceService;
 
 	// dependancy
 	/**
@@ -127,7 +129,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		// set the action
 		edit
 				.setAction(new SiteEmailNotificationRWiki(this,
-						this.renderService));
+						this.renderService, this.preferenceService));
 
 		EntityManager.registerEntityProducer(this,
 				RWikiObjectService.REFERENCE_ROOT);
@@ -270,6 +272,14 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 	public void setRenderService(RenderService renderService) {
 		this.renderService = renderService;
+	}
+
+	public PreferenceService getPreferenceService() {
+		return preferenceService;
+	}
+
+	public void setPreferenceService(PreferenceService preferenceService) {
+		this.preferenceService = preferenceService;
 	}
 
 	public void update(String name, String realm, Date version,

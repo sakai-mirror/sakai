@@ -34,6 +34,9 @@ public interface PreferenceService {
 	 * a context
 	 */
 	public static final String MAIL_NOTIFCIATION = "mail.notify";
+	public static final String NONE_PREFERENCE = "none";
+	public static final String DIGEST_PREFERENCE = "digest";
+	public static final String SEPARATE_PREFERENCE = "separate";
 	/**
 	 * Update the users preference
 	 * 

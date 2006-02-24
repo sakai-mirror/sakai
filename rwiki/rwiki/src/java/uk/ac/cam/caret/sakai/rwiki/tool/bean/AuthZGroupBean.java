@@ -84,6 +84,10 @@ public class AuthZGroupBean extends ViewBean {
     public String getEditRealmManyUrl() {
         return this.getPageUrl(getPageName(), WikiPageAction.EDIT_REALM_MANY_ACTION.getName());
     }
+    public String getPreferencesUrl() {
+    	return this.getPageUrl(getPageName(), WikiPageAction.PREFERENCES_ACTION.getName());
+    }
+    
     public AuthzGroup getRealmEdit() {
         return currentRealm;
     }

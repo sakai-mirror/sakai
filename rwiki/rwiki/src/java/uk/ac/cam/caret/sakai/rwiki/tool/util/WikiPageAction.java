@@ -84,6 +84,7 @@ public class WikiPageAction {
     public static final WikiPageAction LINK_ATTACHMENT_RETURN_ACTION = new WikiPageAction("addAttachmentReturnLink");
     
     public static final WikiPageAction EMBED_ATTACHMENT_RETURN_ACTION = new WikiPageAction("addAttachmentReturnEmbed");
+	public static final WikiPageAction PREFERENCES_ACTION = new WikiPageAction("preferences");
     
     private String name;
     

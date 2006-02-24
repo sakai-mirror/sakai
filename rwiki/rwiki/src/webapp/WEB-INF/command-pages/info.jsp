@@ -778,9 +778,10 @@ both pages are identical. Any change in the page, will change the digest on the 
 		      </td>
 		    </tr>
 		    <tr>
-		    	<th>Feeds<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'feedshelp'); return false;"
-		    		onMouseOut="hidePopup('feedshelp');" >?</a></th>
-		      <td colspan="6">
+		      <th>Notification Preferences<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'preferenceshelp'); return false;"
+		    		onMouseOut="hidePopup('preferenceshelp');" >?</a></th>
+		      <td colspan="7">
+			<a href="${realmBean.preferencesUrl}">Edit Notification Preferences for <c:out value="${realmBean.pageSpace}"/></a>
 		      </td>
 		    </tr>
 		    

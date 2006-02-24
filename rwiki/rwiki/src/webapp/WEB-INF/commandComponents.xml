@@ -27,7 +27,8 @@
     <entry key="helper"><ref bean="helperCommand"/></entry>
     <entry key="addAttachmentReturnLink"><ref bean="addAttachmentReturnLinkCommand"/></entry>
     <entry key="addAttachmentReturnEmbed"><ref bean="addAttachmentReturnEmbedCommand"/></entry>
-        <entry key="editRealmMany"><ref bean="editRealmManyCommand"/></entry>
+    <entry key="updatePreferences"><ref bean="updatePreferencesCommand"/></entry>
+    <entry key="editRealmMany"><ref bean="editRealmManyCommand"/></entry>
         <!--<entry key=""><ref bean="Command"/></entry>-->
       </map>
     </property>
@@ -170,6 +171,12 @@
 
   </bean>
 
+  <!-- Update preferences command -->
+  <bean id="updatePreferencesCommand" class="uk.ac.cam.caret.sakai.rwiki.tool.command.UpdatePreferencesCommand">
+    <property name="successfulPath"><value>/WEB-INF/command-pages/info.jsp</value></property>
+    <property name="preferenceService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService"/></property>
+  </bean>
+  
   <!-- Real/AuthZgroups edit command -->
   <bean id="editRealmManyCommand"
     class="uk.ac.cam.caret.sakai.rwiki.tool.command.EditManyAuthZGroupCommand">
@@ -182,5 +189,4 @@
     <property name="successfulPath"><value>/WEB-INF/command-pages/info.jsp</value></property>		
     <property name="unknownRealmPath"><value>/WEB-INF/command-pages/realmUnknown.jsp</value></property>		
   </bean>
-
 </beans>

@@ -32,10 +32,12 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.springframework.context.ApplicationContext;
 
+import sun.security.action.GetLongAction;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.message.api.MessageService;
+import uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.PopulateService;
 import uk.ac.cam.caret.sakai.rwiki.tool.api.ToolRenderService;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupBean;
@@ -48,6 +50,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.HistoryBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.HomeBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PermissionsBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PrePopulateBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.PreferencesBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PresenceBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.RecentlyVisitedBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ReferencesBean;
@@ -59,6 +62,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupCollectionBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.AuthZGroupEditBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.DiffHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.PreferencesBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.PresenceBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.RecentlyVisitedHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ReverseHistoryHelperBean;
@@ -104,6 +108,8 @@ public class RequestScopeSuperBean {
     
     private MessageService messageService;
 
+	private PreferenceService preferenceService;
+
     public static RequestScopeSuperBean getFromRequest(
             HttpServletRequest request) {
         return (RequestScopeSuperBean) request.getAttribute(REQUEST_ATTRIBUTE);
@@ -129,7 +135,7 @@ public class RequestScopeSuperBean {
         toolRenderService = (ToolRenderService) context.getBean("toolRenderService");
         populateService = (PopulateService) context.getBean("populateService");
         realmService = (AuthzGroupService) context.getBean(AuthzGroupService.class.getName());
-        
+        preferenceService = (PreferenceService) context.getBean(PreferenceService.class.getName());
         
         messageService = (MessageService) context.getBean(MessageService.class.getName());
         // if the message service has been configured
@@ -547,7 +553,15 @@ public class RequestScopeSuperBean {
     public MessageService getMessageService() {
         return messageService;
     }
-
     
+    public PreferencesBean getPreferencesBean() {
+    	String key = "preferencesBean";
+    	PreferencesBean pb = (PreferencesBean) map.get(key);
+    	if (pb == null) {
+    		pb = PreferencesBeanHelper.createPreferencesBean(getCurrentUser(), getCurrentPageSpace(), preferenceService);
+    		map.put(key, pb);
+    	}
+    	return pb;
+    }
 }
 
