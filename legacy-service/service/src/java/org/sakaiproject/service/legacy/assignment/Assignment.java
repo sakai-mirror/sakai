@@ -25,13 +25,9 @@
 package org.sakaiproject.service.legacy.assignment;
 
 // import
-import java.util.Collection;
 import java.util.List;
 
-import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.entity.Entity;
-import org.sakaiproject.service.legacy.message.MessageHeader.MessageAccess;
-import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.time.Time;
 
 
@@ -193,53 +189,7 @@ public interface Assignment
 	 * @return The Assignment's title.
 	 */
 	public String getTitle();
-	
-	/**
-	 * Access the groups defined for this assignment.
-	 * 
-	 * @return A Collection (String) of group refs (authorization group ids) defined for this message; empty if none are defined.
-	 */
-	Collection getGroups();
 
-	/**
-	 * Access the access mode for the assignment - how we compute who has access to the assignment.
-	 * 
-	 * @return The AssignmentAccess access mode for the Assignment.
-	 */
-	AssignmentAccess getAccess();
-	
-	/**
-	 * <p>
-	 * AssignmentAccess enumerates different access modes for the assignment: site-wide or grouped.
-	 * </p>
-	 */
-	public class AssignmentAccess
-	{
-		private final String m_id;
-
-		private AssignmentAccess(String id)
-		{
-			m_id = id;
-		}
-
-		public String toString()
-		{
-			return m_id;
-		}
-
-		static public AssignmentAccess fromString(String access)
-		{
-			if (SITE.m_id.equals(access)) return SITE;
-			if (GROUPED.m_id.equals(access)) return GROUPED;
-			return null;
-		}
-
-		/** channel (site) level access to the message */
-		public static final AssignmentAccess SITE = new AssignmentAccess("site");
-
-		/** grouped access; only members of the getGroup() groups (authorization groups) have access */
-		public static final AssignmentAccess GROUPED = new AssignmentAccess("grouped");
-	}
 }	// Assignment
 
 

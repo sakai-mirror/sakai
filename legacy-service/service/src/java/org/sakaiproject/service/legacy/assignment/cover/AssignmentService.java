@@ -24,7 +24,6 @@
 package org.sakaiproject.service.legacy.assignment.cover;
 
 import java.util.Set;
-import java.util.Vector;
 
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 
@@ -59,7 +58,6 @@ public class AssignmentService
 
 	public static java.lang.String SERVICE_NAME = org.sakaiproject.service.legacy.assignment.AssignmentService.SERVICE_NAME;
 	public static java.lang.String REFERENCE_ROOT = org.sakaiproject.service.legacy.assignment.AssignmentService.REFERENCE_ROOT;
-	public static java.lang.String SECURE_ALL_GROUPS = org.sakaiproject.service.legacy.assignment.AssignmentService.SECURE_ALL_GROUPS;
 	public static java.lang.String SECURE_ADD_ASSIGNMENT = org.sakaiproject.service.legacy.assignment.AssignmentService.SECURE_ADD_ASSIGNMENT;
 	public static java.lang.String SECURE_ADD_ASSIGNMENT_CONTENT = org.sakaiproject.service.legacy.assignment.AssignmentService.SECURE_ADD_ASSIGNMENT_CONTENT;
 	public static java.lang.String SECURE_ADD_ASSIGNMENT_SUBMISSION = org.sakaiproject.service.legacy.assignment.AssignmentService.SECURE_ADD_ASSIGNMENT_SUBMISSION;
@@ -78,7 +76,6 @@ public class AssignmentService
 	public static java.lang.String REF_TYPE_CONTENT = org.sakaiproject.service.legacy.assignment.AssignmentService.REF_TYPE_CONTENT;
 	public static java.lang.String REF_TYPE_GRADES = org.sakaiproject.service.legacy.assignment.AssignmentService.REF_TYPE_GRADES;
 	public static java.lang.String REF_TYPE_SUBMISSIONS = org.sakaiproject.service.legacy.assignment.AssignmentService.REF_TYPE_SUBMISSIONS;
-	public static java.lang.String REF_TYPE_SITE_GROUPS = org.sakaiproject.service.legacy.assignment.AssignmentService.REF_TYPE_SITE_GROUPS;
 
 	public static boolean allowAddAssignment(java.lang.String param0)
 	{
@@ -87,24 +84,6 @@ public class AssignmentService
 			return false;
 
 		return service.allowAddAssignment(param0);
-	}
-	
-	public static boolean allowAddSiteAssignment(java.lang.String param0)
-	{
-		org.sakaiproject.service.legacy.assignment.AssignmentService service = getInstance();
-		if (service == null)
-			return false;
-
-		return service.allowAddSiteAssignment(param0);
-	}
-	
-	public static java.util.Collection getGroupsAllowAddAssignment(java.lang.String param0)
-	{
-		org.sakaiproject.service.legacy.assignment.AssignmentService service = getInstance();
-		if (service == null)
-			return new Vector();
-
-		return service.getGroupsAllowAddAssignment(param0);
 	}
 
 	public static boolean allowGetAssignment(java.lang.String param0)

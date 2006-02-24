@@ -69,8 +69,8 @@
 	#if ($alertMessage)<div class="alertMessage" style="width:80%  !important">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end
 
 	<form name = "newAssignmentForm" action="#toolForm("AssignmentAction")" method="post" onsubmit="return true;">
-		<input type="hidden" name="assignmentId" value="$!assignment.Reference" />
-		<input type="hidden" name="assignmentContentId" value="$!assignment.ContentReference" />
+		<input type="hidden" name="assignmentId" value="" />
+		<input type="hidden" name="assignmentContentId" value="" />
 		<input type="hidden" name="eventSubmit_doAssignment_form" value="" />
 		<input type="hidden" name="option" id="option" value="" />
 		<input type="hidden" name="view" id="view" value="" />
@@ -394,85 +394,6 @@
 						$!tlang.getString('addtogradebook')
 					</label>
 				</p>
-			#end
-			## group/section support
-			#if ($allowAddSiteAssignment)
-				<p class="checkbox">
-					<input type="radio" name="range" id="site" value="site" #if($!range == "site")checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'none';" onkeypress="document.getElementById('groupTable').style.display = 'none';"/>
-					<label for="site">$tlang.getString("displayto.site")</label>
-				</p>	
-			#elseif ($allowAddAssignment)
-				#if ($!groups.size() >1)
-					<label for="$tlang.getString('groups')">$tlang.getString("groups")</label>
-				#else
-					<label for="$tlang.getString('group')">$tlang.getString("group")</label>
-				#end
-			#end
-			#if ($!groups)
-				## added group awareness
-				<p class="checkbox">
-					<input type="radio" name="range" id="groups" value="groups" #if($!range == "groups")checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'block';document.getElementById('groupTable').style.width = '80%';" onkeypress="document.getElementById('groupTable').style.display = 'block';" />
-					<label for="groups">$tlang.getString("displayto.selected")</label>
-				</p>	
-				#if($!range == "groups" || $!assignment.Access == $groupAccess)
-					#set ($listDisplay="block")
-				#else
-					#set ($listDisplay="none")
-				#end
-					<table id="groupTable" style="margin-left:3em;width:80%;display:$listDisplay" class="listHier lines" border="0" cellspacing="0" summary="Table contains list of groups. First will  contain checkboxes, second will contain the group name, third the group description. Header links can be used to sort.">
-					<caption class="skip" style="display:none">$tlang.getString("displayto.selected")</caption>
-						<tr>
-							<th id ="selectAllGroups" style="width:2em;padding-left:.4em">
-								<input type="checkbox" name="selectall" id="selectall" title="toggle select all" onclick="javascript:toggleSelectAll(this, 'selectedGroups')" onkeypress="javascript:toggleSelectAll(this, 'selectedGroups')" />
-							</th>
-					 		<th id ="groupname">
-								#if (!$sortedBy.equals("group_title"))
-									<a href="#" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='sortbygrouptitle';document.newAssignmentForm.submit();return false;" title ="Sort by group title">Title</a>
-								#else
-									#if ($sortedAsc.equals("true"))
-										<a href="#" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='sortbygrouptitle';document.newAssignmentForm.submit();return false;" title ="Sort by group title">Title <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group title ascending" /></a>
-									#else
-										<a href="#" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='sortbygrouptitle';document.newAssignmentForm.submit();return false;" title ="Sort by group title">Title <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group title descending"/></a>
-									#end
-								#end
-							</th>
-							<th id ="groupdescription">
-								#if (!$sortedBy.equals("group_description"))
-									<a href="#" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='sortbygroupdescription';document.newAssignmentForm.submit();return false;" title ="Sort by group description">Description</a>
-								#else
-									#if ($sortedAsc.equals("true"))
-										<a href="#" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='sortbygroupdescription';document.newAssignmentForm.submit();return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortascending.gif")" border="0" alt="Sort by group description ascending" /></a>
-									#else
-										<a href="#" onclick="javascript:document.newAssignmentForm.onsubmit();document.getElementById('option').value='sortbygroupdescription';document.newAssignmentForm.submit();return false;" title ="Sort by group description">Description <img src = "#imageLink("sakai/sortdescending.gif")" border="0" alt="Sort by group description descending"/></a>
-									#end
-								#end
-							</th>
-						</tr>
-						#foreach ($group in $!groups)
-							<tr>
-								<td headers="selected" style="padding-bottom:0;" style="width:2em">
-									#set($selected=false)
-									#foreach($aGroupRef in $assignmentGroups)
-										#set($aGroup = $!site.getGroup($!aGroupRef))
-										#if ($!group.Id == $!aGroup.Id)
-											#set($selected = true)
-										#end
-									#end
-									<input type="checkbox" name="selectedGroups" id="$group.Id" title="$group.Id" value="$group.Id" #if($selected) checked="checked"#end />
-								</td>
-								<td headers="name" style="padding-bottom:0;" class="checkbox">
-									<label for="$group.Id">
-										$group.Title
-									</label>	
-								</td>
-								<td headers="description" width="100%"> ##mozilla does not resize table children dynamically , so set here
-									#set($description = "")
-									#set($description = $group.Description)
-									$!description
-								</td>
-							</tr>
-						#end
-					</table>
 			#end
 			<h4>
 				$tlang.getString("gen.addres")
