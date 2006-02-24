@@ -39,11 +39,17 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
 
       if (ResourcesAction.MODE_ATTACHMENT_DONE.equals(sstate.getAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE))) {
          ToolSession toolSession = SessionManager.getCurrentToolSession();
-         List attachments = (List) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
 
-         if (attachments != null) {
-            toolSession.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS,
-                  EntityManager.newReferenceList(attachments));
+         if (sstate.getAttribute(ResourcesAction.STATE_HELPER_CANCELED_BY_USER) == null) {
+            List attachments = (List) sstate.getAttribute(ResourcesAction.STATE_ATTACHMENTS);
+
+            if (attachments != null) {
+               toolSession.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS,
+                     EntityManager.newReferenceList(attachments));
+            }
+            else if (sstate.getAttribute(ResourcesAction.STATE_EDIT_ID) == null) {
+               toolSession.setAttribute(FilePickerHelper.FILE_PICKER_CANCEL, "true");
+            }
          }
          else {
             toolSession.setAttribute(FilePickerHelper.FILE_PICKER_CANCEL, "true");
@@ -75,6 +81,7 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       sstate.removeAttribute(ResourcesAction.STATE_MODE);
       sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
       sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
+      sstate.removeAttribute(ResourcesAction.STATE_HELPER_CANCELED_BY_USER);
    }
 
    /**
