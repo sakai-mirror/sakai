@@ -629,6 +629,7 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		}
 	}
 
+	
 	public void setContent(String content) {
 		lazyLoadContentObject();
 		if (content == null)

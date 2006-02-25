@@ -57,6 +57,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.ListProxy;
+import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.RWikiCurrentObjectContentDaoImpl;
+import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.RWikiCurrentObjectDaoImpl;
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntityImpl;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiCurrentObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiPermissionsImpl;
@@ -634,7 +636,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService#createNewRWikiCurrentObject()
 	 */
 	public RWikiObject createNewRWikiCurrentObject() {
-		return new RWikiCurrentObjectImpl();
+//		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
+//		rwco.setRwikiObjectContentDao(c)
+		return cdao.createRWikiObject("dummy","dummy");
 	}
 
 	/*
@@ -745,7 +749,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 					if (lh != null) {
 						for (Iterator ih = lh.iterator(); ih.hasNext();) {
 							RWikiObject rwoh = (RWikiObject) ih.next();
-							RWikiEntity rwoeh = (RWikiEntity) getEntity(rwo);
+							RWikiEntity rwoeh = (RWikiEntity) getEntity(rwoh);
 							log.debug("Archiving " + rwoh.getName()
 									+ " version " + rwoh.getVersion());
 							rwoeh.toXml(doc, stack);
@@ -782,6 +786,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	public String merge(String siteId, Element root, String archivePath,
 			String fromSiteId, Map attachmentNames, Map userIdTrans,
 			Set userListAllowImport) {
+		log.info(" wiki Merge");
 		// TODO Permissions ?
 		// stolen :) from BaseContentService
 		// get the system name: FROM_WT, FROM_CT, FROM_SAKAI
@@ -797,6 +802,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
+		int 	nversions_reject = 0;
+		int npages = 0;
+		int nversions = 0;
+		int npages_fail = 0;
+		int npages_errors = 0;
 		try {
 			String defaultRealm = SiteService.getSite(siteId).getReference();
 
@@ -806,24 +816,28 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 			NodeList children = root.getChildNodes();
 			final int length = children.getLength();
+			log.info("Archive has "+length+" pages ");
 			for (int i = 0; i < length; i++) {
 				Node child = children.item(i);
-				if (child.getNodeType() != Node.ELEMENT_NODE)
+				if (child.getNodeType() != Node.ELEMENT_NODE) 
 					continue;
 				Element element = (Element) child;
 
 				try {
 
-					RWikiCurrentObjectImpl archiverwo = new RWikiCurrentObjectImpl();
+					RWikiCurrentObject archiverwo = cdao.createRWikiObject("dummy","dummy");
 					RWikiEntity rwe = (RWikiEntity) getEntity(archiverwo);
 					rwe.fromXml(element, defaultRealm);
+					log.info(" Merging "+archiverwo.getRevision()+":"+rwe.getReference());
 
 					// clear the ID to remove hibernate session issues and
 					// recreate
 					// a new id issues
 					archiverwo.setId(null);
+					
 
 					String pageName = archiverwo.getName();
+
 
 					if (exists(pageName, defaultRealm)) {
 						// page exists, add to history, if the version does not
@@ -831,16 +845,17 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 						RWikiObject rwo = getRWikiObject(pageName, defaultRealm);
 						if (archiverwo.getRevision().intValue() >= rwo
 								.getRevision().intValue()) {
+							nversions_reject++;
 							results
 									.append("Page ")
 									.append(rwo.getName())
 									.append(" already exists with revision ")
 									.append(rwo.getRevision())
-									.append(
-											" which is earlier than the revision form the archive"
-													+ " therefore I have rejected the merge from the archive,"
-													+ " please report this a bug to JIRA if you feel that"
-													+ " this functionality is required \n");
+									.append(" which is earlier than the revision from the archive ")
+									.append(archiverwo.getRevision())
+									.append(" therefore I have rejected the merge from the archive,")
+									.append(" please report this a bug to JIRA if you feel that")
+									.append(" this functionality is required \n");
 						} else {
 							RWikiHistoryObject rwho = getRWikiHistoryObject(
 									rwo, archiverwo.getRevision().intValue());
@@ -854,14 +869,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 								rwho = getRWikiHistoryObject(rwo, archiverwo
 										.getRevision().intValue());
-								results.append("Created ").append(
-										rwho.getName()).append(" revision ")
-										.append(rwho.getRevision()).append(
-												" with version ").append(
-												rwho.getVersion().getTime())
-										.append(" date ").append(
-												rwho.getVersion()).append("\n");
+								nversions++;
 							} else {
+								nversions_reject++;
 								results
 										.append("Page ")
 										.append(rwo.getName())
@@ -890,15 +900,30 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 						RWikiObject savedrwo = getRWikiObject(archiverwo
 								.getName(), archiverwo.getRealm());
-						results.append("Created ").append(savedrwo.getName())
-								.append(" revision ").append(
-										savedrwo.getRevision()).append(
-										" with version ").append(
-										savedrwo.getVersion().getTime())
-								.append(" date ").append(savedrwo.getVersion())
-								.append("\n");
+						if ( archiverwo.getSha1().equals(savedrwo.getSha1()) ){
+							npages++;
+						} else {
+							npages_errors++;
+							results.append("Created ").append(savedrwo.getName())
+							.append(" revision ").append(
+									savedrwo.getRevision()).append(
+									" with version ").append(
+									savedrwo.getVersion().getTime())
+							.append(" date ").append(savedrwo.getVersion())
+							.append("\n");
+							results.append(" WARNING: Check Sums do not match Archive Verions:")
+							.append(archiverwo.getSha1())
+							.append(" Merged Version:")
+							.append(savedrwo.getSha1())
+							.append("\nArchive Content:\n")
+							.append(archiverwo.getContent())
+							.append("\nSaved Content:\n")
+							.append(savedrwo.getContent())
+							.append("\n");
+						}
 					}
 				} catch (Exception ex) {
+					npages_fail++;
 					log.error("Failed to add page ", ex);
 					results.append("Failed to add ").append(
 							element.getAttribute("page-name")).append(
@@ -912,6 +937,18 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			results.append(" Problem locating Reference on site ").append(
 					siteId).append(" :").append(ex.getMessage()).append("\n");
 		}
+		results.append(" Wiki Merge Complete ")
+		.append(" Added ")
+		.append(npages)
+		.append(" pages with ")
+		.append(nversions)
+		.append(" revisions \nFound ")
+		.append(nversions_reject)
+		.append(" rejects, ")
+		.append(npages_fail)
+		.append(" failures, ")
+		.append(npages_errors)
+		.append(" errors\n ");
 		return results.toString();
 	}
 
