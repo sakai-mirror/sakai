@@ -112,7 +112,8 @@ public class BasicArchiveService
 		CalendarService.SERVICE_NAME,
 		DiscussionService.SERVICE_NAME,
 		MailArchiveService.SERVICE_NAME,
-		"org.sakaiproject.api.app.syllabus.SyllabusService"
+		"org.sakaiproject.api.app.syllabus.SyllabusService",
+		"uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"
 		};
 		
 	public String[] CT_tools_toImport = {};
