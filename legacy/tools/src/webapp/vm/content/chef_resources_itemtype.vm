@@ -97,11 +97,11 @@
 							value="$!{tag.value}" />
 					#elseif("$!tag.widget" == "$!ANYURI")
 						#set ($size = 0)
-						#if (!$tag.value.isEmpty())
+						#if (!$tag.values.isEmpty())
 							#set ($props = false)
-							#set ($size = $tag.value.size())
+							#set ($size = $tag.values.size())
 							<ul class="attachList">
-								#foreach ($attachment in $tag.value)
+								#foreach ($attachment in $tag.values)
 									#set ($props = $attachment.Properties)
 									#if (!$props)
 										#if ($size > 0) #set ($size = $size - 1) #end

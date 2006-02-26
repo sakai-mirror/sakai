@@ -4052,6 +4052,7 @@ public class ResourcesAction
 		// end up in main mode
 		popFromStack(state);
 		resetCurrentMode(state);
+		current_stack_frame = peekAtStack(state);
 		
 		String field = null;
 		
@@ -4075,13 +4076,14 @@ public class ResourcesAction
 			}
 			
 			// we are trying to attach a link to a form field and there is at least one attachment
-			new_items = (List) current_stack_frame.get(ResourcesAction.STATE_HELPER_NEW_ITEMS);
 			if(new_items == null)
 			{
-				new_items = (List) state.getAttribute(ResourcesAction.STATE_HELPER_NEW_ITEMS);
-				
+				new_items = (List) current_stack_frame.get(ResourcesAction.STATE_HELPER_NEW_ITEMS);
+				if(new_items == null)
+				{
+					new_items = (List) state.getAttribute(ResourcesAction.STATE_HELPER_NEW_ITEMS);
+				}
 			}
-			current_stack_frame = peekAtStack(state);
 			EditItem edit_item = null;
 			List edit_items = (List) current_stack_frame.get(ResourcesAction.STATE_STACK_CREATE_ITEMS);
 			if(edit_items == null)
@@ -4095,7 +4097,7 @@ public class ResourcesAction
 			if(edit_item != null)
 			{
 				Reference ref = (Reference) attachments.get(0);
-				edit_item.setValue(fieldname, index, ref);
+				edit_item.setPropertyValue(fieldname, index, ref);
 			}
 		}
 	}
@@ -10599,6 +10601,8 @@ public class ResourcesAction
 		{
 			return m_properties;
 		}
+		
+		
 
 		/**
 		 * Replace current values of Structured Artifact with new values.
@@ -11054,6 +11058,71 @@ public class ResourcesAction
 				// return null
 			}
 			return rv;
+			
+		}
+		
+		public Object getPropertyValue(String name)
+		{
+			return getPropertyValue(name, 0);
+		}
+		
+		/**
+		 * Access a particular value in a Structured Artifact, as identified by the parameter "name".  This
+		 * implementation of the method assumes that the name is a series of String identifiers delimited 
+		 * by the ResourcesAction.ResourcesMetadata.DOT String. 
+		 * @param name The delimited identifier for the item.
+		 * @return The value identified by the name, or null if the name does not identify a valid item.
+		 */
+		public Object getPropertyValue(String name, int index)
+		{
+			String[] names = name.split(ResourcesMetadata.DOT);
+			Object rv = null;
+			if(m_properties == null)
+			{
+				m_properties = new Vector();
+			}
+			Iterator it = m_properties.iterator();
+			while(rv == null && it.hasNext())
+			{
+				ResourcesMetadata prop = (ResourcesMetadata) it.next();
+				if(name.equals(prop.getDottedname()))
+				{
+					rv = prop.getValue(index);
+				}
+			}
+			return rv;
+			
+		}
+
+		public void setPropertyValue(String name, Object value)
+		{
+			setPropertyValue(name, 0, value);
+		}
+
+		/**
+		 * Access a particular value in a Structured Artifact, as identified by the parameter "name".  This
+		 * implementation of the method assumes that the name is a series of String identifiers delimited 
+		 * by the ResourcesAction.ResourcesMetadata.DOT String. 
+		 * @param name The delimited identifier for the item.
+		 * @return The value identified by the name, or null if the name does not identify a valid item.
+		 */
+		public void setPropertyValue(String name, int index, Object value)
+		{
+			if(m_properties == null)
+			{
+				m_properties = new Vector();
+			}
+			boolean found = false;
+			Iterator it = m_properties.iterator();
+			while(!found && it.hasNext())
+			{
+				ResourcesMetadata prop = (ResourcesMetadata) it.next();
+				if(name.equals(prop.getDottedname()))
+				{
+					found = true;
+					prop.setValue(index, value);
+				}
+			}
 			
 		}
 		
