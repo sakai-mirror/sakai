@@ -754,6 +754,7 @@ public class ResourcesMetadata
 			this.m_nested.add(new ResourcesMetadata(child));
 		}
 		m_container = other.m_container;
+		m_length = other.m_length;
 		
 	}
 	

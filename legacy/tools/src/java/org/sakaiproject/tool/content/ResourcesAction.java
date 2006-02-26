@@ -2765,7 +2765,7 @@ public class ResourcesAction
 				
 		// put a copy of the attachments into the state
 		
-		state.setAttribute(ResourcesAction.STATE_ATTACHMENTS, EntityManager.newReferenceList());
+		// state.setAttribute(ResourcesAction.STATE_ATTACHMENTS, EntityManager.newReferenceList());
 		// whether there is already an attachment
 		/*
 		if (attachments.size() > 0)
@@ -4049,6 +4049,10 @@ public class ResourcesAction
 		cleanupState(state);
 		state.setAttribute(STATE_ATTACHMENTS, attachments);
 
+		// end up in main mode
+		popFromStack(state);
+		resetCurrentMode(state);
+		
 		String field = null;
 		
 		// if there is at least one attachment
@@ -4058,10 +4062,6 @@ public class ResourcesAction
 			state.setAttribute(AttachmentAction.STATE_HAS_ATTACHMENT_BEFORE, Boolean.TRUE);
 			field = (String) current_stack_frame.get(STATE_ATTACH_FORM_FIELD);
 		}
-		
-		// end up in main mode
-		popFromStack(state);
-		resetCurrentMode(state);
 		
 		if(field != null)
 		{
