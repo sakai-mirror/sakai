@@ -17,7 +17,7 @@
             <body>
                 <div id="rwiki_container">
                     <div class="portletBody">
-                        <div id="rwiki_content">
+                        <div id="rwiki_content_nosidebar">
                             <h3><xsl:value-of select="/entity-service/entity/properties/property[@name='_title']" /></h3>
                             <div class="rwikiRenderBody">
                                 <div class="rwikiRenderedContent">
