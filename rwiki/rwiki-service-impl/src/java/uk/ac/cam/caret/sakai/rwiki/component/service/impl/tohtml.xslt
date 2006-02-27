@@ -12,8 +12,6 @@
                 <script type="text/javascript" src="/sakai-rwiki/scripts/logger.js"> </script>
                 <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet"
                     media="all"/>
-                <link href="/library/skin/camstyle/tool.css" type="text/css" rel="stylesheet"
-                    media="all"/>
                 <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"/>
             </head>
             <body>
@@ -23,7 +21,7 @@
                             <h3><xsl:value-of select="/entity-service/entity/properties/property[@name='_title']" /></h3>
                             <div class="rwikiRenderBody">
                                 <div class="rwikiRenderedContent">
-                                    <xsl:copy-of select="/entity-service/entity/rendered-content/content/rendered"/>
+				  <xsl:copy-of select="/entity-service/entity/rendered-content/content/rendered/node()"/>
                                 </div>
                             </div>
                         </div>
