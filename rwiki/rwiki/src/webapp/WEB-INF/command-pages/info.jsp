@@ -792,7 +792,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 			  <ul id="feedsLinks">
 			  <li>
 		    	      <jsp:element name="a"><!--
-		--><jsp:attribute name="href"><c:out value="${viewBean.publicViewUrl}"/></jsp:attribute><!--
+		--><jsp:attribute name="href"><c:out value="${realmBean.publicViewUrl}"/></jsp:attribute><!--
 		--><jsp:attribute name="target">publicview</jsp:attribute><!--
 		-->Printer Friendly<!--
 		--></jsp:element>
