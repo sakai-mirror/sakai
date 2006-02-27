@@ -49,6 +49,7 @@ public class ImageMacro extends BaseMacro {
 			"3,ext: (optional) ignored at the moment",
 			"4,class: (optional) css class applied to the image",
 			"5,target: (optional) Target window",
+			"6,title: (optional) Title the image, (will default to the same value as alt)",
 			"Remember if using positional parameters, you must include dummies for the optional parameters"
 		};
 	private static String description = "Places an Image in the page";
@@ -83,10 +84,11 @@ public class ImageMacro extends BaseMacro {
 		
 		if (params.getLength() > 0) {
 			String img = params.get("img");
-			String alt = null, ext = null, cssclass = null, target = null;
+			String alt = null, ext = null, cssclass = null, target = null, title = null;
 			boolean qualifiedParams = img != null;
 			if (qualifiedParams) {
 				alt = params.get("alt");
+				title = params.get("title");
 				ext = params.get("ext");
 				cssclass = params.get("class");
 				target = params.get("target");
@@ -96,10 +98,14 @@ public class ImageMacro extends BaseMacro {
 				ext = params.get(2);
 				cssclass = params.get(3);
 				target = params.get(4);
+				title = params.get(5);
+			}
+			
+			if (title == null && alt != null) {
+				title = alt;
 			}
 			
 			String link = params.get("link");
-            
             
 			if (link != null) {
                 // check url for sakai:// or worksite://
@@ -140,6 +146,9 @@ public class ImageMacro extends BaseMacro {
 			}
             if (alt != null) {
                 writer.write("alt=\""+ Encoder.escape(alt) +"\" ");
+            }
+            if (title != null) {
+            	writer.write("title=\"" + Encoder.escape(title) + "\" ");
             }
 			writer.write("border=\"0\"/>");
 			
