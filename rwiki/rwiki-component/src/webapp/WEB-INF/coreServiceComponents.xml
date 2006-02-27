@@ -144,7 +144,7 @@
     <property name="authZPrefix" ><value>/wiki</value></property>
     <property name="anchorLinkFormat" ><value>/access/wiki{0}.html#{1}</value></property>
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
-    <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
+    <property name="hrefTagFormat" ><value>&lt;a href="{0}" target="_blank" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
     <property name="feedFormat"><value>&lt;a href="/access{0}html" &gt;&lt;img src="/library/image/sakai/html.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
