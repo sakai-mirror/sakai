@@ -139,7 +139,7 @@ public class ImageMacro extends BaseMacro {
 				writer.write("\" ");
 			}
             if (alt != null) {
-                writer.write("alt=\""+ Encoder.escape(alt) +"\"");
+                writer.write("alt=\""+ Encoder.escape(alt) +"\" ");
             }
 			writer.write("border=\"0\"/>");
 			
