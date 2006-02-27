@@ -219,13 +219,15 @@ public class SakaiSecurity implements SecurityService
 		{
 			user = UserDirectoryService.getCurrentUser();
 		}
-		
+
 		// make sure we have complete parameters
 		if (user == null || function == null || entityRef == null)
 		{
 			m_logger.warn(this + ".unlock(): null: " + user + " " + function + " " + entityRef);
 			return false;
 		}
+
+		System.out.println(function + "@" + entityRef + "@" + user.getId());
 
 		// if super, grant
 		if (isSuperUser(user))

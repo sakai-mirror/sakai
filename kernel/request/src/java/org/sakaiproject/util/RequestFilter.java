@@ -862,16 +862,21 @@ public class RequestFilter implements Filter
 			res.addCookie(c);
 		}
 
-		// if we have a session and had no cookie, or the cookie was to another session id, set the cookie
-		if ((s != null) && ((c == null) || (!c.getValue().equals(s.getId()))))
+		// if we have a session and had no cookie,
+		// or the cookie was to another session id, set the cookie
+		if (s != null)
 		{
+			// the cookie value we need to use
 			sessionId = s.getId() + DOT + suffix;
 
-			// set the cookie
-			c = new Cookie(SESSION_COOKIE, sessionId);
-			c.setPath("/");
-			c.setMaxAge(-1);
-			res.addCookie(c);
+			if ((c == null) || (!c.getValue().equals(sessionId)))
+			{
+				// set the cookie
+				c = new Cookie(SESSION_COOKIE, sessionId);
+				c.setPath("/");
+				c.setMaxAge(-1);
+				res.addCookie(c);
+			}
 		}
 
 		return s;
