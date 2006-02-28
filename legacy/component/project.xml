@@ -104,15 +104,21 @@
 			<version>${sakai.version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-util-i18n</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+		
 		<!-- For integration with the gradebook -->
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-gradebook-service</artifactId>
-      <version>${sakai.version}</version>
-      <properties>
-       <deploy.target>shared</deploy.target>
-      </properties>
-    </dependency>
+	    <dependency>
+	      <groupId>sakaiproject</groupId>
+	      <artifactId>sakai-gradebook-service</artifactId>
+	      <version>${sakai.version}</version>
+	      <properties>
+	       <deploy.target>shared</deploy.target>
+	      </properties>
+	    </dependency>
 
 		<dependency>
 			<groupId>commons-pool</groupId>

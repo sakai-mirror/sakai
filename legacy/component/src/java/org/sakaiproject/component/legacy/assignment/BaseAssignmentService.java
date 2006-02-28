@@ -64,6 +64,7 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
 import org.sakaiproject.service.framework.memory.CacheRefresher;
 import org.sakaiproject.service.framework.memory.MemoryService;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.assignment.Assignment;
 import org.sakaiproject.service.legacy.assignment.AssignmentContent;
@@ -99,6 +100,7 @@ import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.Blob;
 import org.sakaiproject.util.java.EmptyIterator;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.resource.BaseResourcePropertiesEdit;
 import org.sakaiproject.util.storage.StorageUser;
@@ -120,6 +122,9 @@ import org.w3c.dom.NodeList;
 public abstract class BaseAssignmentService 
 	implements AssignmentService
 {
+	/** the resource bundle */
+	private static ResourceLoader rb = new ResourceLoader("assignment");
+	
 	/** A Storage object for persistent storage of Assignments. */
 	protected AssignmentStorage m_assignmentStorage = null;
 
@@ -635,10 +640,6 @@ public abstract class BaseAssignmentService
 		if(m_logger.isDebugEnabled())
 			m_logger.debug("ASSIGNMENT : BASE SERVICE : ENTERING ADD DUPLICATE ASSIGNMENT WITH ID : " + assignmentReference);
 
-		Vector tempVector = new Vector();
-		String tempString = null;
-		Reference tempRef = null;
-		Reference newRef = null;
 		AssignmentEdit retVal = null;
 		AssignmentContentEdit newContent = null;
 
@@ -1044,8 +1045,6 @@ public abstract class BaseAssignmentService
 		AssignmentContentEdit retVal = null;
 		AssignmentContent existingContent = null;
 		List tempVector = null;
-		String tempString = null;
-		String newContentId = null;
 		Reference tempRef = null;
 		Reference newRef = null;
 
@@ -1753,7 +1752,6 @@ public abstract class BaseAssignmentService
 		Assignment tempAssignment = null;
 		Vector retVal = new Vector();
 		List allAssignments = null;
-		String aGroup = null;
 
 		if(context != null)
 		{
@@ -1795,7 +1793,6 @@ public abstract class BaseAssignmentService
 		//m_logger.info("ASSIGNMENT : BASE SERVICE : GET SUBMISSION(assignmentRef, User) : REF : " + assignmentReference);
 		AssignmentSubmission retVal = null;
 		AssignmentSubmission sub = null;
-		String subString = null;
 		List submitters = null;
 		String aUserId = null;
 
@@ -2218,16 +2215,44 @@ public abstract class BaseAssignmentService
 		String typeGradesString = new String(REF_TYPE_GRADES + Entity.SEPARATOR);
 		String context = ref.substring(ref.indexOf(typeGradesString) + typeGradesString.length());
 		
+		//get site title for display purpose
+		String siteTitle = "";
+		try
+		{
+			Site s = SiteService.getSite(context);
+			siteTitle = s.getTitle();
+		}
+		catch (Exception e)
+		{
+			// ignore exception
+		}
+		
 		if (allowGradeSubmission(context))
 		{
 			short rowNum = 0;
 			HSSFWorkbook wb = new HSSFWorkbook();
-			HSSFSheet sheet = wb.createSheet("sheet 1");
+			HSSFSheet sheet = wb.createSheet(siteTitle);
 	
 			// Create a row and put some cells in it. Rows are 0 based.
 			HSSFRow row = sheet.createRow(rowNum++);
-	
-			row.createCell((short)0).setCellValue("Assignment Submission Excel File for group ");
+			
+			row.createCell((short)0).setCellValue(rb.getString("download.spreadsheet.title"));
+			
+			// empty line
+			row = sheet.createRow(rowNum++);
+			row.createCell((short)0).setCellValue("");
+			
+			// site title
+			row = sheet.createRow(rowNum++);
+			row.createCell((short)0).setCellValue(rb.getString("download.spreadsheet.site") + siteTitle);
+			
+			// download time
+			row = sheet.createRow(rowNum++);
+			row.createCell((short)0).setCellValue(rb.getString("download.spreadsheet.date") + TimeService.newTime().toStringLocalFull());
+			
+			// empty line
+			row = sheet.createRow(rowNum++);
+			row.createCell((short)0).setCellValue("");
 	
 			// the bold font
 			HSSFFont font = wb.createFont();
@@ -2236,13 +2261,20 @@ public abstract class BaseAssignmentService
 			// the cell style with bold font
 			HSSFCellStyle style = wb.createCellStyle();
 			style.setFont(font);
-	
+			
 			// set up the header cells
 			row = sheet.createRow(rowNum++);
 			short cellNum = 0;
+			
+			// user enterprise id column
 			HSSFCell cell = row.createCell(cellNum++);
 			cell.setCellStyle(style);
-			cell.setCellValue("Name");
+			cell.setCellValue(rb.getString("download.spreadsheet.column.userid"));
+			
+			// user name column
+			cell = row.createCell(cellNum++);
+			cell.setCellStyle(style);
+			cell.setCellValue(rb.getString("download.spreadsheet.column.name"));
 			
 			Iterator assignments = getAssignmentsForContext(context);
 			Vector assignmentTypeVector = new Vector();
@@ -2297,6 +2329,10 @@ public abstract class BaseAssignmentService
 				row = sheet.createRow(rowNum++);
 				cellNum = 0;
 				member = (User) it.next();
+				
+				//show user's enterprise id
+				row.createCell(cellNum++).setCellValue(member.getEid());
+				
 				// show user's name
 				row.createCell(cellNum++).setCellValue(member.getSortName());
 	
@@ -3451,13 +3487,10 @@ public abstract class BaseAssignmentService
 			m_properties = new BaseResourcePropertiesEdit();
 
 			int numAttributes = 0;
-			String bool = null;
 			String intString = null;
 			String attributeString = null;
 			String tempString = null;
-			Reference tempReference = null;
-			AssignmentContent tempContent = null;
-
+			
 			m_id  = el.getAttribute("id");
 			if(m_logger.isDebugEnabled())
 				m_logger.debug("ASSIGNMENT : BASE SERVICE : BASE ASSIGNMENT : STORAGE CONSTRUCTOR : ASSIGNMENT ID : " + m_id);
@@ -3557,7 +3590,6 @@ public abstract class BaseAssignmentService
 			String numItemsString = null;
 			String attributeString = null;
 			String itemString = null;
-			Reference tempReference = null;
 			assignment.setAttribute("id", m_id);
 			assignment.setAttribute("title", m_title);
 			assignment.setAttribute("section", m_section);
@@ -4222,7 +4254,6 @@ public abstract class BaseAssignmentService
 		public BaseAssignmentContent(Element el)
 		{
 			int numAttributes = 0;
-			String bool = null;
 			String intString = null;
 			String attributeString = null;
 			String tempString = null;
@@ -5239,7 +5270,6 @@ public abstract class BaseAssignmentService
 		public BaseAssignmentSubmission(Element el)
 		{
 			int numAttributes = 0;
-			String bool = null;
 			String intString = null;
 			String attributeString = null;
 			String tempString = null;
@@ -5263,7 +5293,7 @@ public abstract class BaseAssignmentService
 				{
 					try
 					{
-						int test = Integer.parseInt(grade);
+						Integer.parseInt(grade);
 						// for the grades in points, multiple those by 10
 						grade = grade + "0";
 					}
