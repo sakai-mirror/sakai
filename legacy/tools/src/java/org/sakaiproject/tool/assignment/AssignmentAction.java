@@ -4229,11 +4229,12 @@ extends PagedResourceActionII
 		Vector ids = (Vector) state.getAttribute (DELETE_ASSIGNMENT_IDS);
 		for (int i=0; i<ids.size (); i++)
 		{
+			
+			String assignmentId = (String) ids.get (i);
 			try
 			{
-				AssignmentEdit aEdit = AssignmentService.editAssignment((String) ids.get (i));
+				AssignmentEdit aEdit = AssignmentService.editAssignment(assignmentId);
 				ResourcePropertiesEdit pEdit = aEdit.getPropertiesEdit();
-				
 				String title = aEdit.getTitle();
 				
 				// remove releted event if there is one
@@ -4302,10 +4303,25 @@ extends PagedResourceActionII
 					}					
 				}	// if-else
 				
-				// remove the assignment by marking the remove status property true
-				pEdit.addProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED, Boolean.TRUE.toString());
-
-				AssignmentService.commitEdit (aEdit);
+				if (!AssignmentService.getSubmissions(aEdit).hasNext())
+				{
+					// there is no submission to this assignment yet, delete the assignment record completely
+					try
+					{
+						AssignmentService.removeAssignment (aEdit);
+					}
+					catch (PermissionException e)
+					{
+						addAlert(state, rb.getString("youarenot11") + " " + aEdit.getTitle () + ". ");
+					}
+				}
+				else
+				{
+					// remove the assignment by marking the remove status property true
+					pEdit.addProperty(ResourceProperties.PROP_ASSIGNMENT_DELETED, Boolean.TRUE.toString());
+	
+					AssignmentService.commitEdit (aEdit);
+				}
 				
 				// remove from Gradebook
 				integrateGradebook(state, (String) ids.get (i), "remove", null, null);
