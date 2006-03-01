@@ -8024,17 +8024,21 @@ public class SiteAction extends PagedResourceActionII
 					String short_description = StringUtil.trimToNull(params.getString("short_description"));
 					state.setAttribute(FORM_SITEINFO_SHORT_DESCRIPTION, short_description);
 						
-					String skin = StringUtil.trimToNull(params.getString("skin"));		
-					state.setAttribute(FORM_SITEINFO_SKIN, skin);
-					
-					String icon = StringUtil.trimToNull(params.getString("icon"));		
-					if (icon != null)
+					String skin = params.getString("skin");
+					if (skin != null)
 					{
-						state.setAttribute(FORM_SITEINFO_ICON_URL, icon);
-					}
-					else
-					{
-						state.removeAttribute(FORM_SITEINFO_ICON_URL);
+						// if there is a skin input
+						skin = StringUtil.trimToNull(skin);
+						state.setAttribute(FORM_SITEINFO_SKIN, skin);
+						String icon = StringUtil.trimToNull(params.getString("icon"));		
+						if (icon != null)
+						{
+							state.setAttribute(FORM_SITEINFO_ICON_URL, icon);
+						}
+						else
+						{
+							state.removeAttribute(FORM_SITEINFO_ICON_URL);
+						}
 					}
 					
 					// site contact information
