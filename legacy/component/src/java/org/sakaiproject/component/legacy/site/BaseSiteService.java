@@ -693,9 +693,14 @@ public abstract class BaseSiteService implements SiteService, StorageUser
 	public void save(Site site) throws IdUnusedException, PermissionException
 	{
 		if (site.getId() == null) throw new IdUnusedException("<null>");
+		
+		String siteRef = site.getReference();
 
-		// check security (throws if not permitted)
-		unlock(SECURE_UPDATE_SITE, site.getReference());
+		if (!unlockCheck(SECURE_UPDATE_GROUP_MEMBERSHIP, siteRef) && !unlockCheck(SECURE_UPDATE_SITE_MEMBERSHIP, siteRef))
+		{
+			// check security (throws if not permitted)
+			unlock(SECURE_UPDATE_SITE, siteRef);
+		}
 
 		// check for existance
 		if (!m_storage.check(site.getId()))

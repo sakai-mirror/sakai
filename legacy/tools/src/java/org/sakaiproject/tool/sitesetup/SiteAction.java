@@ -1459,10 +1459,16 @@ public class SiteAction extends PagedResourceActionII
 						context.put("siteCreationDate", creationTime.toStringLocalFull());
 					}
 					boolean allowUpdateSite = SiteService.allowUpdateSite(siteId);
+					context.put("allowUpdate", Boolean.valueOf(allowUpdateSite));
+					
+					boolean allowUpdateGroupMembership = SiteService.allowUpdateGroupMembership(siteId);
+					context.put("allowUpdateGroupMembership", Boolean.valueOf(allowUpdateGroupMembership));
+					
+					boolean allowUpdateSiteMembership = SiteService.allowUpdateSiteMembership(siteId);
+					context.put("allowUpdateSiteMembership", Boolean.valueOf(allowUpdateSiteMembership));
+					
 					if (allowUpdateSite)
 					{	
-						// instructor's view
-						context.put("allowUpdate", Boolean.TRUE);
 						// top menu bar
 						Menu b = new Menu(portlet, data, (String) state.getAttribute(STATE_ACTION));
 						
@@ -1523,11 +1529,33 @@ public class SiteAction extends PagedResourceActionII
 						
 						context.put("menu", b);
 					}
-					else
+					
+					if (allowUpdateGroupMembership)
 					{
-						// student's view
-						context.put("allowUpate", Boolean.FALSE);
+						// show Manage Groups menu
+						Menu b = new Menu(portlet, data, (String) state.getAttribute(STATE_ACTION));
+						if (!isMyWorkspace
+								&& (ServerConfigurationService.getString("wsetup.group.support") == "" 
+									|| ServerConfigurationService.getString("wsetup.group.support").equalsIgnoreCase(Boolean.TRUE.toString())))
+						{
+							// show the group toolbar unless configured to not support group
+							b.add( new MenuEntry(rb.getString("java.group"), "doMenu_group"));
+						}
+						context.put("menu", b);
 					}
+					
+					if (allowUpdateSiteMembership)
+					{
+						// show add participant menu
+						Menu b = new Menu(portlet, data, (String) state.getAttribute(STATE_ACTION));
+						if (!isMyWorkspace)
+						{
+							// show the Add Participant menu
+							b.add( new MenuEntry(rb.getString("java.addp"), "doMenu_siteInfo_addParticipant"));
+						}
+						context.put("menu", b);
+					}
+					
 					if (((String) state.getAttribute(STATE_SITE_MODE)).equalsIgnoreCase(SITE_MODE_SITESETUP))
 					{
 						// editing from worksite setup tool
@@ -1556,7 +1584,7 @@ public class SiteAction extends PagedResourceActionII
 						context.put("viewRoster", Boolean.FALSE);
 					}
 					//set participant list
-					if (allowUpdateSite || allowViewRoster)
+					if (allowUpdateSite || allowViewRoster || allowUpdateSiteMembership)
 					{
 						List participants = new Vector(); 
 						participants = getParticipantList(state);
@@ -2822,7 +2850,7 @@ public class SiteAction extends PagedResourceActionII
     		 */
     		context.put("site", site);
     		bar = new Menu(portlet, data, (String) state.getAttribute(STATE_ACTION));
-		if (SiteService.allowUpdateSite(site.getId()))
+		if (SiteService.allowUpdateSite(site.getId()) || SiteService.allowUpdateGroupMembership(site.getId()))
 		{
 			bar.add( new MenuEntry(rb.getString("java.new"), "doGroup_new"));
 		}
@@ -7444,7 +7472,7 @@ public class SiteAction extends PagedResourceActionII
 		ParameterParser params = data.getParameters ();
 		Site s = getStateSite(state);
 		String realmId = SiteService.siteReference(s.getId());
-		if (AuthzGroupService.allowUpdate(realmId))
+		if (AuthzGroupService.allowUpdate(realmId) || SiteService.allowUpdateSiteMembership(s.getId()))
 		{
 			try
 			{
@@ -10832,7 +10860,7 @@ public class SiteAction extends PagedResourceActionII
 			User user = UserDirectoryService.getUser(id);
 			Site sEdit = getStateSite(state);
 			String realmId = SiteService.siteReference(sEdit.getId());
-			if (AuthzGroupService.allowUpdate(realmId))
+			if (AuthzGroupService.allowUpdate(realmId) || SiteService.allowUpdateSiteMembership(sEdit.getId()))
 			{
 				try
 				{

@@ -177,7 +177,7 @@
 			</tr>
 		#end
 	</table>	
-	#if ($!allowUpdate || $!viewRoster)
+	#if ($!allowUpdate || $allowUpdateSiteMembership || $!viewRoster)
 		<h4>		
 			$validator.escapeHtml($!siteTitle) $tlang.getString("sitegen.siteinfolist.part") (# $!participantListSize)
 		</h4>
@@ -302,7 +302,7 @@
 							#end
 						</a>	
 					</th>
-					#if ($allowUpdate)
+					#if ($allowUpdate || $allowUpdateSiteMembership)
 						#if ($!activeInactiveUser && !$!isMyWorkspace)
 							<th id="status">
 								$tlang.getString("sitegen.siteinfolist.status")
@@ -349,7 +349,7 @@
 							#set($uRole = $participant.getRole())
 							#if ($!isMyWorkspace)
 								$uRole
-							#elseif ($allowUpdate)
+							#elseif ($allowUpdate || $allowUpdateSiteMembership)
 								<label class="skip" for="role$uniqname">Select role for $uniqname</label>
 								<select id="role$uniqname" name="role$uniqname">
 									#foreach($r in $roles)
@@ -366,7 +366,7 @@
 								$!uRole
 							#end
 						</td>
-						#if ($allowUpdate)
+						#if ($allowUpdate || $allowUpdateSiteMembership)
 							#if ($!activeInactiveUser && !$!isMyWorkspace)
 								<td>
 								 #set($grant="")
