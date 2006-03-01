@@ -52,18 +52,18 @@ FCKConfig.FormatOutput		= true ;
 FCKConfig.FormatIndentator	= '    ' ;
 
 FCKConfig.ToolbarSets["Default"] = [
-	['Source','-','Preview'],
-	['Cut','Copy','Paste','PasteText','PasteWord','-','SpellCheck'],
-	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
-	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'],
-	['OrderedList','UnorderedList','-','Outdent','Indent'],
-	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
-	['Link','Unlink','Anchor'],
-	['SpecialChar'],
-	'/',
-	['Style','FontFormat','FontName','FontSize'],
-	['TextColor','BGColor'],
-	['About']
+    ['Source','-','Preview'],
+    ['Cut','Copy','Paste','PasteText','PasteWord','-','SpellCheck'],
+    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+    ['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'],
+    ['OrderedList','UnorderedList','-','Outdent','Indent'],
+    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
+    ['Link','Unlink','Anchor'],
+    ['SpecialChar'], ['Style'], 
+    '/',
+    ['FontFormat','FontName','FontSize'],
+    ['TextColor','BGColor'],
+    ['About']
 ] ;
 
 FCKConfig.ToolbarSets["Basic"] = [
