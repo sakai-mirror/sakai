@@ -527,6 +527,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       // register functions
       FunctionManager.registerFunction(SharedFunctionConstants.CREATE_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.EDIT_ARTIFACT_DEF);
+      FunctionManager.registerFunction(SharedFunctionConstants.EXPORT_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.PUBLISH_ARTIFACT_DEF);
       FunctionManager.registerFunction(SharedFunctionConstants.SUGGEST_GLOBAL_PUBLISH_ARTIFACT_DEF);
       updateSchemaHash();

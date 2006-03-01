@@ -59,8 +59,9 @@
          <c:out value="${home.type.description}" />
          <c:if test="${home.modifiable}">
             <div class="itemAction">
-                <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />"><fmt:message key="table_action_edit"/></a> |
-                <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=structuredArtifactDefinitionManager&formId=<c:out value="${home.id.value}" />/<c:out value="${home.type.description}" /> Form.zip"><fmt:message key="table_action_export"/></a>
+                <c:if test="${can.edit}"><a href="<osp:url value="/editStructuredArtifactDefinition.osp"/>&id=<c:out value="${home.id}" />"><fmt:message key="table_action_edit"/></a></c:if>
+                
+                <c:if test="${can.export}">| <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=structuredArtifactDefinitionManager&formId=<c:out value="${home.id.value}" />/<c:out value="${home.type.description}" /> Form.zip"><fmt:message key="table_action_export"/></a>
                 </c:if>
                 <c:if test="${!isGlobal && can.publish && home.canPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=site_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_publish"/></a></c:if>
                 <c:if test="${isGlobal && can.publish &&  home.canGlobalPublish}"> | <a href="<osp:url value="confirmSADPublish.osp"/>&action=global_publish&id=<c:out value="${home.id}" />"><fmt:message key="table_action_globalPublish"/></a></c:if>
