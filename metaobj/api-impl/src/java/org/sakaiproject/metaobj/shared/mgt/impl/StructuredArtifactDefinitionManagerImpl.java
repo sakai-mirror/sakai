@@ -560,7 +560,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public void packageFormForExport(String formId, OutputStream os)
          throws IOException {
-      getAuthzManager().checkPermission(SharedFunctionConstants.EDIT_ARTIFACT_DEF,
+      getAuthzManager().checkPermission(SharedFunctionConstants.EXPORT_ARTIFACT_DEF,
             getToolId());
 
       CheckedOutputStream checksum = new CheckedOutputStream(os,
