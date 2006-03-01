@@ -57,7 +57,8 @@
 		</p>
 	#else
 	<div>
-		#if ($allowAddAssignment && !$!view.equals($!tlang.getString('gen.stuvie')))
+		#if ($allowAddAssignment)
+			#if (!$!view.equals($!tlang.getString('gen.stuvie')))
 			<div class="leftNav">
 				<form name="viewForm" class="inlineForm" method="post" action="#toolForm("AssignmentAction")">
 					<input type="hidden" name="eventSubmit_doView" value="view" />
@@ -70,6 +71,15 @@
 					</select>
 				</form>
 			</div>
+			#else
+				<p class="instruction">
+				$tlang.getString("stulistassig.selanass1")
+			</p>
+			#end
+		#else
+			<p class="instruction">
+				$tlang.getString("stulistassig.selanass")
+			</p>
 		#end
 		#if ($!allowRead)
 		<div class="rightNav">
@@ -317,16 +327,6 @@
 										#if ($!deleted.equalsIgnoreCase("true"))
 											<span class="highlight">$tlang.getString("stulistassig.asshasbee1")</span>
 										#end
-										<div class="itemAction">
-											#set($prevAction=false)		
-											#if ($service.allowUpdateAssignment($assignmentReference))
-												<a href="#toolLinkParam("$action" "doEdit_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("revise")</a>
-												#set($prevAction=true)
-											#end
-											#if (!$assignment.draft && $allowGradeSubmission)
-												#if($prevAction) | #end<a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>
-											#end
-										</div>
 									#end
 								</h4>
 							</td>
