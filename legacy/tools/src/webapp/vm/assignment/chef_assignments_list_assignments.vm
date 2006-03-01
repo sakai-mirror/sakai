@@ -5,26 +5,46 @@
 </script>
 <div class="portletBody">
 	<div class="navIntraTool">
+		#set($prevAction=false)
 		#if ($allowAddAssignment)
+			#set($prevAction=true)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
-			#if (!$!view.equals($!tlang.getString('gen.liofass')))
-				| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
-			#else
-				| <span style="margin:.5em">$!tlang.getString("gen.liofass")</span>
-			#end
+		#end
+		#if ($prevAction)
+			 | 
+		#else
+			#set($prevAction=true)
+		#end
+		#if (!$!view.equals($!tlang.getString('gen.liofass')))
+				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
+		#else
+				<span style="margin:.5em">$!tlang.getString("gen.liofass")</span>
 		#end
 		#if ($withGrade && $!allowGradeSubmission)
-			| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>
+			#if ($prevAction)
+			 | 
+			#else
+				#set($prevAction=true)
+			#end
+			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>
 		#end
 		#if ($allowAddAssignment)
-			#if (!$!view.equals($!tlang.getString('gen.stuvie')))
-				| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
+			#if ($prevAction)
+			 | 
 			#else
-				| $!tlang.getString("gen.stuvie")
+				#set($prevAction=true)
+			#end
+			#if (!$!view.equals($!tlang.getString('gen.stuvie')))
+				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
+			#else
+				$!tlang.getString("gen.stuvie")
 			#end
 		#end
 		#if ($allowUpdateSite)
-			| <a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a>
+			#if ($prevAction)
+			 | 
+			#end
+			<a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a>
 		#end
 	</div>
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
@@ -250,10 +270,11 @@
 												$validator.limit($validator.escapeHtml($!assignment.getTitle()), 40)
 											</a>
 										#end
-										<div class="itemAction">		
-											#if ($service.allowUpdateAssignment($assignmentReference))<a href="#toolLinkParam("$action" "doEdit_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("revise")</a>#end
-											#if ($allowAddAssignment)| <a href="#toolLinkParam("$action" "doDuplicate_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("dupli")</a>#end
-											#if (!$assignment.draft && $allowGradeSubmission)| <a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>#end
+										<div class="itemAction">
+											#set($prevAction=false)
+											#if ($service.allowUpdateAssignment($assignmentReference))#set($prevAction=true)<a href="#toolLinkParam("$action" "doEdit_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("revise")</a>#end
+											#if ($allowAddAssignment)#if($prevAction) | #else#set($prevAction=true)#end<a href="#toolLinkParam("$action" "doDuplicate_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("dupli")</a>#end
+											#if (!$assignment.draft && $allowGradeSubmission)#if($prevAction) | #end<a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>#end
 										</div>
 									#else
 										#if ($!allowAddAssignment)
@@ -296,12 +317,14 @@
 										#if ($!deleted.equalsIgnoreCase("true"))
 											<span class="highlight">$tlang.getString("stulistassig.asshasbee1")</span>
 										#end
-										<div class="itemAction">		
+										<div class="itemAction">
+											#set($prevAction=false)		
 											#if ($service.allowUpdateAssignment($assignmentReference))
 												<a href="#toolLinkParam("$action" "doEdit_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">$!tlang.getString("revise")</a>
+												#set($prevAction=true)
 											#end
 											#if (!$assignment.draft && $allowGradeSubmission)
-												| <a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>
+												#if($prevAction) | #end<a href="#toolLinkParam("$action" "doGrade_assignment" "assignmentId=$validator.escapeUrl($assignmentReference)")">#if ($withGrade)$!tlang.getString("grad1")#else$!tlang.getString("viewsubmissions")#end</a>
 											#end
 										</div>
 									#end

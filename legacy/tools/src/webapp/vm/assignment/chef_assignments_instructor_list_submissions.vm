@@ -1,12 +1,44 @@
 ##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/assignment/chef_assignments_instructor_list_submissions.vm,v 1.10 2005/06/14 16:07:00 zqian.umich.edu Exp $ -->
 <div class="portletBody">
 	<div class="navIntraTool">
+		#set($prevAction=false)
 		#if ($allowAddAssignment)
-			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a> |
+			#set($prevAction=true)
+			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a>
 		#end
-		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a> | <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString('gen.stuvie')">$!tlang.getString('gen.stuvie')</a>#if($withGrade)| <a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString('gen.grarep')">$!tlang.getString('gen.grarep')</a>#end
+		#if ($prevAction)
+			| 
+		#else
+			#set($prevAction=true)
+		#end
+		<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
+		#if ($withGrade && $!allowGradeSubmission)
+			#if ($prevAction)
+			 | 
+			#else
+				#set($prevAction=true)
+			#end
+			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.grarep'))")" title="$!tlang.getString("gen.grarep")">$!tlang.getString("gen.grarep")</a>
+		#end
+		#if ($allowAddAssignment)
+			#if ($prevAction)
+			 | 
+			#else
+				#set($prevAction=true)
+			#end
+			#if (!$!view.equals($!tlang.getString('gen.stuvie')))
+				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.stuvie'))")" title="$!tlang.getString("gen.stuvie")">$!tlang.getString("gen.stuvie")</a>
+			#else
+				$!tlang.getString("gen.stuvie")
+			#end
+		#end
 		#if ($allowUpdateSite)
-			| <a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a>
+			#if ($prevAction)
+			 | 
+			#else
+				#set($prevAction=true)
+			#end
+			<a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a>
 		#end
 	</div>
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both"></div>#end

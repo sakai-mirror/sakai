@@ -1470,8 +1470,11 @@ public abstract class BaseAssignmentService
 	public AssignmentSubmissionEdit editSubmission(String submissionReference)
 		throws IdUnusedException, PermissionException, InUseException
 	{
-		// check security (throws if not permitted)
-		unlock2(SECURE_UPDATE_ASSIGNMENT_SUBMISSION, SECURE_UPDATE_ASSIGNMENT, submissionReference);
+		if (!unlockCheck(SECURE_GRADE_ASSIGNMENT_SUBMISSION, submissionReference))
+		{
+			// check security (throws if not permitted)
+			unlock2(SECURE_UPDATE_ASSIGNMENT_SUBMISSION, SECURE_UPDATE_ASSIGNMENT, submissionReference);
+		}
 
 		String submissionId = submissionId(submissionReference);
 
@@ -2727,7 +2730,7 @@ public abstract class BaseAssignmentService
 					IdUnusedException, ServerOverloadException
 			{
 				// need update permission for any of these accesses
-				if (!allowUpdateAssignment(ref.getReference())) throw new PermissionException(SECURE_UPDATE_ASSIGNMENT, ref.getReference());
+				if (!allowUpdateAssignment(ref.getReference()) && !allowGradeSubmission(ref.getContext())) throw new PermissionException(SECURE_UPDATE_ASSIGNMENT, ref.getReference());
 
 				try
 				{
