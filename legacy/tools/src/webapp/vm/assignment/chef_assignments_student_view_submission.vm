@@ -1,9 +1,8 @@
-<!--Assignments - Student New Assignment-->
 <div class="portletBody">
 	#set($closeTime = false)
 	#set($closeTime = $assignment.CloseTime)
 	#if ($!closeTime && $currentTime.after($!closeTime) && (!$!submission.getSubmitted()))
-		<div class="alertMessage">$tlang.getString("stuviewsubm.theclodat")<div style="display:block;clear:both" /></div>
+		<div class="alertMessage">$tlang.getString("stuviewsubm.theclodat")</div><div style="display:block;clear:both" /></div>
 	#else
 		#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 		#if ($!submission)
