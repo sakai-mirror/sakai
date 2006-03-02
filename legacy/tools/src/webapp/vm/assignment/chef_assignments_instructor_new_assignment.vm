@@ -385,7 +385,7 @@
 			</p>
 			#if ($!withGrade)
 				<p class="checkbox">
-					#if ($!value_AddToGradebook.equals("true"))
+					#if ($!value_AddToGradebook)
 						<input id="$name_Addtogradebook" name="$name_Addtogradebook" type="checkbox" value="true" checked="checked"/>
 					#else
 						<input id="$name_Addtogradebook" name="$name_Addtogradebook" type="checkbox" value="true"/>
