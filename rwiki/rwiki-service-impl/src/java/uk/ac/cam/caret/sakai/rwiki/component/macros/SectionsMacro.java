@@ -37,7 +37,10 @@ import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 
+import com.sun.tools.javac.v8.util.Name;
+
 import uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.SpecializedRenderContext;
+import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * This is a reimplementation of the LinkMacro but made aware of the sakai://
@@ -109,11 +112,10 @@ public class SectionsMacro extends BaseMacro {
 				}
 				pageName += "section/"+cs.getTitle()+"/Home";
 			}
-			
 			writer.write("\n");
-			writer.write("* [");
+			writer.write("* [ Section: ");
 			writer.write(cs.getTitle());
-			writer.write("| Section: ");
+			writer.write("|");
 			writer.write(pageName);
 			writer.write("]");
 		}
