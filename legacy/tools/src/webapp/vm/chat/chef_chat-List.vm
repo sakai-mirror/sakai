@@ -38,7 +38,7 @@ doubleDeep = true;
 							<img src="#imageLink("sakai/delete.gif")" border="0" alt="$tlang.getString('list.del')" /></a>
 						#end
 					#end
-					<span style="font-size:.8em;font-weight:normal">#if($display_date && $display_time) ($item.Header.Date.toStringLocalFullZ())#elseif($display_date) ($item.Header.Date.toStringLocalDate())#elseif($display_time) ($item.Header.Date.toStringLocalTime())#end</span>
+					<span style="font-size:.8em;font-weight:normal">#if($display_date && $display_time) ($item.Header.Date.toStringLocalFullZ())#elseif($display_date) ($item.Header.Date.toStringLocalDate())#elseif($display_time) ($item.Header.Date.toStringLocalTimeZ())#end</span>
 					<span>: $validator.escapeHtmlFormattedText($item.Body)</span>
 				</li>
 			#end
