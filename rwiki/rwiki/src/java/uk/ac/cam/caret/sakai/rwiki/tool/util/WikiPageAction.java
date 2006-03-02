@@ -42,6 +42,8 @@ public class WikiPageAction {
     public static final WikiPageAction INFO_ACTION = new WikiPageAction("info");
 
     public static final WikiPageAction SEARCH_ACTION = new WikiPageAction("search");
+    
+    public static final WikiPageAction FULL_SEARCH_ACTION = new WikiPageAction("full_search");
 
     public static final WikiPageAction TITLE_ACTION = new WikiPageAction("Title");
 

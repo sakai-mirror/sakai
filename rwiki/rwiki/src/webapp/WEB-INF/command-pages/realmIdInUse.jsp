@@ -35,7 +35,7 @@
 		<!--<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmEditBean.infoUrl}"/></jsp:attribute><jsp:attribute name="class">rwiki_currentPage</jsp:attribute>Info</jsp:element>-->
 		<!--</span>-->
 	      <!--<span class="rwiki_searchBox">-->
-		<!--Search:	<input type="hidden" name="action" value="search" />-->
+		<!--Search:	<input type="hidden" name="action" value="${requestScope.rsacMap.searchTarget}" />-->
 		<!--<input type="hidden" name="panel" value="Main" />-->
 		<!--<input type="text" name="search" />-->
 		<!--</span>-->

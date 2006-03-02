@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.search.SearchService;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.springframework.context.ApplicationContext;
@@ -46,6 +48,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.AuthZGroupEditBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.DiffBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.EditBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.ErrorBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.bean.FullSearchBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.HistoryBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.HomeBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.PermissionsBean;
@@ -70,6 +73,7 @@ import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ReviewHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.UpdatePermissionsBeanHelper;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.UserHelperBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.helper.ViewParamsHelperBean;
+import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
 
 /**
  * This is a replacement for the RequestScopeApplicationContext which turned out
@@ -110,6 +114,10 @@ public class RequestScopeSuperBean {
 
 	private PreferenceService preferenceService;
 
+	private SearchService searchService;
+
+	private boolean experimental = false;
+
     public static RequestScopeSuperBean getFromRequest(
             HttpServletRequest request) {
         return (RequestScopeSuperBean) request.getAttribute(REQUEST_ATTRIBUTE);
@@ -137,6 +145,8 @@ public class RequestScopeSuperBean {
         realmService = (AuthzGroupService) context.getBean(AuthzGroupService.class.getName());
         preferenceService = (PreferenceService) context.getBean(PreferenceService.class.getName());
         
+        searchService = (SearchService) context.getBean(SearchService.class.getName());
+        
         messageService = (MessageService) context.getBean(MessageService.class.getName());
         // if the message service has been configured
         // update the presence
@@ -148,6 +158,7 @@ public class RequestScopeSuperBean {
                 this.getCurrentPageName(),
                 this.getCurrentPageSpace());
         }
+        experimental  = new Boolean(ServerConfigurationService.getString("wiki.experimental","false")).booleanValue();
         
     }
 
@@ -334,6 +345,16 @@ public class RequestScopeSuperBean {
             map.put(key, ppb);
         }
         return (PrePopulateBean) map.get(key);
+    }
+
+    public FullSearchBean getFullSearchBean() {
+        String key = "fullSearchBean";
+        if (map.get(key) == null) {
+            FullSearchBean sb = new FullSearchBean(getCurrentSearch(),
+                    getCurrentLocalSpace(), searchService);
+            map.put(key, sb);
+        }
+        return (FullSearchBean) map.get(key);
     }
 
     public SearchBean getSearchBean() {
@@ -563,5 +584,26 @@ public class RequestScopeSuperBean {
     	}
     	return pb;
     }
+
+	/**
+	 * @return Returns the experimental.
+	 */
+	public boolean getExperimental() {
+		return experimental;
+	}
+
+	/**
+	 * @param experimental The experimental to set.
+	 */
+	public void setExperimental(boolean experimental) {
+		this.experimental = experimental;
+	}
+	public String getSearchTarget() {
+		if ( experimental ) {
+			return WikiPageAction.FULL_SEARCH_ACTION.getName();
+		} else {
+			return WikiPageAction.SEARCH_ACTION.getName();
+		}
+	}
 }
 

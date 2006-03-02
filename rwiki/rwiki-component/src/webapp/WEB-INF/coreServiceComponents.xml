@@ -56,13 +56,17 @@
   <!-- The RWiki Object service, component level -->
   <bean id="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"
     class="uk.ac.cam.caret.sakai.rwiki.component.service.impl.RWikiObjectServiceImpl"
-    init-method="init" destroy-method="destroy" >
+    init-method="init"  >
     <property name="log"><ref bean="rwiki-logger"/></property>
     <property name="renderService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
     <property name="RWikiCurrentObjectDao"><ref bean="rwikiCurrentObjectDao"/></property>
     <property name="RWikiHistoryObjectDao"><ref bean="rwikiHistoryObjectDao"/></property>
     <property name="preferenceService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService"/></property>
     <property name="securityService"><ref bean="securityService"/></property>
+<!-- This is injected at runtime, contolled by wiki.experimental
+    <property name="searchService" ><ref bean="org.sakaiproject.search.SearchService" /></property>
+    <property name="searchIndexBuilder" ><ref bean="org.sakaiproject.search.SearchIndexBuilder" /></property>
+ -->
     <property name="handlers">
       <map>
         <entry key=""><ref bean="rwikiRAWHandler" /></entry>

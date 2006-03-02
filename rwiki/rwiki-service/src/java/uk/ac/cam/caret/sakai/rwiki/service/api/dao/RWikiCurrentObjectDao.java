@@ -125,5 +125,11 @@ public interface RWikiCurrentObjectDao extends RWikiObjectDao {
      */
 	List findAllChangedSince(Date time, String basepath);
 
+	/**
+	 * get a list of all pages in the database, used for search
+	 * @return
+	 */
+	List findAllPageNames();
+
 
 }

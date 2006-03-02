@@ -431,4 +431,15 @@ public class RWikiCurrentObjectDaoImpl extends HibernateDaoSupport implements
 
 	}
 
+	public List findAllPageNames() {
+		HibernateCallback callback = new HibernateCallback() {
+			public Object doInHibernate(Session session)
+					throws HibernateException {
+				return session.find("select r.name "
+						+ "from RWikiCurrentObjectImpl  r ");
+			}
+		};
+		return (List)getHibernateTemplate().execute(callback);
+	}
+
 }

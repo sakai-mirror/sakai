@@ -300,5 +300,11 @@ public interface RWikiObjectService extends EntityProducer {
 	 * @return
 	 */
 	boolean checkAdmin(RWikiObject rwo);
+	
+	/**
+	 * Find all pages in the database just reture
+	 * @return
+	 */
+	List findAllPageNames();
     
 }

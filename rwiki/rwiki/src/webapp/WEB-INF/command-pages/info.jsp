@@ -191,8 +191,9 @@ both pages are identical. Any change in the page, will change the digest on the 
 		<!-- History Link -->
 		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${realmBean.historyUrl}"/></jsp:attribute>History</jsp:element>
 	      </span>
+	      
 	      <span class="rwiki_searchBox">
-		Search:	<input type="hidden" name="action" value="search" />
+		Search:	<input type="hidden" name="action" value="${requestScope.rsacMap.searchTarget}" />
 		<input type="hidden" name="panel" value="Main" />
 		<input type="text" name="search" />
 	      </span>
@@ -590,12 +591,27 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
 				<c:if test="${realmBean.siteUpdateAllowed}">
 				  In addition to editing the page permissions you may <a href="${realmBean.editRealmUrl}">edit site permissions</a>
-				  <a href="${realmBean.editRealmManyUrl}" >Edit Multi Realms</a>
+				  <c:out value="${requestScope.rsacMap.experimental}" />
 				</c:if>
 			      </p>
 			    </div>
 			  </td>
 			</tr>
+			<!-- EXPERIMENTAL -->
+			<c:if test="${requestScope.rsacMap.experimental}" >
+				<tr>
+			  	<td colspan="7">
+			   	  <div class="rwiki_editControl">
+			      <p class="act">
+				  <c:if test="${realmBean.siteUpdateAllowed}">
+				    (Experimental) Multiple AuthZGroups Edit
+				    <a href="${realmBean.editRealmManyUrl}" >Edit Multi Realms</a>
+				  </c:if>
+			      </p>
+			    </div>
+			  </td>
+			  </tr>
+			</c:if>
 		      </c:when>
 		      <!--
 
@@ -777,14 +793,16 @@ both pages are identical. Any change in the page, will change the digest on the 
 			</c:if>
 		      </td>
 		    </tr>
+		    <!-- EXPERIMENTAL -->
+			<c:if test="${requestScope.rsacMap.experimental}" >
 		    <tr>
-		      <th>Notification Preferences<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'preferenceshelp'); return false;"
+		      <th>(Experimental) Notification Preferences<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'preferenceshelp'); return false;"
 		    		onMouseOut="hidePopup('preferenceshelp');" >?</a></th>
 		      <td colspan="7">
 			<a href="${realmBean.preferencesUrl}">Edit Notification Preferences for <c:out value="${realmBean.pageSpace}"/></a>
 		      </td>
 		    </tr>
-		    
+		    </c:if>
 		    <tr>
 		    	<th>Feeds<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'feedshelp'); return false;"
 		    		onMouseOut="hidePopup('feedshelp');" >?</a></th>

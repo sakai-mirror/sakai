@@ -30,7 +30,7 @@
 	  <form action="?#" method="get" class="rwiki_searchForm">
 	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.viewUrl}"/></jsp:attribute>View</jsp:element>
 	    <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.infoUrl}"/></jsp:attribute>Info</jsp:element>
-	    Search:	<input type="hidden" name="action" value="search" />
+	    Search:	<input type="hidden" name="action" value="${requestScope.rsacMap.searchTarget}" />
 	    <input type="hidden" name="panel" value="Main" />
 	    <input type="text" name="search" />
 	  </form>

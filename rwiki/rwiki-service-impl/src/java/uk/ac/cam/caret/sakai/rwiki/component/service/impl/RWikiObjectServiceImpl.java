@@ -35,9 +35,15 @@ import java.util.Stack;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.search.SearchIndexBuilder;
+import org.sakaiproject.search.SearchService;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
@@ -57,10 +63,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.ListProxy;
-import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.RWikiCurrentObjectContentDaoImpl;
-import uk.ac.cam.caret.sakai.rwiki.component.dao.impl.RWikiCurrentObjectDaoImpl;
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntityImpl;
-import uk.ac.cam.caret.sakai.rwiki.model.RWikiCurrentObjectImpl;
 import uk.ac.cam.caret.sakai.rwiki.model.RWikiPermissionsImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.EntityHandler;
 import uk.ac.cam.caret.sakai.rwiki.service.api.PageLinkRenderer;
@@ -92,6 +95,8 @@ import uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger;
 // FIXME: Component
 public class RWikiObjectServiceImpl implements RWikiObjectService {
 
+	private static Log dlog = LogFactory.getLog(RWikiObjectServiceImpl.class);
+
 	private Logger log;
 
 	private RWikiCurrentObjectDao cdao;
@@ -101,7 +106,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	private RWikiSecurityService securityService;
 
 	private RenderService renderService;
-	
+
 	private PreferenceService preferenceService;
 
 	// dependancy
@@ -112,11 +117,16 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 	public String createTemplatePageName = "default_template";
 
+	private SearchService searchService;
+
+	private SearchIndexBuilder searchIndexBuilder;
+
 	/**
 	 * Register this as an EntityProducer
 	 * 
 	 */
 	public void init() {
+		dlog.debug("init start");
 		// register a transient notification for resources
 		NotificationEdit edit = NotificationService.addTransientNotification();
 
@@ -129,12 +139,31 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		// %%% is this the best we can do? -ggolden
 
 		// set the action
-		edit
-				.setAction(new SiteEmailNotificationRWiki(this,
-						this.renderService, this.preferenceService));
+		edit.setAction(new SiteEmailNotificationRWiki(this, this.renderService,
+				this.preferenceService));
 
 		EntityManager.registerEntityProducer(this,
 				RWikiObjectService.REFERENCE_ROOT);
+		if ("true".equals(ServerConfigurationService
+				.getString("wiki.experimental"))) {
+			searchService = (SearchService) ComponentManager
+					.get(SearchService.class);
+			searchIndexBuilder = (SearchIndexBuilder) ComponentManager
+					.get(SearchIndexBuilder.class);
+			if (searchService != null) {
+				searchService
+						.registerFunction(RWikiObjectService.EVENT_RESOURCE_ADD);
+				searchService
+						.registerFunction(RWikiObjectService.EVENT_RESOURCE_WRITE);
+				if (searchIndexBuilder != null) {
+					searchIndexBuilder
+							.registerEntityContentProducer(new RWikiEntityContentProducer(
+									renderService, this));
+				}
+			}
+		}
+		dlog.debug("init end");
+
 	}
 
 	/*
@@ -287,9 +316,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		this.preferenceService = preferenceService;
 	}
 
-	public void update(String name, String realm, Date version,
-			String content, RWikiPermissions permissions)
-			throws PermissionException, VersionException {
+	public void update(String name, String realm, Date version, String content,
+			RWikiPermissions permissions) throws PermissionException,
+			VersionException {
 
 		String user = SessionManager.getCurrentSessionUserId();
 		update(name, user, realm, version, content, permissions);
@@ -636,9 +665,9 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService#createNewRWikiCurrentObject()
 	 */
 	public RWikiObject createNewRWikiCurrentObject() {
-//		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
-//		rwco.setRwikiObjectContentDao(c)
-		return cdao.createRWikiObject("dummy","dummy");
+		// RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
+		// rwco.setRwikiObjectContentDao(c)
+		return cdao.createRWikiObject("dummy", "dummy");
 	}
 
 	/*
@@ -719,7 +748,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
 		results.append("archiving Wiki Pages for ").append(siteId).append("\n");
-		log.debug("archiving Wiki Pages for "+siteId);
+		log.debug("archiving Wiki Pages for " + siteId);
 		int npages = 0;
 		int nversions = 0;
 
@@ -763,7 +792,8 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 						+ " " + any.toString() + "\n");
 			}
 
-			results.append("archiving: Completed ").append(npages).append(" pages and ").append(nversions).append(" versions\n");
+			results.append("archiving: Completed ").append(npages).append(
+					" pages and ").append(nversions).append(" versions\n");
 			stack.pop();
 		} catch (IdUnusedException ex) {
 
@@ -802,7 +832,7 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 		// prepare the buffer for the results log
 		StringBuffer results = new StringBuffer();
-		int 	nversions_reject = 0;
+		int nversions_reject = 0;
 		int npages = 0;
 		int nversions = 0;
 		int npages_fail = 0;
@@ -816,28 +846,28 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 			NodeList children = root.getChildNodes();
 			final int length = children.getLength();
-			log.info("Archive has "+length+" pages ");
+			log.info("Archive has " + length + " pages ");
 			for (int i = 0; i < length; i++) {
 				Node child = children.item(i);
-				if (child.getNodeType() != Node.ELEMENT_NODE) 
+				if (child.getNodeType() != Node.ELEMENT_NODE)
 					continue;
 				Element element = (Element) child;
 
 				try {
 
-					RWikiCurrentObject archiverwo = cdao.createRWikiObject("dummy","dummy");
+					RWikiCurrentObject archiverwo = cdao.createRWikiObject(
+							"dummy", "dummy");
 					RWikiEntity rwe = (RWikiEntity) getEntity(archiverwo);
 					rwe.fromXml(element, defaultRealm);
-					log.info(" Merging "+archiverwo.getRevision()+":"+rwe.getReference());
+					log.info(" Merging " + archiverwo.getRevision() + ":"
+							+ rwe.getReference());
 
 					// clear the ID to remove hibernate session issues and
 					// recreate
 					// a new id issues
 					archiverwo.setId(null);
-					
 
 					String pageName = archiverwo.getName();
-
 
 					if (exists(pageName, defaultRealm)) {
 						// page exists, add to history, if the version does not
@@ -851,11 +881,15 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 									.append(rwo.getName())
 									.append(" already exists with revision ")
 									.append(rwo.getRevision())
-									.append(" which is earlier than the revision from the archive ")
+									.append(
+											" which is earlier than the revision from the archive ")
 									.append(archiverwo.getRevision())
-									.append(" therefore I have rejected the merge from the archive,")
-									.append(" please report this a bug to JIRA if you feel that")
-									.append(" this functionality is required \n");
+									.append(
+											" therefore I have rejected the merge from the archive,")
+									.append(
+											" please report this a bug to JIRA if you feel that")
+									.append(
+											" this functionality is required \n");
 						} else {
 							RWikiHistoryObject rwho = getRWikiHistoryObject(
 									rwo, archiverwo.getRevision().intValue());
@@ -900,26 +934,27 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 						RWikiObject savedrwo = getRWikiObject(archiverwo
 								.getName(), archiverwo.getRealm());
-						if ( archiverwo.getSha1().equals(savedrwo.getSha1()) ){
+						if (archiverwo.getSha1().equals(savedrwo.getSha1())) {
 							npages++;
 						} else {
 							npages_errors++;
-							results.append("Created ").append(savedrwo.getName())
-							.append(" revision ").append(
-									savedrwo.getRevision()).append(
-									" with version ").append(
-									savedrwo.getVersion().getTime())
-							.append(" date ").append(savedrwo.getVersion())
-							.append("\n");
-							results.append(" WARNING: Check Sums do not match Archive Verions:")
-							.append(archiverwo.getSha1())
-							.append(" Merged Version:")
-							.append(savedrwo.getSha1())
-							.append("\nArchive Content:\n")
-							.append(archiverwo.getContent())
-							.append("\nSaved Content:\n")
-							.append(savedrwo.getContent())
-							.append("\n");
+							results.append("Created ").append(
+									savedrwo.getName()).append(" revision ")
+									.append(savedrwo.getRevision()).append(
+											" with version ").append(
+											savedrwo.getVersion().getTime())
+									.append(" date ").append(
+											savedrwo.getVersion()).append("\n");
+							results
+									.append(
+											" WARNING: Check Sums do not match Archive Verions:")
+									.append(archiverwo.getSha1()).append(
+											" Merged Version:").append(
+											savedrwo.getSha1()).append(
+											"\nArchive Content:\n").append(
+											archiverwo.getContent()).append(
+											"\nSaved Content:\n").append(
+											savedrwo.getContent()).append("\n");
 						}
 					}
 				} catch (Exception ex) {
@@ -937,18 +972,11 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 			results.append(" Problem locating Reference on site ").append(
 					siteId).append(" :").append(ex.getMessage()).append("\n");
 		}
-		results.append(" Wiki Merge Complete ")
-		.append(" Added ")
-		.append(npages)
-		.append(" pages with ")
-		.append(nversions)
-		.append(" revisions \nFound ")
-		.append(nversions_reject)
-		.append(" rejects, ")
-		.append(npages_fail)
-		.append(" failures, ")
-		.append(npages_errors)
-		.append(" errors\n ");
+		results.append(" Wiki Merge Complete ").append(" Added ")
+				.append(npages).append(" pages with ").append(nversions)
+				.append(" revisions \nFound ").append(nversions_reject).append(
+						" rejects, ").append(npages_fail).append(" failures, ")
+				.append(npages_errors).append(" errors\n ");
 		return results.toString();
 	}
 
@@ -1291,6 +1319,44 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public boolean checkAdmin(RWikiObject rwo) {
 		return securityService.checkAdmin((RWikiEntity) getEntity(rwo));
+	}
+
+	/**
+	 * @return Returns the searchIndexBuilder.
+	 */
+	public SearchIndexBuilder getSearchIndexBuilder() {
+		return searchIndexBuilder;
+	}
+
+	/**
+	 * @param searchIndexBuilder
+	 *            The searchIndexBuilder to set.
+	 */
+	public void setSearchIndexBuilder(SearchIndexBuilder searchIndexBuilder) {
+		this.searchIndexBuilder = searchIndexBuilder;
+	}
+
+	/**
+	 * @return Returns the searchService.
+	 */
+	public SearchService getSearchService() {
+		return searchService;
+	}
+
+	/**
+	 * @param searchService
+	 *            The searchService to set.
+	 */
+	public void setSearchService(SearchService searchService) {
+		this.searchService = searchService;
+	}
+
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public List findAllPageNames() {
+		return cdao.findAllPageNames();
 	}
 
 }

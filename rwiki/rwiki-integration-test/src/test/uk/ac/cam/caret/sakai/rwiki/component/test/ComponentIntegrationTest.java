@@ -306,6 +306,8 @@ public class ComponentIntegrationTest extends SakaiTestBase {
 		xtestImport();
 		xtestPreference();
 		xtestPermissions();
+		
+		Thread.sleep(60000);
 
 	}
 

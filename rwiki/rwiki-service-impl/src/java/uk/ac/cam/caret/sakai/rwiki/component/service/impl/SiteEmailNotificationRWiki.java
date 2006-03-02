@@ -49,13 +49,13 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.util.notification.SiteEmailNotification;
-import org.sakaiproject.util.text.FormattedText;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.message.api.PreferenceService;
+import uk.ac.cam.caret.sakai.rwiki.utils.DigestHtml;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
@@ -209,7 +209,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 
 		// get the URL and resource name.
 		//StringBuffer buf = new StringBuffer();
-		String url = ServerConfigurationService.getAccessUrl() + ref.getUrl();
+		String url = ServerConfigurationService.getAccessUrl() + ref.getUrl() + "html";
 
 		String pageName = props.getProperty(RWikiEntity.RP_NAME);
 		String realm = props.getProperty(RWikiEntity.RP_REALM);
@@ -227,7 +227,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 					pageSpace);
 			content = renderService.renderPage(rwikiObject, pageSpace,
 					cplr);
-			content = FormattedText.convertFormattedTextToPlaintext(content);
+			content = DigestHtml.digest(content);
 			if ( content.length() > 1000 ) {
 				content = content.substring(0,1000);
 			}
@@ -526,7 +526,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 		String preference = preferenceService.findPreferenceAt(user.getId(), resourceReference, PreferenceService.MAIL_NOTIFCIATION );
 		
 		if (preference == null || "".equals(preference)) {
-			return NotificationService.PREF_NONE;
+			return NotificationService.PREF_IMMEDIATE;
 		}
 		
 		if (PreferenceService.NONE_PREFERENCE.equals(preference)) {
@@ -541,7 +541,7 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 			return NotificationService.PREF_IMMEDIATE;
 		}
 		
-		return NotificationService.PREF_NONE;
+		return NotificationService.PREF_IMMEDIATE;
 	}
 	
 

@@ -50,7 +50,7 @@
 	      <jsp:element name="a"><jsp:attribute name="href"><c:out value="${viewBean.historyUrl}"/></jsp:attribute>History</jsp:element>
 	    </span>
 	    <span class="rwiki_searchBox">
-	      Search:	<input type="hidden" name="action" value="search" />
+	      Search:	<input type="hidden" name="action" value="${requestScope.rsacMap.searchTarget}" />
 	      <input type="hidden" name="panel" value="Main" />
 	      <input type="text" name="search" />
 	    </span>

@@ -256,5 +256,8 @@ public class RWikiEntityImpl implements RWikiEntity {
 	public boolean isContainer() {
 		return (rwo == null);
 	}
+	public static String createReference(String pageName) {
+		return RWikiObjectService.REFERENCE_ROOT+pageName+".";
+	}
 
 }

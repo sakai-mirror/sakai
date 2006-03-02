@@ -64,6 +64,7 @@ import uk.ac.cam.caret.sakai.rwiki.utils.DebugContentHandler;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.utils.SchemaNames;
 import uk.ac.cam.caret.sakai.rwiki.utils.SimpleCoverage;
+import uk.ac.cam.caret.sakai.rwiki.utils.DigestHtml;
 
 /**
  * Provides a XSLT Based entity handler. It will serialise the an RWikiObject
@@ -437,7 +438,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		} else {
 			String renderedPage = renderService.renderPage(rwo, 
 					localSpace, plr);
-			String contentDigest = FormattedText.convertFormattedTextToPlaintext(renderedPage);
+			String contentDigest = DigestHtml.digest(renderedPage);
 			if ( contentDigest.length() > 500 ) {
 				contentDigest = contentDigest.substring(0,500);
 			}

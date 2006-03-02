@@ -64,7 +64,7 @@ public class RWikiBaseRenderEngine implements RenderEngine {
         this.initialContext = context;
      }
 
-    protected void init() {
+    public void init() {
       if (null == fp) {
         fp = new FilterPipe(initialContext);
 

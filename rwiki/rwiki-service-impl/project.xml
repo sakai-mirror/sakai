@@ -78,7 +78,7 @@
       <version>1.0.4</version>
       <type>jar</type>
     </dependency>
-
+    
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-legacy-service</artifactId>
@@ -182,6 +182,12 @@
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-sections-api</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-search-service</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>
     </dependency>
