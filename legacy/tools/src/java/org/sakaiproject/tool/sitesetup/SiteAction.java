@@ -7549,7 +7549,17 @@ public class SiteAction extends PagedResourceActionII
 						}
 					}
 				}
-				AuthzGroupService.save(realmEdit);
+				
+				String maintainRoleString = realmEdit.getMaintainRole();
+				if (realmEdit.getUsersHasRole(maintainRoleString).isEmpty())
+				{
+					// if after update, there is no maintainer role user for the site, show alert message and don't save the update
+					addAlert(state, rb.getString("sitegen.siteinfolist.nomaintainuser") + maintainRoleString + ".");
+				}
+				else
+				{
+					AuthzGroupService.save(realmEdit);
+				}
 			}
 			catch (IdUnusedException e)
 			{
