@@ -1,4 +1,12 @@
 <!-- chef_resources_more.vm, version: $Revision:  $, use with org.sakaiproject.tool.content.ResourcesAction.java -->
+<script type="text/javascript">
+	function openCopyrightWindow(theURL,winName,winSettings) 
+	{ 
+		window.open(theURL,winName,winSettings);
+		return false;
+	}
+</script>
+
 <div class="portletBody">
 
 	<h3>

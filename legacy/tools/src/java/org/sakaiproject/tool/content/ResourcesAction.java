@@ -230,9 +230,6 @@ public class ResourcesAction
 	/** The more collection id */
 	private static final String STATE_MORE_COLLECTION_ID = "resources.more_collection_id";
 
-	/** The more from */
-	private static final String STATE_MORE_FROM = "resources.more_from";
-
 	/************** the edit context *****************************************/
 
 	/** The edit id */
@@ -1900,7 +1897,7 @@ public class ResourcesAction
 	/**
 	* Build the context to show the list of resource properties
 	*/
-	public String buildMoreContext (	VelocityPortlet portlet,
+	public static String buildMoreContext (	VelocityPortlet portlet,
 									Context context,
 									RunData data,
 									SessionState state)
@@ -1911,18 +1908,18 @@ public class ResourcesAction
 		// find the ContentHosting service
 		org.sakaiproject.service.legacy.content.ContentHostingService service = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
 		context.put ("service", service);
+		
+		Map current_stack_frame = peekAtStack(state);
 
-		String id = (String) state.getAttribute (STATE_MORE_ID);
+		String id = (String) current_stack_frame.get(STATE_MORE_ID);
 		context.put ("id", id);
-		String collectionId = (String) state.getAttribute (STATE_MORE_COLLECTION_ID);
+		String collectionId = (String) current_stack_frame.get(STATE_MORE_COLLECTION_ID);
 		context.put ("collectionId", collectionId);
 		String homeCollectionId = (String) (String) state.getAttribute (STATE_HOME_COLLECTION_ID);
 		context.put("homeCollectionId", homeCollectionId);
 		List cPath = getCollectionPath(state);
 		context.put ("collectionPath", cPath);
 		
-		context.put ("from", (String) state.getAttribute (STATE_MORE_FROM));
-
 		// for the resources of type URL or plain text, show the content also
 		try
 		{
@@ -4679,11 +4676,13 @@ public class ResourcesAction
 	/**
 	* show the resource properties
 	*/
-	public void doMore ( RunData data)
+	public static void doMore ( RunData data)
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 
 		ParameterParser params = data.getParameters ();
+		
+		Map current_stack_frame = pushOnStack(state);
 		
 		// cancel copy if there is one in progress
 		if(! Boolean.FALSE.toString().equals(state.getAttribute (STATE_COPY_FLAG)))
@@ -4702,9 +4701,6 @@ public class ResourcesAction
 		// the hosted item ID
 		String id = NULL_STRING;
 
-		// from which page
-		String from = NULL_STRING;
-
 		// the collection id
 		String collectionId = NULL_STRING;
 
@@ -4714,22 +4710,18 @@ public class ResourcesAction
 			if (id!=null)
 			{
 				// set the collection/resource id for more context
-				state.setAttribute (STATE_MORE_ID, id);
+				current_stack_frame.put(STATE_MORE_ID, id);
 			}
 			else
 			{
 				// get collection/resource id from the state object
-				id =(String) state.getAttribute (STATE_MORE_ID);
+				id =(String) current_stack_frame.get(STATE_MORE_ID);
 			}
 
-			// set the more from from attribute
-			from = params.getString ("from");
-			state.setAttribute (STATE_MORE_FROM, from);
-
 			collectionId = params.getString ("collectionId");
-			state.setAttribute(STATE_MORE_COLLECTION_ID, collectionId);
+			current_stack_frame.put(STATE_MORE_COLLECTION_ID, collectionId);
 
-			if (collectionId.equals ((String) state.getAttribute (STATE_HOME_COLLECTION_ID)))
+			if (collectionId.equals ((String) state.getAttribute(STATE_HOME_COLLECTION_ID)))
 			{
 				try
 				{
@@ -4789,14 +4781,7 @@ public class ResourcesAction
 		if (state.getAttribute(STATE_MESSAGE) == null)
 		{
 			// go to the more state
-			state.setAttribute (STATE_MODE, MODE_MORE);
-
-			// reserving where it is from
-			if (from.equals ("show"))
-			{
-				state.setAttribute (STATE_MORE_FROM, MODE_LIST);
-			}
-			// state.setAttribute (STATE_COLLECTION_ID, collectionId);
+			state.setAttribute(STATE_MODE, MODE_MORE);
 
 		}	// if-else
 
