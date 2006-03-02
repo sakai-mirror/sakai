@@ -314,6 +314,24 @@ public class MyTime implements Time
 
 		return s;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toStringLocalTimeZ()
+	{
+				
+		String s = null;
+		SimpleDateFormat fmtClz = ((BasicTimeService) TimeService.getInstance()).getLocalTzFormat(((BasicTimeService) TimeService
+				.getInstance()).getUserLocalTzId()).M_fmtClz;
+		
+		synchronized (fmtClz)
+		{
+			// format
+			s = fmtClz.format(new Date(getTime()));
+		}
+		return s;
+	}
 
 	/**
 	 * {@inheritDoc}

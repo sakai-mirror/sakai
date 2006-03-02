@@ -92,6 +92,12 @@ public interface Time extends Cloneable, Comparable, Serializable
 	 * @return Time in string format.
 	 */
 	String toStringLocalTime24();
+	
+	/**
+	 * Format as a string, Human Readable, time only format, Local, with zone.
+	 * @return Time in string format.
+	 */
+	String toStringLocalTimeZ();
 
 	/**
 	 * Format as a string, Human Readable, date only format, GMT.

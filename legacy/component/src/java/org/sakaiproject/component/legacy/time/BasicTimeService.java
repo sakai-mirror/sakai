@@ -364,6 +364,7 @@ public class BasicTimeService implements TimeService
 		public SimpleDateFormat M_fmtBl = null;
 		public SimpleDateFormat M_fmtBlz = null;
 		public SimpleDateFormat M_fmtCl = null;
+		public SimpleDateFormat M_fmtClz = null;
 		public SimpleDateFormat M_fmtDl = null;
 		public SimpleDateFormat M_fmtD2 = null;
 		public SimpleDateFormat M_fmtFl = null;
@@ -378,6 +379,7 @@ public class BasicTimeService implements TimeService
 			M_fmtBl = new SimpleDateFormat("MMM d, yyyy h:mm aa");
 			M_fmtBlz = new SimpleDateFormat("MMM d, yyyy h:mm aa z");
 			M_fmtCl = new SimpleDateFormat("h:mm aa");
+			M_fmtClz = new SimpleDateFormat("h:mm aa z");
 			M_fmtDl = new SimpleDateFormat("MMM d, yyyy");
 			M_fmtD2 = new SimpleDateFormat("MM/dd/yy");
 			M_fmtFl = new SimpleDateFormat("HH:mm:ss");
@@ -386,10 +388,11 @@ public class BasicTimeService implements TimeService
 			M_fmtBl.setTimeZone(M_tz_local);
 			M_fmtBlz.setTimeZone(M_tz_local);
 			M_fmtCl.setTimeZone(M_tz_local);
+			M_fmtClz.setTimeZone(M_tz_local);
 			M_fmtDl.setTimeZone(M_tz_local);
 			M_fmtD2.setTimeZone(M_tz_local);
 			M_fmtFl.setTimeZone(M_tz_local);
-      
+			
 			M_GCall = getCalendar(M_tz_local, 0, 0, 0, 0, 0, 0, 0);
 		}
 	}
