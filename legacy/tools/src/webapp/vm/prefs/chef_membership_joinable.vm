@@ -13,6 +13,14 @@
 	## join/unjoin action info normally is the only value of "alertMessage"
 	#if ($alertMessage)<p class="information">$validator.escapeHtml($alertMessage)</p>#end
 	
+	<div style="text-align:right;">
+		<form name="searchform" method="post" action="#toolForm("$action")">
+		<input type="text" size="15" name="search" value="$search"> 
+		<input type="submit" name="eventSubmit_doSearch" value="Search">
+		<input type="submit" name="eventSubmit_doSearch_clear" value="Clear">
+		</form> 
+	</div>
+
 	#if ($openSites.size()>0)
 		<span class="instruction leftNav">
 			$tlang.getString("mb.listjoin")

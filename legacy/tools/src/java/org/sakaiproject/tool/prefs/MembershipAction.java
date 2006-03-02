@@ -57,6 +57,9 @@ public class MembershipAction extends PagedResourceActionII
 	//SAK-1606
 	private static String STATE_CONFIRM_VIEW_MODE="state_confirm_view";
 	private static String UNJOIN_SITE="unjoin_site";
+	
+	private static String SEARCH_TERM = "search";
+	
 	/* (non-Javadoc)
 	 * @see org.sakaiproject.cheftool.PagedResourceActionII#sizeResources(org.sakaiproject.service.framework.session.SessionState)
 	 */
@@ -64,8 +67,14 @@ public class MembershipAction extends PagedResourceActionII
 	{
 		int size = 0;
 
+		String search = (String) state.getAttribute(SEARCH_TERM);
+		if ((search != null) && search.trim().equals("")) {
+			search = null;
+		}
+		
 		List openSites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.JOINABLE,
-				null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+				// null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+				null, search, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
 		size = openSites.size();
 		
 		return size;
@@ -77,16 +86,24 @@ public class MembershipAction extends PagedResourceActionII
 	protected List readResourcesPage(SessionState state, int first, int last) 
 	{
 		List rv = new Vector();
-
+		
+		String search = (String) state.getAttribute(SEARCH_TERM);
+		if ((search != null) && search.trim().equals("")) 
+		{
+			search = null;
+		}
+		
 		if (((Boolean) state.getAttribute(SORT_ASC)).booleanValue())
 		{
 			rv = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.JOINABLE,
-					null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+					//null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+					null, search, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
 		}
 		else
 		{
 			rv = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.JOINABLE,
-					null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_DESC, null);
+					//null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_DESC, null);
+					null, search, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_DESC, null);
 		}
 		
 		PagingPosition page = new PagingPosition(first, last);
@@ -114,7 +131,13 @@ public class MembershipAction extends PagedResourceActionII
 		}
 		Boolean sortAsc = (Boolean) state.getAttribute(SORT_ASC);
 		context.put("currentSortAsc", sortAsc);
-		
+
+		if (state.getAttribute(SEARCH_TERM) == null) 
+		{
+			state.setAttribute(SEARCH_TERM, "");
+		}
+		context.put(SEARCH_TERM, state.getAttribute(SEARCH_TERM));
+			
 		boolean defaultMode = state.getAttribute(STATE_VIEW_MODE) == null;
 		if (defaultMode)
 		{
@@ -269,6 +292,12 @@ public class MembershipAction extends PagedResourceActionII
 			state.setAttribute(JOINABLE_SORT_ASC, Boolean.TRUE);
 		}
 		context.put("currentSortAsc", state.getAttribute(JOINABLE_SORT_ASC));
+		
+		 if (state.getAttribute(SEARCH_TERM) == null) 
+		 {
+		 	state.setAttribute(SEARCH_TERM, "");
+		 }
+		 context.put(SEARCH_TERM, state.getAttribute(SEARCH_TERM));
 		
 		List openSites = prepPage(state);
 		context.put("openSites", openSites);
