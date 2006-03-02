@@ -8413,7 +8413,8 @@ public class SiteAction extends PagedResourceActionII
 							}
 						}
 					}
-					else
+					
+					if (state.getAttribute(STATE_MESSAGE) == null)
 					{
 						// site duplication confirmed
 						state.removeAttribute(SITE_DUPLICATED);
@@ -8423,6 +8424,7 @@ public class SiteAction extends PagedResourceActionII
 						state.setAttribute(STATE_TEMPLATE_INDEX, "12");
 					}
 				}
+				break;
 			case 33:
 				/*  
 				* actionForTemplate chef_site-sitemanage-addParticipants.vm
