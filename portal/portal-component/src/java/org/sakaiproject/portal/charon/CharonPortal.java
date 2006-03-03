@@ -1325,7 +1325,7 @@ public class CharonPortal extends HttpServlet
 
 	protected void includeBottom(PrintWriter out)
 	{
-		String copyright = ServerConfigurationService.getString("bottom.copyrighttext");
+		String copyright = rb.getString("bottom.copyrighttext","");
 		String service = ServerConfigurationService.getString("ui.service", "Sakai");
 		String serviceVersion = ServerConfigurationService.getString("version.service", "?");
 		String sakaiVersion = ServerConfigurationService.getString("version.sakai", "?");
