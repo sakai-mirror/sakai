@@ -31,13 +31,14 @@ import java.util.List;
 import java.util.Vector;
 
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.coursemanagement.Course;
 import org.sakaiproject.service.legacy.coursemanagement.CourseManagementProvider;
 import org.sakaiproject.service.legacy.coursemanagement.CourseManagementService;
 import org.sakaiproject.service.legacy.coursemanagement.Term;
 import org.sakaiproject.service.legacy.time.cover.TimeService;
+import org.sakaiproject.util.java.ResourceLoader;
 
 /**
 * <p>BasicCourseManagementService is a course management services implemented as a Turbine Service.</p>
@@ -47,6 +48,9 @@ import org.sakaiproject.service.legacy.time.cover.TimeService;
 */
 public class BasicCourseManagementService implements CourseManagementService
 {	
+	/** Resource bundle using current language locale */
+    private static ResourceLoader rb = new ResourceLoader("coursemanagement");
+    
 	/** A course management provider. */
 	protected CourseManagementProvider m_provider = null;
 	
@@ -97,9 +101,9 @@ public class BasicCourseManagementService implements CourseManagementService
 		List termEndTimes = new Vector();
 		
 		// get term information
-		if (ServerConfigurationService.getStrings("termterm") != null)
+		if (rb.getStrings("termterm") != null)
 		{
-			termTerms = new ArrayList(Arrays.asList(ServerConfigurationService.getStrings("termterm")));
+			termTerms = new ArrayList(Arrays.asList(rb.getStrings("termterm")));
 		}
 		if (ServerConfigurationService.getStrings("termyear") != null)
 		{

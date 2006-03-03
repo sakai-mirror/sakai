@@ -272,7 +272,7 @@ public class SiteAction extends PagedResourceActionII
 	
 	private final static String STATE_NEWS_TITLES = "newstitles";
 	private final static String STATE_NEWS_URLS = "newsurls";
-	private final static String NEWS_DEFAULT_TITLE = ServerConfigurationService.getString("news.title");
+	private final static String NEWS_DEFAULT_TITLE = rb.getString("news.title");
 	private final static String NEWS_DEFAULT_URL = ServerConfigurationService.getString("news.feedURL");
 	private final static String STATE_WEB_CONTENT_TITLES = "webcontenttitles";
 	private final static String STATE_WEB_CONTENT_URLS = "wcUrls";
@@ -1190,10 +1190,10 @@ public class SiteAction extends PagedResourceActionII
 				context.put("roles", roles);
 				
             // Note that (for now) these strings are in both sakai.properties and sitesetupgeneric.properties
-				context.put("noEmailInIdAccountName", ServerConfigurationService.getString("noEmailInIdAccountName"));
-				context.put("noEmailInIdAccountLabel", ServerConfigurationService.getString("noEmailInIdAccountLabel"));
-				context.put("emailInIdAccountName", ServerConfigurationService.getString("emailInIdAccountName"));
-				context.put("emailInIdAccountLabel", ServerConfigurationService.getString("emailInIdAccountLabel"));
+				context.put("noEmailInIdAccountName", rb.getString("noEmailInIdAccountName"));
+				context.put("noEmailInIdAccountLabel", rb.getString("noEmailInIdAccountLabel"));
+				context.put("emailInIdAccountName", rb.getString("emailInIdAccountName"));
+				context.put("emailInIdAccountLabel", rb.getString("emailInIdAccountLabel"));
 				
 				if(state.getAttribute("noEmailInIdAccountValue")!=null)
 				{
@@ -2463,10 +2463,10 @@ public class SiteAction extends PagedResourceActionII
 			* buildContextForTemplate chef_site-sitemanage-addParticipant.vm 
 			*/
          // Note that (for now) these strings are in both sakai.properties and sitesetupgeneric.properties
-			context.put("noEmailInIdAccountName", ServerConfigurationService.getString("noEmailInIdAccountName"));
-			context.put("noEmailInIdAccountLabel", ServerConfigurationService.getString("noEmailInIdAccountLabel"));
-			context.put("emailInIdAccountName", ServerConfigurationService.getString("emailInIdAccountName"));
-			context.put("emailInIdAccountLabel", ServerConfigurationService.getString("emailInIdAccountLabel"));
+			context.put("noEmailInIdAccountName", rb.getString("noEmailInIdAccountName"));
+			context.put("noEmailInIdAccountLabel", rb.getString("noEmailInIdAccountLabel"));
+			context.put("emailInIdAccountName", rb.getString("emailInIdAccountName"));
+			context.put("emailInIdAccountLabel", rb.getString("emailInIdAccountLabel"));
 			
 			try
 			{
@@ -2603,7 +2603,7 @@ public class SiteAction extends PagedResourceActionII
 			context.put("form_additional", siteInfo.additional);
 			context.put("form_title", siteInfo.title);
 			context.put("form_description", siteInfo.description);
-			context.put("noEmailInIdAccountName", ServerConfigurationService.getString("noEmailInIdAccountName", ""));
+			context.put("noEmailInIdAccountName", rb.getString("noEmailInIdAccountName", ""));
 			context.put("value_uniqname", state.getAttribute(STATE_SITE_QUEST_UNIQNAME));
 			int number = 1;
 			if (state.getAttribute(STATE_MANUAL_ADD_COURSE_NUMBER) != null)
@@ -4954,7 +4954,7 @@ public class SiteAction extends PagedResourceActionII
 					// if a future term is selected, do not check authorization uniqname 
 					if (uniqname == null)
 					{
-						addAlert(state, rb.getString("java.author") + " " + ServerConfigurationService.getString("noEmailInIdAccountName") + ". "); 
+						addAlert(state, rb.getString("java.author") + " " + rb.getString("noEmailInIdAccountName") + ". "); 
 					}
 					else
 					{
@@ -4964,7 +4964,7 @@ public class SiteAction extends PagedResourceActionII
 						}
 						catch (IdUnusedException e)
 						{
-							addAlert(state, rb.getString("java.validAuthor1")+" "+ ServerConfigurationService.getString("noEmailInIdAccountName") + " "+ rb.getString("java.validAuthor2"));
+							addAlert(state, rb.getString("java.validAuthor1")+" "+ rb.getString("noEmailInIdAccountName") + " "+ rb.getString("java.validAuthor2"));
 						}
 					}
 				}
@@ -5712,7 +5712,7 @@ public class SiteAction extends PagedResourceActionII
 		}
 		else
 		{
-			String noEmailInIdAccountName = ServerConfigurationService.getString("noEmailInIdAccountName", "");
+			String noEmailInIdAccountName = rb.getString("noEmailInIdAccountName", "");
 			
 			SiteInfo siteInfo = (SiteInfo)state.getAttribute(STATE_SITE_INFO);
 			
@@ -7063,7 +7063,7 @@ public class SiteAction extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ()); 
 		ParameterParser params = data.getParameters ();
 		
-		String emailInIdAccountName = ServerConfigurationService.getString("emailInIdAccountName", "");
+		String emailInIdAccountName = rb.getString("emailInIdAccountName", "");
 		
 		String index = state.getAttribute(STATE_TEMPLATE_INDEX).toString();
 		
@@ -10529,7 +10529,7 @@ public class SiteAction extends PagedResourceActionII
 		int i;
 		
 		//accept noEmailInIdAccounts and/or emailInIdAccount account names
-		String emailInIdAccountName = ServerConfigurationService.getString("emailInIdAccountName", "");
+		String emailInIdAccountName = rb.getString("emailInIdAccountName", "");
 		String noEmailInIdAccounts = null;
 		String emailInIdAccounts = null;
 		
@@ -10821,7 +10821,7 @@ public class SiteAction extends PagedResourceActionII
 		{
 			String productionSiteName = ServerConfigurationService.getString("ui.service", "");
 			String productionSiteUrl = ServerConfigurationService.getPortalUrl();
-			String emailInIdAccountUrl = ServerConfigurationService.getString("emailInIdAccount.url", null);
+			String emailInIdAccountUrl = rb.getString("emailInIdAccount.url", null);
 			String to = emailId;
 			String headerTo = emailId;
 			String replyTo = emailId;
@@ -10838,7 +10838,7 @@ public class SiteAction extends PagedResourceActionII
          	buf.append(UserDirectoryService.getCurrentUser().getDisplayName() + ". \n\n");
 			if (newEmailInIdAccount)
 			{
-				buf.append(ServerConfigurationService.getString("emailInIdAccountInstru", "") + "\n");
+				buf.append(rb.getString("emailInIdAccountInstru", "") + "\n");
 				
 				if (emailInIdAccountUrl != null)
 				{
@@ -11536,9 +11536,9 @@ public class SiteAction extends PagedResourceActionII
 		String[] iconSkins = null;
 		
 		//get icon information
-		if (ServerConfigurationService.getStrings("iconNames") != null)
+		if (rb.getStrings("iconNames") != null)
 		{
-			iconNames = ServerConfigurationService.getStrings("iconNames");
+			iconNames = rb.getStrings("iconNames");
 		}
 		if (ServerConfigurationService.getStrings("iconUrls") != null)
 		{

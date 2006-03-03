@@ -8302,17 +8302,17 @@ public class ResourcesAction
 		
 		if (state.getAttribute(COPYRIGHT_TYPES) == null)
 		{
-			if (ServerConfigurationService.getStrings("copyrighttype") != null)
+			if (rb.getStrings("copyrighttype") != null)
 			{
-				state.setAttribute(COPYRIGHT_TYPES, new ArrayList(Arrays.asList(ServerConfigurationService.getStrings("copyrighttype"))));
+				state.setAttribute(COPYRIGHT_TYPES, new ArrayList(Arrays.asList(rb.getStrings("copyrighttype"))));
 			}
 		}
 		
 		if (state.getAttribute(DEFAULT_COPYRIGHT) == null)
 		{
-			if (ServerConfigurationService.getString("default.copyright") != null)
+			if (rb.getString("default.copyright") != null)
 			{
-				state.setAttribute(DEFAULT_COPYRIGHT, ServerConfigurationService.getString("default.copyright"));
+				state.setAttribute(DEFAULT_COPYRIGHT, rb.getString("default.copyright"));
 			}
 		}
 		
@@ -8342,17 +8342,17 @@ public class ResourcesAction
 		
 		if (state.getAttribute(COPYRIGHT_SELF_COPYRIGHT) == null)
 		{
-			if (ServerConfigurationService.getString("copyrighttype.own") != null)
+			if (rb.getString("copyrighttype.own") != null)
 			{
-				state.setAttribute(COPYRIGHT_SELF_COPYRIGHT, ServerConfigurationService.getString("copyrighttype.own"));
+				state.setAttribute(COPYRIGHT_SELF_COPYRIGHT, rb.getString("copyrighttype.own"));
 			}
 		}
 		
 		if (state.getAttribute(COPYRIGHT_NEW_COPYRIGHT) == null)
 		{
-			if (ServerConfigurationService.getString("copyrighttype.new") != null)
+			if (rb.getString("copyrighttype.new") != null)
 			{
-				state.setAttribute(COPYRIGHT_NEW_COPYRIGHT, ServerConfigurationService.getString("copyrighttype.new"));
+				state.setAttribute(COPYRIGHT_NEW_COPYRIGHT, rb.getString("copyrighttype.new"));
 			}
 		}
 		
