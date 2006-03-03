@@ -12,7 +12,7 @@ h1 Title || a style h1 heading (major heading)
 h3 Title || a style h3 heading (minor heading)
 - text || a list item (with -), several lines create a single list
 * text || a list item (with *)
-1. text || an enumerated list
+# text || an enumerated list
 a. text || alphabetical enumerated list
 A. text || uppercase alphabetical enumerated list
 i. text || roman enumerated list
