@@ -26,7 +26,9 @@ package org.sakaiproject.test;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.PropertyResourceBundle;
 
 import junit.framework.TestCase;
@@ -127,7 +129,7 @@ public abstract class SakaiTestBase extends TestCase {
 	 * 
 	 * @return The service, or null if the ID is not registered
 	 */
-	protected Object getService(String beanId) {
+	public static final Object getService(String beanId) {
 		return org.sakaiproject.api.kernel.component.cover.ComponentManager.get(beanId);
 	}
 
@@ -137,7 +139,7 @@ public abstract class SakaiTestBase extends TestCase {
 	 * 
 	 * @param userUid The user to become
 	 */
-	protected void setUser(String userUid) {
+	public static final void setUser(String userUid) {
 		Session session = SessionManager.getCurrentSession();
 		session.setUserId(userUid);
 	}
@@ -151,4 +153,18 @@ public abstract class SakaiTestBase extends TestCase {
 	protected String generateSiteId() {
 		return "site-" + getClass().getName() + "-" + Math.floor(Math.random()*100000);
 	}
+	
+	/**
+	 * Returns a dynamic proxy for a service interface.  Useful for testing with
+	 * customized service implementations without needing to write custom stubs.
+	 * 
+	 * @param clazz The service interface class
+	 * @param handler The invocation handler that defines how the dynamic proxy should behave
+	 * 
+	 * @return The dynamic proxy to use as a collaborator
+	 */
+	public static final Object getServiceProxy(Class clazz, InvocationHandler handler) {
+		return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[] {clazz}, handler);
+	}
+
 }
