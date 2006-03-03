@@ -3687,9 +3687,59 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 	public String getUrl(String id)
 	{
 		// escape just the is part, not the access point
-		return getAccessPoint(false) + Validator.escapeUrl(id);
+		return getUrl(id, PROP_ALTERNATE_REFERENCE); // getAccessPoint(false) + Validator.escapeUrl(id);
 
 	} // getUrl
+
+	/**
+	 * Access the alternate URL which can be used to access the entity.
+	 * 
+	 * @param id
+	 *        The resource id.
+	 * @param rootProperty
+	 * 		 The name of the entity property whose value controls which alternate reference URL is requested. If null, the native 'raw' URL is requested. 
+	 * @return The resource URL.
+	 */
+	public String getUrl(String id, String rootProperty)
+	{
+		// escape just the is part, not the access point
+		// return getAccessPoint(false) + Validator.escapeUrl(id);
+		return m_serverConfigurationService.getAccessUrl() + getAlternateReferenceRoot(id, rootProperty) + m_relativeAccessPoint + Validator.escapeUrl(id);
+
+	} // getUrl
+	
+	/**
+	 * Compute an alternate root for a reference, based on the value of the specified property.
+	 * @param rootProperty The property name.
+	 * @return The alternate root, or "" if there is none.
+	 */
+	protected String getAlternateReferenceRoot(String id, String rootProperty)
+	{
+		// null means don't do this
+		if (rootProperty == null) return "";
+
+		// find the property - "" if not found
+		String alternateRoot = null;
+		try 
+		{
+			alternateRoot = StringUtil.trimToNull(getProperties(id).getProperty(rootProperty));
+		} 
+		catch (PermissionException e) 
+		{
+			// ignore
+		} 
+		catch (IdUnusedException e) 
+		{
+			// ignore
+		}
+		if (alternateRoot == null) return "";
+
+		// make sure it start with a separator and does not end with one
+		if (!alternateRoot.startsWith(Entity.SEPARATOR)) alternateRoot = Entity.SEPARATOR + alternateRoot;
+		if (alternateRoot.endsWith(Entity.SEPARATOR)) alternateRoot = alternateRoot.substring(0, alternateRoot.length() - Entity.SEPARATOR.length());
+		
+		return alternateRoot;
+	}
 
 	/**
 	 * Access the internal reference from a resource id.

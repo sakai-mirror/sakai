@@ -72,6 +72,15 @@ public class ContentHostingService
 		return service.getUrl(param0);
 	}
 
+	public static java.lang.String getUrl(java.lang.String param0, java.lang.String param1)
+	{
+		org.sakaiproject.service.legacy.content.ContentHostingService service = getInstance();
+		if (service == null)
+			return null;
+
+		return service.getUrl(param0, param1);
+	}
+
    /**
     *
     * @param id id of the resource to set the UUID for

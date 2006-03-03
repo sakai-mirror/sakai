@@ -1007,7 +1007,7 @@ public class ResourcesAction
 						ResourceProperties properties = ref.getProperties();
 						String displayName = properties.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 						String containerId = ref.getContainer();
-						String accessUrl = ref.getUrl();
+						String accessUrl = ContentHostingService.getUrl(itemId);
 						String contentType = properties.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
 						
 						AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
@@ -2886,6 +2886,7 @@ public class ResourcesAction
 					resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
 					resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
 					resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, item.getFormtype());
+					resourceProperties.addProperty(ContentHostingService.PROP_ALTERNATE_REFERENCE, org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
 					List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
 					saveMetadata(resourceProperties, metadataGroups, item);
 					String filename = Validator.escapeResourceName(item.getName()).trim();
@@ -3765,7 +3766,7 @@ public class ResourcesAction
 					}
 					
 					String containerId = ContentHostingService.getContainingCollectionId (attachment.getId());
-					String accessUrl = ContentHostingService.getUrl(attachment.getId());
+					String accessUrl = attachment.getUrl();
 					
 					AttachItem item = new AttachItem(attachment.getId(), filename, containerId, accessUrl);
 					item.setContentType(contentType);
@@ -3865,7 +3866,7 @@ public class ResourcesAction
 			}
 			
 			String containerId = ContentHostingService.getContainingCollectionId (attachment.getId());
-			String accessUrl = ContentHostingService.getUrl(attachment.getId());
+			String accessUrl = attachment.getUrl();
 			
 			AttachItem item = new AttachItem(attachment.getId(), url, containerId, accessUrl);
 			item.setContentType(ResourceProperties.TYPE_URL);
@@ -4158,7 +4159,7 @@ public class ResourcesAction
 				
 				String displayName = newprops.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
 				String containerId = contentService.getContainingCollectionId (attachment.getId());
-				String accessUrl = contentService.getUrl(attachment.getId());
+				String accessUrl = attachment.getUrl();
 						
 				AttachItem item = new AttachItem(attachment.getId(), displayName, containerId, accessUrl);
 				item.setContentType(contentType);
@@ -4270,7 +4271,7 @@ public class ResourcesAction
 				
 				String displayName = props.getPropertyFormatted(ResourceProperties.PROP_DISPLAY_NAME);
 				String containerId = contentService.getContainingCollectionId (itemId);
-				String accessUrl = contentService.getUrl(itemId);
+				String accessUrl = res.getUrl();
 						
 				AttachItem item = new AttachItem(itemId, displayName, containerId, accessUrl);
 				item.setContentType(contentType);
@@ -5289,7 +5290,7 @@ public class ResourcesAction
 						try
 						{
 							ContentResource referedResource= ContentHostingService.getResource (currentPasteItem);
-							ContentResource newResource = ContentHostingService.addResource (id, ResourceProperties.TYPE_URL, referedResource.getUrl ().getBytes (), resourceProperties, NotificationService.NOTI_NONE);
+							ContentResource newResource = ContentHostingService.addResource (id, ResourceProperties.TYPE_URL, referedResource.getUrl().getBytes (), resourceProperties, NotificationService.NOTI_NONE);
 						}
 						catch (InconsistentException e)
 						{
@@ -5440,6 +5441,7 @@ public class ResourcesAction
 				// assume isCollection is false if property is not set
 			}
 
+			ContentResource resource = null;
 			String itemType = "";
 			byte[] content = null;
 			if(isCollection)
@@ -5448,7 +5450,7 @@ public class ResourcesAction
 			}
 			else
 			{
-				ContentResource resource = ContentHostingService.getResource(id);
+				resource = ContentHostingService.getResource(id);
 				itemType = resource.getContentType();
 				content = resource.getContent();
 			}

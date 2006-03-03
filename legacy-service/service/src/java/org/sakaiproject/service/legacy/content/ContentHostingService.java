@@ -937,6 +937,17 @@ public interface ContentHostingService extends EntityProducer
 	public String getUrl(String id);
 
 	/**
+	 * Access the alternate URL which can be used to access the entity.
+	 * 
+	 * @param id
+	 *        The resource id.
+	 * @param rootProperty
+	 * 		 The name of the entity property whose value controls which alternate reference URL is requested. If null, the native 'raw' URL is requested. 
+	 * @return The resource URL.
+	 */
+	public String getUrl(String id, String rootProperty);
+
+	/**
 	 * Access the internal reference from a resource id.
 	 * 
 	 * @param id
