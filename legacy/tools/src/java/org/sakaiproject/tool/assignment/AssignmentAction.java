@@ -2964,15 +2964,11 @@ extends PagedResourceActionII
 
 		if (params.getString (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK)!=null && params.getString (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK).equalsIgnoreCase (Boolean.TRUE.toString ()))
 		{
+			state.setAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, Boolean.TRUE.toString ());
 			if (gradeType != Assignment.SCORE_GRADE_TYPE)
 			{
 				// gradebook integration only available to point-grade assignment
 				addAlert(state, rb.getString("addtogradebook.wrongGradeScale"));
-				state.setAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, Boolean.FALSE.toString ());
-			}
-			else
-			{
-				state.setAttribute (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, Boolean.TRUE.toString ());
 			}
 		}
 		else
