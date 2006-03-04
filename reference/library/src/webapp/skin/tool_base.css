@@ -287,6 +287,12 @@ span.abc a, span.abc a:link  {
 	line-height:1.2em;
 	margin:1em 
 } 
+
+.clear {
+	margin: 3em 0;
+	clear: both;
+}
+
 /*validation message - overrides other rules in effect*/
 .validation  { 
 /*	background-color:#FFC  !important;
