@@ -12,6 +12,7 @@
                 <script type="text/javascript" src="/sakai-rwiki/scripts/logger.js"> </script>
                 <link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet"
                     media="all"/>
+                <link type="application/rss+xml" href="/access/wiki{/entity-service/entity/properties/property[@name='name']}.10.rss" title="Sakai Wiki RSS" rel="alternate"/>
                 <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"/>
             </head>
             <body>
