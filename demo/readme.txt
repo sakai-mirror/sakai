@@ -1,20 +1,20 @@
-Sakai 2.0.0 readme.txt
+Sakai 2.x readme.txt
 
 
 Starting the demo
 -----------------------------------------------------
 
-1) change directory to this sakai-demo folder.
+1) Change directory to this sakai-demo folder.
 
-2) start up tomcat:
+2) Start up tomcat:
 
 <windows>
 
-      bin\catalina start
+      start-sakai.bat
 
 <mac, linux>
 
-      bin/catalina.sh start
+      ./start-sakai.sh
 
 
 Logs from the demo
@@ -48,11 +48,11 @@ Stopping the demo
 
 <windows>
 
-      bin\catalina stop
+      stop-sakai.bat
 
 <mac, linux>
 
-      bin/catalina.sh stop
+      ./stop-sakai.sh
 
 
 Data from the demo
@@ -89,14 +89,3 @@ Problems getting started
 
 2) Sakai's Tomcat will find itself relative to the startup directory.  Always start it from the sakai-demo folder.
    If you have an environment variable CATALINA_HOME set to another Tomcat, this will interfere with Sakai's startup.
-
-
-Problems running
------------------------------------------------------
-
-1) memory
-
-There is no default setting of java memory in Tomcat.  You have to provide this.  The easiest way is to provide a system
-environment variable, JAVA_OPTS.  Give Sakai / Tomcat some memory to work with.  "-server" mode is good, too.
-
-JAVA_OPTS=-server -Xms512m -Xmx512m -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps

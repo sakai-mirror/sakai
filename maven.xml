@@ -40,6 +40,12 @@
 				<exclude name="CVS/**"/>
 			</fileset>
 		</copy>
+
+		<copy file="${basedir}/demo/bin/start-sakai.bat" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/start-sakai.bat" />
+		<copy file="${basedir}/demo/bin/start-sakai.sh" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/start-sakai.sh" />
+		<copy file="${basedir}/demo/bin/stop-sakai.bat" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/stop-sakai.bat" />
+		<copy file="${basedir}/demo/bin/stop-sakai.sh" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/stop-sakai.sh" />
+
 		<delete file="${basedir}/target/demo/jakarta-tomcat-5.5.9/licenses/.project" />
 		<ant:copy file="${basedir}/sakai_license_1_0.txt" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai_license_1_0.txt" overwrite="true" />
 		<ant:copy file="${basedir}/sakai_license_1_0.html" tofile="${basedir}/target/demo/jakarta-tomcat-5.5.9/sakai_license_1_0.html" overwrite="true" />
@@ -59,6 +65,9 @@
 			</filterset>
 		</copy>
 
+		<!-- makes all ".sh" files readable and executable for anyone on a UNIX system  -->
+		<chmod dir="${basedir}/target/demo" perm="ugo+rx" includes="**/*.sh"/>
+
 		<!-- zip it -->
 		<delete file="sakai-demo.zip" />
 		<zip destfile="sakai-demo.zip" compress="yes" >
@@ -67,18 +76,15 @@
 		<ant:echo>* * * sakai-demo.zip</ant:echo>
 
 		<!-- tar it -->
-		<delete file="sakai-demo.tar" />
 		<delete file="sakai-demo.tar.gz" />
-		<tar destfile="sakai-demo.tar" longfile="gnu" >
+		<tar destfile="sakai-demo.tar.gz" longfile="gnu" compression="gzip">
 			<tarfileset dir="${maven.tomcat.home}" mode="755" prefix="sakai-demo">
-				<include name="bin/*.sh"/>
+				<include name="**/*.sh"/>
 			</tarfileset>
 			<tarfileset dir="${maven.tomcat.home}" prefix="sakai-demo">
-				<exclude name="bin/*.sh"/>
+				<exclude name="**/*.sh"/>
 			</tarfileset>
 		</tar>
-		<gzip zipfile="sakai-demo.tar.gz" src="sakai-demo.tar"/>
-		<delete file="sakai-demo.tar" />
 		<ant:echo>* * * sakai-demo.tar.gz</ant:echo>
 
 		<delete dir="${basedir}/target/demo"/>
