@@ -1,3 +1,4 @@
+package uk.ac.cam.caret.sakai.rwiki.component.macros;
 /**********************************************************************************
  *
  * $Header$
@@ -20,7 +21,6 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  **********************************************************************************/
-package uk.ac.cam.caret.sakai.rwiki.component.macros;
 
 
 import java.io.IOException;
@@ -98,4 +98,3 @@ public class BackgroundColorMacro extends BaseMacro {
 	}
 
 
-}
