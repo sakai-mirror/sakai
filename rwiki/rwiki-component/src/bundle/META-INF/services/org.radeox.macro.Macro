@@ -7,3 +7,5 @@ uk.ac.cam.caret.sakai.rwiki.component.macros.SakaiLinkMacro
 uk.ac.cam.caret.sakai.rwiki.component.macros.BlockMacro
 uk.ac.cam.caret.sakai.rwiki.component.macros.AnchorMacro
 uk.ac.cam.caret.sakai.rwiki.component.macros.SectionsMacro
+uk.ac.cam.caret.sakai.rwiki.component.macros.ColorMacro
+uk.ac.cam.caret.sakai.rwiki.component.macros.BackgroundColorMacro
