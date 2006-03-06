@@ -3,11 +3,9 @@
  */
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import org.apache.xml.serializer.ToXMLStream;
-import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**

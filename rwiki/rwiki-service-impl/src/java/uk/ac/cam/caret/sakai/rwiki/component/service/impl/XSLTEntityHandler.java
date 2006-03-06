@@ -25,7 +25,6 @@ package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.java.StringUtil;
-import org.sakaiproject.util.text.FormattedText;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -62,10 +60,10 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.RenderService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiEntity;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.utils.DebugContentHandler;
+import uk.ac.cam.caret.sakai.rwiki.utils.DigestHtml;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 import uk.ac.cam.caret.sakai.rwiki.utils.SchemaNames;
 import uk.ac.cam.caret.sakai.rwiki.utils.SimpleCoverage;
-import uk.ac.cam.caret.sakai.rwiki.utils.DigestHtml;
 
 /**
  * Provides a XSLT Based entity handler. It will serialise the an RWikiObject
