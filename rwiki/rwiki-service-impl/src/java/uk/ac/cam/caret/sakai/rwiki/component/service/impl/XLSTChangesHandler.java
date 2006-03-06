@@ -70,7 +70,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 			return;
 
 		try {
-			PrintWriter pw = res.getWriter();
+			
 			Map rheaders = getResponseHeaders();
 			if (rheaders != null) {
 				for (Iterator i = rheaders.keySet().iterator(); i.hasNext();) {
@@ -81,8 +81,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 				}
 
 			}
-
-			ContentHandler opch = getOutputHandler(pw);
+			ContentHandler opch = getOutputHandler(res.getOutputStream());
 			ContentHandler ch = null;
 			if (false) {
 				ch = new DebugContentHandler(opch);

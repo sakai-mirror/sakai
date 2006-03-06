@@ -24,6 +24,7 @@
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.Writer;
@@ -168,13 +169,12 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * 
 	 * 
 	 */
-	public void outputContent(Entity entity, HttpServletRequest request,
-			HttpServletResponse res) {
+	public void outputContent(final Entity entity, final HttpServletRequest request,
+			final HttpServletResponse res) {
 		if (!(entity instanceof RWikiEntity))
 			return;
 
-		try {
-			PrintWriter pw = res.getWriter();
+		try {		
 
 			if (responseHeaders != null) {
 				for (Iterator i = responseHeaders.keySet().iterator(); i
@@ -187,14 +187,16 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 			}
 
-			ContentHandler opch = getOutputHandler(pw);
+			OutputStream out = res.getOutputStream();
+
+			ContentHandler opch = getOutputHandler(out);
 			ContentHandler ch = null;
 			if (false) {
 				ch = new DebugContentHandler(opch);
 			} else {
 				ch = opch;
 			}
-
+			
 			Attributes dummyAttributes = new AttributesImpl();
 
 			ch.startDocument();
@@ -637,6 +639,35 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			 */
 		}
 	}
+	
+	public ContentHandler getOutputHandler(OutputStream out) throws IOException {
+		try {
+			XSLTTransform xsltTransform = (XSLTTransform) transformerHolder
+					.get();
+			if (xsltTransform == null) {
+				xsltTransform = new XSLTTransform();
+				xsltTransform.setXslt(new InputSource(this.getClass()
+						.getResourceAsStream(xslt)));
+				transformerHolder.set(xsltTransform);
+			}
+			ContentHandler ch = xsltTransform.getOutputHandler(out,
+					outputProperties);
+			return ch;
+		} catch (Exception ex) {
+			// XXX Hmm I don't like this but I'm not sure what the correct way to handle this is
+			throw new RuntimeException("Failed to create Content Handler", ex);
+			/*
+			 * String stackTrace = null; try { StringWriter exw = new
+			 * StringWriter(); PrintWriter pw = new PrintWriter(exw);
+			 * ex.printStackTrace(pw); stackTrace = exw.toString(); } catch
+			 * (Exception ex2) { stackTrace =
+			 * MessageFormat.format(defaultStackTrace, new Object[] {
+			 * ex.getMessage() }); } out.write(MessageFormat.format(errorFormat,
+			 * new Object[] { ex.getMessage(), stackTrace }));
+			 */
+		}
+	}
+	
 
 	// Need to configure components correctly.
 

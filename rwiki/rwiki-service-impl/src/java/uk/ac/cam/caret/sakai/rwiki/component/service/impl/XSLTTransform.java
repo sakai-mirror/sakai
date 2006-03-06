@@ -23,18 +23,25 @@
 
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
 
+import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TemplatesHandler;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.xml.serializer.Serializer;
+import org.apache.xalan.templates.OutputProperties;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -80,20 +87,52 @@ public class XSLTTransform {
 	 * @return a content handler configured to produce output
 	 * @throws Exception
 	 */
-	public ContentHandler getOutputHandler(Writer out, Map outputProperties) throws Exception {
+	public ContentHandler getOutputHandler(Writer out, Map outputProperties)
+			throws Exception {
 		TransformerHandler saxTH = factory.newTransformerHandler(templates);
 		Result r = new StreamResult(out);
-		if ( outputProperties != null ) {
+		if (outputProperties != null) {
 			Transformer trans = saxTH.getTransformer();
-			for ( Iterator i = outputProperties.keySet().iterator(); i.hasNext(); ) {
+			for (Iterator i = outputProperties.keySet().iterator(); i.hasNext();) {
 				String name = (String) i.next();
 				String value = (String) outputProperties.get(name);
 				trans.setOutputProperty(name, value);
-				
+
 			}
-			
-			//String s = OutputKeys.INDENT;
+
+			// String s = OutputKeys.INDENT;
 		}
+		saxTH.setResult(r);
+		return saxTH;
+	}
+
+	public ContentHandler getOutputHandler(OutputStream out,
+			final Map outputProperties) throws Exception {
+
+		TransformerHandler saxTH = factory.newTransformerHandler(templates);
+		Properties p = OutputPropertiesFactory
+				.getDefaultMethodProperties("xml");
+		p.putAll(outputProperties);
+
+		Serializer serializer = null;
+
+		String className = p
+				.getProperty(OutputProperties.S_KEY_CONTENT_HANDLER);
+
+		if (null == className) {
+			throw new IllegalArgumentException(
+					"The output format must have a '"
+							+ OutputProperties.S_KEY_CONTENT_HANDLER
+							+ "' property!");
+		}
+
+		serializer = (Serializer) Class.forName(className).newInstance();
+		serializer.setOutputFormat(p);
+		
+		serializer.setOutputStream(out);
+
+		Result r = new SAXResult(serializer.asContentHandler());
+
 		saxTH.setResult(r);
 		return saxTH;
 	}
