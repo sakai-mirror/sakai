@@ -1123,27 +1123,51 @@
 			if(newValue == true)
 			{
 				caller.title = "$tlang.getString("list.unselect")";
-				document.getElementById("removeButton").disabled = false;
-				document.getElementById("removeButton").className = 'enabled';
-				document.getElementById("removeCount").value = "$removeCount";
-				document.getElementById("moveButton").disabled = false;
-				document.getElementById("moveButton").className = 'enabled';
-				document.getElementById("moveCount").value = "$moveCount";
-				document.getElementById("copyButton").disabled = false;
-				document.getElementById("copyButton").className='enabled';
+				var copyButton = document.getElementById("copyButton");
+				if(copyButton)
+				{
+					copyButton.disabled = false;
+					copyButton.className='enabled';
+				}
+				var moveButton = document.getElementById("moveButton");
+				if(moveButton)
+				{
+					moveButton.disabled = false;
+					moveButton.className = 'enabled';
+				}
+				var removeButton = document.getElementById("removeButton");
+				if(removeButton)
+				{
+					removeButton.disabled = false;
+					removeButton.className = 'enabled';
+				}
 				document.getElementById("copyCount").value = "$copyCount";
+				document.getElementById("moveCount").value = "$moveCount";
+				document.getElementById("removeCount").value = "$removeCount";
 			}
 			else
 			{
 				caller.title = "$tlang.getString("list.select")";
-				document.getElementById("removeButton").disabled = true;
-				document.getElementById("removeButton").className = 'disabled';
+				var copyButton = document.getElementById("copyButton");
+				if(copyButton)
+				{
+					copyButton.disabled = true;
+					copyButton.className='disabled';
+				}
+				var moveButton = document.getElementById("moveButton");
+				if(moveButton)
+				{
+					moveButton.disabled = true;
+					moveButton.className = 'disabled';
+				}
+				var removeButton = document.getElementById("removeButton");
+				if(removeButton)
+				{
+					removeButton.disabled = true;
+					removeButton.className = 'disabled';
+				}
 				document.getElementById("removeCount").value = "0";
-				document.getElementById("moveButton").disabled = true;
-				document.getElementById("moveButton").className = 'disabled';
 				document.getElementById("moveCount").value = "0";
-				document.getElementById("copyButton").disabled = true;
-				document.getElementById("copyButton").className = 'disabled';
 				document.getElementById("copyCount").value = "0";
 			}
 		}
