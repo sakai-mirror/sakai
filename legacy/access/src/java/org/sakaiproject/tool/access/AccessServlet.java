@@ -258,6 +258,7 @@ public class AccessServlet extends VmServlet
 							+ "&" + COPYRIGHT_ACCEPT_URL + "=" + returnPath);
 
 			setVmReference("accept", acceptPath, req);
+			res.setContentType("text/html; charset=UTF-8");
 			includeVm("/vm/access/copyrightAlert.vm", req, res);
 			return;		
 		}
@@ -398,6 +399,7 @@ public class AccessServlet extends VmServlet
 		setVmReference("validator", new Validator(), req);
 		setVmReference("sample", Boolean.TRUE.toString(), req);
 		setVmReference("tlang", rb, req);
+		res.setContentType("text/html; charset=UTF-8");
 		includeVm("/vm/access/copyrightAlert.vm", req, res);
 	}
 
