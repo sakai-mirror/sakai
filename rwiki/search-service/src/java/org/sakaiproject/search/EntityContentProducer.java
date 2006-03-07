@@ -67,6 +67,12 @@ public interface EntityContentProducer {
 	 * @return
 	 */
 	String getTitle(Entity cr);
+	/**
+	 * Gets the url that displays the entity
+	 * @param entity
+	 * @return
+	 */
+	String getUrl(Entity entity);
 
 	/**
 	 * If the reference matches this EntityContentProducer return true
@@ -86,5 +92,6 @@ public interface EntityContentProducer {
 	boolean matches(Event event);
 
 	String getTool();
+
 
 }

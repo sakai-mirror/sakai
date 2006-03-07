@@ -93,6 +93,10 @@ public class RWikiEntityContentProducer implements EntityContentProducer {
 	public String getTool() {
 		return "Wiki";
 	}
+
+	public String getUrl(Entity entity) {
+		return entity.getUrl()+"html";
+	}
 	
 	
 

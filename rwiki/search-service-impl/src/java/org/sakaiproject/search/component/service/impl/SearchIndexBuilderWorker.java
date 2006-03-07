@@ -312,7 +312,6 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 					doc.add(Field.Keyword("type", ref.getType()));
 					doc.add(Field.Keyword("subtype", ref.getSubType()));
 					doc.add(Field.Keyword("reference", ref.getReference()));
-					doc.add(Field.Keyword("url", ref.getUrl()));
 					Collection c = ref.getRealms();
 					for (Iterator ic = c.iterator(); ic.hasNext();) {
 						String realm = (String) ic.next();
@@ -332,7 +331,14 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 							doc.add(Field.Text("title", sep.getTitle(entity),
 									true));
 							doc.add(Field.Keyword("tool", sep.getTool()));
+							doc.add(Field.Keyword("url", sep.getUrl(entity)));
 
+						} else {
+							doc.add(Field.Text("title", ref.getReference(),
+									true));
+							doc.add(Field.Keyword("tool", ref.getType()));
+							doc.add(Field.Keyword("url", ref.getUrl()));
+							
 						}
 					} catch (Exception e1) {
 						e1.printStackTrace();
