@@ -21,63 +21,46 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.search;
+package org.sakaiproject.search.model;
 
-import java.util.Map;
+import java.util.Date;
 
 /**
  * @author ieb
  *
  */
-public interface SearchResult {
-
-	/**
-	 * the result score
-	 * @return
-	 */
-	float getScore();
-
-	/**
-	 * The result ID (entity id)
-	 * @return
-	 */
+public interface SearchWriterLock {
 	String getId();
-
+	void setId(String id);
 	/**
-	 * All field names in the search record
+	 * Optimistic locking version
 	 * @return
 	 */
-	String[] getFieldNames();
-
+	Date getVersion();
 	/**
-	 * All values in a search field
-	 * @param string
+	 * the name of the node holding the lock
 	 * @return
 	 */
-	String[] getValues(String string);
+	String getNodename();
+	/**
+	 * the name of the node holding the lock
+	 * @param nodeName
+	 */
+	void setNodename(String nodeName);
+	/**
+	 * The name of the lock
+	 * @param lockkey
+	 */
+	void setLockkey(String lockkey);
+	/**
+	 * The name of the lock
+	 * @return
+	 */
+	String getLockkey();
+	/**
+	 * Version
+	 * @param date
+	 */
+	void setVersion(Date date);
 	
-	/**
-	 * Get a map of values in the result
-	 * @return
-	 */
-	Map getValueMap();
-	
-	/**
-	 * An absolute URL to the resource (no host, protocol or port)
-	 * @return
-	 */
-	String getUrl();
-	
-	/**
-	 * The title of the resource, usually including the type (eg Wiki Page, Resource)
-	 * @return
-	 */
-	String getTitle();
-	
-	/**
-	 * get the index of the search entry over the whole change set
-	 * @return
-	 */
-	int getIndex();
-
 }

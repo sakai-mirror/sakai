@@ -53,6 +53,11 @@ public class ViewParamsHelperBean {
      * the requested search criteria
      */
     private String search;
+    
+    /**
+     * The search Page
+     */
+    private String searchPage = "0";
 
     /**
      * the current servlet request
@@ -111,6 +116,8 @@ public class ViewParamsHelperBean {
         globalName = NameHelper.globaliseName(pageName, localSpace);
         
         search = request.getParameter(SearchBean.SEARCH_PARAM);
+        
+        	searchPage = request.getParameter(SearchBean.PAGE_PARAM);
         
         content = request.getParameter(EditBean.CONTENT_PARAM);
         
@@ -321,6 +328,20 @@ public class ViewParamsHelperBean {
     public void setWithBreadcrumbs(String withBreadcrumbs) {
         this.withBreadcrumbs = withBreadcrumbs;
     }
+
+	/**
+	 * @return Returns the searchPage.
+	 */
+	public String getSearchPage() {
+		return searchPage;
+	}
+
+	/**
+	 * @param searchPage The searchPage to set.
+	 */
+	public void setSearchPage(String searchPage) {
+		this.searchPage = searchPage;
+	}
 
     
 }

@@ -284,28 +284,41 @@ public class LoaderComponentIntegrationTest extends SakaiTestBase {
 				logger.error("Problem ",ex);
 			}
 		}
-		waitForEmptyQueue();
+		while ( !searchIndexBuilder.isBuildQueueEmpty() ) {
+			Thread.sleep(5000);
+		}
+		searchIndexBuilder.destroy();
+		Thread.sleep(15000);
 	}
 
 	public void testRefreshIndex() throws Exception {
 		searchIndexBuilder.refreshIndex();
-		waitForEmptyQueue();
+		while ( !searchIndexBuilder.isBuildQueueEmpty() ) {
+			Thread.sleep(5000);
+		}
+		searchIndexBuilder.destroy();
+		Thread.sleep(15000);
 	}
 
 	public void testRebuildIndex() throws Exception {
 		searchIndexBuilder.rebuildIndex();
-		waitForEmptyQueue();
-	}
-
-	private void waitForEmptyQueue() {
-		while (!searchIndexBuilder.isBuildQueueEmpty()) {
-			try {
-				Thread.sleep(10000);
-			} catch (Exception ex) {
-				break;
-			}
+		while ( !searchIndexBuilder.isBuildQueueEmpty() ) {
+			Thread.sleep(5000);
 		}
-
+		searchIndexBuilder.destroy();
+		Thread.sleep(15000);
 	}
+	public void testRebuildIndexAndWait() throws Exception {
+		searchIndexBuilder.refreshIndex();
+		searchIndexBuilder.rebuildIndex();
+		searchIndexBuilder.refreshIndex();
+		Thread.sleep(15000);
+		while ( !searchIndexBuilder.isBuildQueueEmpty() ) {
+			Thread.sleep(5000);
+		}
+		searchIndexBuilder.destroy();
+		Thread.sleep(15000);
+	}
+
 
 }

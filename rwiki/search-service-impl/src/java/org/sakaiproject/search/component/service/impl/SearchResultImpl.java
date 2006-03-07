@@ -113,6 +113,17 @@ public class SearchResultImpl implements SearchResult {
 		}
 		return hm;
 	}
+	
+	public String getUrl() {
+		return doc.get("url");
+	}
+	public String getTitle() {
+		return doc.get("tool")+": "+doc.get("title");
+	}
+	
+	public int getIndex() {
+		return index;
+	}
 
 	public String getSearchResult() {
 		try {

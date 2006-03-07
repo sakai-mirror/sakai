@@ -34,7 +34,6 @@ import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.springframework.context.ApplicationContext;
 
-import sun.security.action.GetLongAction;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
@@ -232,6 +231,17 @@ public class RequestScopeSuperBean {
         }
         return (String) map.get(key);
     }
+    /**
+     * The currently requested page
+     * @return
+     */
+    public String getCurrentSearchPage() {
+        String key = "currentSearchPage";
+        if (map.get(key) == null) {
+            map.put(key, getNameHelperBean().getSearchPage());
+        }
+        return (String) map.get(key);
+    }
 
     public String getCurrentUser() {
         String key = "currentUser";
@@ -350,7 +360,7 @@ public class RequestScopeSuperBean {
     public FullSearchBean getFullSearchBean() {
         String key = "fullSearchBean";
         if (map.get(key) == null) {
-            FullSearchBean sb = new FullSearchBean(getCurrentSearch(),
+            FullSearchBean sb = new FullSearchBean(getCurrentSearch(), getCurrentSearchPage(),
                     getCurrentLocalSpace(), searchService);
             map.put(key, sb);
         }
@@ -360,13 +370,14 @@ public class RequestScopeSuperBean {
     public SearchBean getSearchBean() {
         String key = "searchBean";
         if (map.get(key) == null) {
-            SearchBean sb = new SearchBean(getCurrentSearch(),
+            SearchBean sb = new SearchBean(getCurrentSearch(), 
                     getCurrentLocalSpace(), objectService);
             map.put(key, sb);
         }
         return (SearchBean) map.get(key);
     }
 
+    
     public PermissionsBean getPermissionsBean() {
         String key = "permissionsBean";
         if (map.get(key) == null) {

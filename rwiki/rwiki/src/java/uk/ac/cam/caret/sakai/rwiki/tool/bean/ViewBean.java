@@ -92,6 +92,8 @@ public class ViewBean {
     protected static final String SEARCH_URL_ENCODED = 
         urlEncode(SearchBean.SEARCH_PARAM);
     
+    protected static final String PAGE_URL_ENCODED = 
+        urlEncode(SearchBean.PAGE_PARAM);
 
 
     protected static final String REALM_URL_ENCODED = 
@@ -116,6 +118,7 @@ public class ViewBean {
      * The current search criteria
      */
     private String search;
+
     
     /**
      * Simple constructor that creates an empty view bean.
@@ -372,16 +375,6 @@ public class ViewBean {
                 + PANEL_URL_ENCODED + "=" + MAIN_URL_ENCODED;
     }
     
-    /**
-     * get the Full Search action
-     * @return
-     */
-    protected String getFullSearchUrl() {
-        return "?" + ACTION_URL_ENCODED + "=" + urlEncode(WikiPageAction.FULL_SEARCH_ACTION.getName()) + "&"
-                + SEARCH_URL_ENCODED + "=" + urlEncode(search) + "&"
-                + REALM_URL_ENCODED + "=" + localSpace + "&"
-                + PANEL_URL_ENCODED + "=" + MAIN_URL_ENCODED;
-    }
 
     /**
      * The Globalised Page Name
@@ -495,6 +488,8 @@ public class ViewBean {
         this.search = search;
     }
     
+    
+    
     public String getNewCommentURL() {
         return getPageUrl(pageName,WikiPageAction.NEWCOMMENT_ACTION.getName());
         
@@ -541,5 +536,7 @@ public class ViewBean {
     		return ServerConfigurationService.getAccessUrl()+RWikiObjectService.REFERENCE_ROOT+pageName+".";
 
     }
+
+
 
 }

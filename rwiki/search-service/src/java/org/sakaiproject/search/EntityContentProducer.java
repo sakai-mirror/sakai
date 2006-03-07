@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.event.Event;
 
 /**
  * This is a special class than handles ContentResources for the purposes of search.
@@ -79,5 +80,11 @@ public interface EntityContentProducer {
 	 * @return
 	 */
 	List getAllContent();
+
+	Integer getAction(Event event);
+
+	boolean matches(Event event);
+
+	String getTool();
 
 }

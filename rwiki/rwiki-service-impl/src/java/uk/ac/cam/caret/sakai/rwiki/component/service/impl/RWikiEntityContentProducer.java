@@ -6,9 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.sakaiproject.search.EntityContentProducer;
+import org.sakaiproject.search.model.SearchBuilderItem;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.event.Event;
 
 import uk.ac.cam.caret.sakai.rwiki.component.model.impl.RWikiEntityImpl;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
@@ -71,5 +73,27 @@ public class RWikiEntityContentProducer implements EntityContentProducer {
 		}
 		return l;
 	}
+
+	public Integer getAction(Event event) {
+	    String eventName = event.getEvent();
+	    if ( RWikiObjectService.EVENT_RESOURCE_ADD.equals(eventName) ||
+	    		RWikiObjectService.EVENT_RESOURCE_WRITE.equals(eventName) ) {
+	    		return SearchBuilderItem.ACTION_ADD;
+	    }
+	    if ( RWikiObjectService.EVENT_RESOURCE_REMOVE.equals(eventName) ) {
+	    		return SearchBuilderItem.ACTION_DELETE;
+	    }
+		return SearchBuilderItem.ACTION_UNKNOWN;
+	}
+
+	public boolean matches(Event event) {
+		return !SearchBuilderItem.ACTION_UNKNOWN.equals(getAction(event));
+	}
+
+	public String getTool() {
+		return "Wiki";
+	}
+	
+	
 
 }

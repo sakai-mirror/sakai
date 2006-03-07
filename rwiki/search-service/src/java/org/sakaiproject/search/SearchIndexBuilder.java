@@ -23,49 +23,66 @@
 
 package org.sakaiproject.search;
 
+import java.util.List;
+
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.notification.Notification;
 
 /**
- * A SearchIndexBuilder builds a search index, it must manage its own
- * list of pending documents and should probably do this in a seperate thread
+ * A SearchIndexBuilder builds a search index, it must manage its own list of
+ * pending documents and should probably do this in a seperate thread
+ * 
  * @author ieb
- *
+ * 
  */
 public interface SearchIndexBuilder {
 
 	/**
 	 * Adds a resource to the index builder
+	 * 
 	 * @param notification
 	 * @param event
 	 */
 	void addResource(Notification notification, Event event);
-	
-	
+
 	/**
-	 * EntityProducers that want their content indexed on full text must register an EntityContentProducer with the
-	 * SearchIndexBuilder
+	 * EntityProducers that want their content indexed on full text must
+	 * register an EntityContentProducer with the SearchIndexBuilder
+	 * 
 	 * @param ecp
 	 */
 	void registerEntityContentProducer(EntityContentProducer ecp);
 
-
 	/**
 	 * Refresh the index based on the registered entities
-	 *
+	 * 
 	 */
 	void refreshIndex();
 
-	
 	/**
-	 * rebuild the index completely from scratch 
-	 *
+	 * rebuild the index completely from scratch
+	 * 
 	 */
 	void rebuildIndex();
 
 	/**
-	 * returns true is the build queue is empty and there is no more work to do
+	 * Does the Queue contain work to do.
+	 * 
 	 * @return
 	 */
 	boolean isBuildQueueEmpty();
+
+	/**
+	 * get all the producers registerd, as a clone to avoid concurrent
+	 * modification exceptions
+	 * 
+	 * @return
+	 */
+	List getContentProducers();
+	
+	/**
+	 * Close down the entire search infrastructure
+	 */
+	void destroy();
+
 }

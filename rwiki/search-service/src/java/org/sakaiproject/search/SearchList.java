@@ -39,4 +39,10 @@ public interface SearchList extends List {
 	 */
 	Iterator iterator(int startAt);
 
+	/**
+	 * 
+	 * @return
+	 */
+	int getFullSize();
+
 }

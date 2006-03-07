@@ -95,6 +95,19 @@ public class SearchServiceImpl implements SearchService {
 	public void init() {
 		try {
 			dlog.debug("init start");
+			
+
+			dlog.debug("checking setup");
+			if (indexDirectory == null) {
+				logger.error(" indexDirectory must be set");
+				throw new RuntimeException("Must set indexDirectory");
+
+			}
+			if (searchIndexBuilder == null) {
+				logger.error(" searchIndexBuilder must be set");
+				throw new RuntimeException("Must set searchIndexBuilder");
+			}
+			
 
 			// register a transient notification for resources
 			notification = NotificationService.addTransientNotification();
@@ -116,16 +129,21 @@ public class SearchServiceImpl implements SearchService {
 			notification.setAction(new SearchNotificationAction(
 					searchIndexBuilder));
 
-			dlog.debug("checking setup");
-			if (indexDirectory == null) {
-				logger.error(" indexDirectory must be set");
-				throw new RuntimeException("Must set indexDirectory");
+						
 
-			}
-			if (searchIndexBuilder == null) {
-				logger.error(" searchIndexBuilder must be set");
-				throw new RuntimeException("Must set searchIndexBuilder");
-			}
+			// register a transient notification for resources
+			NotificationEdit sbnotification = NotificationService
+					.addTransientNotification();
+
+			// add all the functions that are registered to trigger search index
+			// modification
+
+			sbnotification.setFunction(SearchService.EVENT_TRIGGER_INDEX_RELOAD);
+
+			// set the action
+			sbnotification.setAction(new SearchReloadNotificationAction(
+					this));
+
 			initComplete = true;
 			dlog.debug("init end");
 		} catch (Throwable t) {
@@ -163,7 +181,7 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public SearchList search(String searchTerms, List contexts) {
+	public SearchList search(String searchTerms, List contexts, int start, int end) {
 		try {
 			BooleanQuery query = new BooleanQuery();
 			BooleanQuery contextQuery = new BooleanQuery();
@@ -184,7 +202,7 @@ public class SearchServiceImpl implements SearchService {
 				Hits h = runningIndexSearcher.search(query);
 				logger.info("Got " + h.length() + " hits");
 
-				return new SearchListImpl(h,textQuery);
+				return new SearchListImpl(h,textQuery, start, end);
 			} else {
 				throw new RuntimeException(
 						"Failed to start the Lucene Searche Engine");

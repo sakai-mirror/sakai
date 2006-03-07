@@ -39,9 +39,11 @@ public interface SearchService {
 	 * Perform a search, return results in a list.
 	 * @param searchTerms the search terms
 	 * @param contexts a list of contexts in which to perform the search
+	 * @param searchEnd 
+	 * @param searchStart 
 	 * @return
 	 */
-	SearchList search( String searchTerms, List contexts);
+	SearchList search( String searchTerms, List contexts, int searchStart, int searchEnd);
 	
 	/**
 	 * Adds a function for the SearchService to respond to and route to 

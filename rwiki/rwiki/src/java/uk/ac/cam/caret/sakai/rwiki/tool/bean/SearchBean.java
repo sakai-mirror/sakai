@@ -39,6 +39,10 @@ public class SearchBean {
      * Parameter name for requesting search terms.
      */
     public static final String SEARCH_PARAM = "search";
+    /**
+     * Parameter name for requesting search terms.
+     */
+    public static final String PAGE_PARAM = "page"; 
 
     /**
      * Parameter name for the realm to which the search is restricted.
@@ -69,7 +73,7 @@ public class SearchBean {
      * @param realm
      * @param objectService
      */
-    public SearchBean(String search, String realm,
+    public SearchBean(String search,  String realm,
             RWikiObjectService objectService) {
         this.search = search;
         this.realm = realm;
@@ -110,6 +114,7 @@ public class SearchBean {
     public List getSearchResults() {
         return search();
     }
+    
 
 
     /**
@@ -117,7 +122,6 @@ public class SearchBean {
      * @return a list of page names that match the search criteria
      */
     public List search() {
-        // FIXME should we use PageLinkRenderer-like thing?
-        return objectService.search(search,  realm);
+    		return objectService.search(search,  realm);
     }
 }

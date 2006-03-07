@@ -21,63 +21,49 @@
  *
  **********************************************************************************/
 
-package org.sakaiproject.search;
+package org.sakaiproject.search.dao;
 
-import java.util.Map;
+import java.util.List;
+
+import org.sakaiproject.search.model.SearchBuilderItem;
 
 /**
  * @author ieb
  *
  */
-public interface SearchResult {
+public interface SearchBuilderItemDao {
+
 
 	/**
-	 * the result score
+	 * create a new item
 	 * @return
 	 */
-	float getScore();
+	SearchBuilderItem create();
 
 	/**
-	 * The result ID (entity id)
-	 * @return
+	 * Update a single item
+	 * @param sb
 	 */
-	String getId();
+	void update(SearchBuilderItem sb);
+
 
 	/**
-	 * All field names in the search record
+	 * Locate the resource entry
+	 * @param resourceName
 	 * @return
 	 */
-	String[] getFieldNames();
+	SearchBuilderItem findByName(String resourceName);
 
 	/**
-	 * All values in a search field
-	 * @param string
+	 * count the number of entries pending
 	 * @return
 	 */
-	String[] getValues(String string);
-	
-	/**
-	 * Get a map of values in the result
-	 * @return
-	 */
-	Map getValueMap();
-	
-	/**
-	 * An absolute URL to the resource (no host, protocol or port)
-	 * @return
-	 */
-	String getUrl();
-	
-	/**
-	 * The title of the resource, usually including the type (eg Wiki Page, Resource)
-	 * @return
-	 */
-	String getTitle();
-	
-	/**
-	 * get the index of the search entry over the whole change set
-	 * @return
-	 */
-	int getIndex();
+	int countPending();
+
+	List getAll();
+
+
+
+
 
 }

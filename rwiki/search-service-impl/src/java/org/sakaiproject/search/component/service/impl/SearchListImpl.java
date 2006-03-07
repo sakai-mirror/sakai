@@ -48,9 +48,14 @@ public class SearchListImpl implements SearchList {
 
 	private Query query;
 	
-	public SearchListImpl( Hits h, Query query) {
+	private int start = 0;
+	private int end = 500;
+	
+	public SearchListImpl( Hits h, Query query, int start, int end) {
 		this.h = h;
 		this.query = query;
+		this.start  = start;
+		this.end = end;
 		
 		
 	}
@@ -59,11 +64,11 @@ public class SearchListImpl implements SearchList {
 	 */
 	public Iterator iterator(final int startAt) {
 		return new Iterator() {
-			int counter = startAt;
+			int counter = Math.max(startAt,start);
 			
 
 			public boolean hasNext() {
-				return counter < h.length();
+				return counter < Math.min(h.length(),end);
 			}
 
 			public Object next() {
@@ -84,10 +89,14 @@ public class SearchListImpl implements SearchList {
 		};
 	}
 	public int size() {
+		return Math.min(h.length(),end-start);
+	}
+	
+	public int getFullSize() {
 		return h.length();
 	}
 	public boolean isEmpty() {
-		return (h.length() == 0);
+		return (size() == 0);
 	}
 	public boolean contains(Object arg0) {
 		throw new UnsupportedOperationException("Not Implemented");
@@ -98,9 +107,10 @@ public class SearchListImpl implements SearchList {
 	public Object[] toArray() {
 		Object[] o;
 		try {
-			o = new Object[h.length()];
+			o = new Object[size()];
 			for ( int i = 0; i < o.length; i++ ) {
-				o[i] = new SearchResultImpl(h,i,query);
+				
+				o[i+start] = new SearchResultImpl(h,i+start,query);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to load all results ",e);
