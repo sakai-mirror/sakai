@@ -2792,7 +2792,14 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 		ResourceProperties properties = thisCollection.getProperties();
 		ResourcePropertiesEdit newProps = duplicateResourceProperties(properties, thisCollection.getId());
-		newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+		// newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+		String displayName = newProps.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+		
+		if (displayName == null && name != null)
+		{
+			newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+			displayName = name;
+		}
 
 		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copyCollection adding colletion=" + new_folder_id + " name=" + name);
 		
@@ -2826,7 +2833,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 						throw e;
 					}
 					new_folder_id = base_id + attempt;
-					newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name + "-" + attempt);
+					// newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name + "-" + attempt);
+					newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, displayName + "-" + attempt);
 				}
 			}
 			
