@@ -154,11 +154,9 @@ public class LinkTestFilter extends LocaleRegexTokenFilter {
           // internal link
 
           if (wikiEngine.exists(name)) {
-            String view = getWikiView(name);
+            String view = getWikiView(name, hash);
             if (-1 != pipeIndex) {
               view = alias;
-            } else if (view.equals("")) {
-                view = hash;
             }
             
             // Do not add hash if an alias was given
@@ -169,7 +167,7 @@ public class LinkTestFilter extends LocaleRegexTokenFilter {
             }
           } else if (wikiEngine.showCreate()) {
               
-            String view = getWikiView(name);
+            String view = getWikiView(name, "");
             if (-1 != pipeIndex) {
                 view = alias;
             }
@@ -197,7 +195,11 @@ public class LinkTestFilter extends LocaleRegexTokenFilter {
    * @return view The view of the wiki name
    */
 
-  protected String getWikiView(String name) {
+  protected String getWikiView(String name, String hash) {
+    if (!hash.equals("")) {
+        return name + "#" + hash;
+    }
+      
     return name;
   }
 }
