@@ -25,6 +25,7 @@ package org.sakaiproject.metaobj.security;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -75,4 +76,8 @@ public interface AuthorizationFacade {
    public void deleteAuthorization(Agent agent, String function, Id id);
 
    public void deleteAuthorizations(Id qualifier);
+
+   public void pushAuthzGroups(Collection authzGroups);
+
+   void pushAuthzGroups(String siteId);
 }

@@ -24,6 +24,7 @@ package org.sakaiproject.metaobj.security.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.api.kernel.thread_local.cover.ThreadLocalManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
@@ -35,6 +36,7 @@ import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -46,6 +48,9 @@ import java.util.List;
  */
 public class AuthzShim implements AuthorizationFacade {
    protected final transient Log logger = LogFactory.getLog(getClass());
+
+   private static final String AUTHZ_GROUPS_LIST =
+      "org.sakaiproject.metaobj.security.impl.AuthzShim.groups";
 
    private AuthzGroupService realmService;
    private PortalService portalService;
@@ -92,7 +97,12 @@ public class AuthzShim implements AuthorizationFacade {
    }
 
    protected String getCurrentRealm() {
-      return "/site/" + getPortalService().getCurrentSiteId();
+      if (getAuthzGroupsList().size() == 0) {
+         return "/site/" + getPortalService().getCurrentSiteId();
+      }
+      else {
+         return "/site/" + getAuthzGroupsList().get(0);
+      }
    }
 
    protected String getReference(Id id) {
@@ -110,6 +120,15 @@ public class AuthzShim implements AuthorizationFacade {
    }
 
    public void deleteAuthorizations(Id qualifier) {
+   }
+
+   public void pushAuthzGroups(Collection authzGroups) {
+      List authzGroupList = getAuthzGroupsList();
+      authzGroupList.addAll(authzGroups);
+   }
+
+   public void pushAuthzGroups(String siteId) {
+      getAuthzGroupsList().add(siteId);
    }
 
    public AuthzGroupService getRealmService() {
@@ -135,4 +154,15 @@ public class AuthzShim implements AuthorizationFacade {
    public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
       this.userDirectoryService = userDirectoryService;
    }
+
+   protected List getAuthzGroupsList() {
+      List returned = (List) ThreadLocalManager.get(AUTHZ_GROUPS_LIST);
+
+      if (returned == null) {
+         returned = new ArrayList();
+         ThreadLocalManager.set(AUTHZ_GROUPS_LIST, returned);
+      }
+      return returned;
+   }
+
 }
