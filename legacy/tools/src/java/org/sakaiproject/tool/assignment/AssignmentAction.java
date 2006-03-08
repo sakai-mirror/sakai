@@ -2182,6 +2182,8 @@ extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		ParameterParser params = data.getParameters ();
 		
+		boolean withGrade = state.getAttribute(WITH_GRADES) != null?((Boolean) state.getAttribute(WITH_GRADES)).booleanValue():false;
+		
 		if (params.getString("allowResubmit") != null)
 		{
 			state.setAttribute (GRADE_SUBMISSION_ALLOW_RESUBMIT, Boolean.TRUE);
@@ -2213,6 +2215,7 @@ extends PagedResourceActionII
 		}
 		
 		String sId = (String) state.getAttribute (GRADE_SUBMISSION_SUBMISSION_ID);
+		
 		try
 		{
 			// for points grading, one have to enter number as the points
@@ -2220,52 +2223,56 @@ extends PagedResourceActionII
 
 			Assignment a = AssignmentService.getSubmission(sId).getAssignment ();
 			int typeOfGrade = a.getContent ().getTypeOfGrade ();
-			if (typeOfGrade==3)
+			
+			if (withGrade)
 			{
-				if ((grade.length ()==0))
+				// do grade validation only for Assignment with Grade tool
+				if (typeOfGrade==3)
 				{
-					if (gradeOption.equals("release"))
+					if ((grade.length ()==0))
 					{
-						// in case of releasing grade, user must specify a grade
-						addAlert(state, rb.getString("plespethe2"));
+						if (gradeOption.equals("release"))
+						{
+							// in case of releasing grade, user must specify a grade
+							addAlert(state, rb.getString("plespethe2"));
+						}
 					}
-				}
-				else
-				{
-					// the preview grade process might already scaled up the grade by 10
-					if (!((String) state.getAttribute(STATE_MODE)).equals(MODE_INSTRUCTOR_PREVIEW_GRADE_SUBMISSION))
-					{					
-						validPointGrade(state, grade);
-						state.setAttribute (GRADE_SUBMISSION_GRADE, grade);
+					else
+					{
+						// the preview grade process might already scaled up the grade by 10
+						if (!((String) state.getAttribute(STATE_MODE)).equals(MODE_INSTRUCTOR_PREVIEW_GRADE_SUBMISSION))
+						{					
+							validPointGrade(state, grade);
+							state.setAttribute (GRADE_SUBMISSION_GRADE, grade);
+							if (state.getAttribute(STATE_MESSAGE) == null)
+							{
+								grade = scalePointGrade(state, grade);
+							}
+						}	
+						
 						if (state.getAttribute(STATE_MESSAGE) == null)
 						{
-							grade = scalePointGrade(state, grade);
-						}
-					}	
-					
-					if (state.getAttribute(STATE_MESSAGE) == null)
-					{
-						int maxGrade = a.getContent ().getMaxGradePoint (); 
-						if (Integer.parseInt(grade) > maxGrade)
-						{
-							addAlert(state, rb.getString("grad2"));
+							int maxGrade = a.getContent ().getMaxGradePoint (); 
+							if (Integer.parseInt(grade) > maxGrade)
+							{
+								addAlert(state, rb.getString("grad2"));
+							}
 						}
 					}
 				}
-			}
-
-			// if ungraded and grade type is not "ungraded" type
-			if (( grade == null || grade.equals ("ungraded")) && (typeOfGrade!=1) && gradeOption.equals("release"))
-			{
-				addAlert(state, rb.getString("plespethe2"));
-			}
+	
+				// if ungraded and grade type is not "ungraded" type
+				if (( grade == null || grade.equals ("ungraded")) && (typeOfGrade!=1) && gradeOption.equals("release"))
+				{
+					addAlert(state, rb.getString("plespethe2"));
+				}
+			}			
 			
 			if (state.getAttribute(STATE_MESSAGE) == null)
 			{
 				state.setAttribute (GRADE_SUBMISSION_GRADE, grade);
 				AssignmentSubmissionEdit sEdit = AssignmentService.editSubmission (sId);
 
-				boolean withGrade = state.getAttribute(WITH_GRADES) != null?((Boolean) state.getAttribute(WITH_GRADES)).booleanValue():false;
 				if (!withGrade)
 				{
 					// no grade input needed for the without-grade version of assignment tool
