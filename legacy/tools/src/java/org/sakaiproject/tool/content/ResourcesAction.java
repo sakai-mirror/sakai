@@ -2038,7 +2038,7 @@ public class ResourcesAction
 		context.put ("contentTypeImageService", state.getAttribute (STATE_CONTENT_TYPE_IMAGE_SERVICE));
 		context.put ("from", state.getAttribute (STATE_FROM));
 		context.put ("mycopyright", (String) state.getAttribute (STATE_MY_COPYRIGHT));
-
+		
 		String collectionId = (String) current_stack_frame.get(STATE_STACK_EDIT_COLLECTION_ID);
 		context.put ("collectionId", collectionId);
 		String id = (String) current_stack_frame.get(STATE_STACK_EDIT_ID);

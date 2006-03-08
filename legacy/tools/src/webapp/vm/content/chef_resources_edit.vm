@@ -406,8 +406,8 @@
 			#end
 		#end
 	</div>	
-	#if("$itemType" == "$TYPE_UPLOAD")
-   	<form name="propertyForm" id="propertyForm" action="#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")" method="post" enctype="multipart/form-data">
+	#if($item.isFileUpload() || "$REPLACE" == "$intent")
+   		<form name="propertyForm" id="propertyForm" action="#toolLinkParam("ResourcesAction" "doSavechanges" "special=upload&flow=update")" method="post" enctype="multipart/form-data">
 	#else
 	   <form name="propertyForm" id="propertyForm" action="#toolLinkParam("ResourcesAction" "doSavechanges" "flow=update")" method="post">
 	#end
