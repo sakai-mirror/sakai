@@ -15,7 +15,7 @@
     init-method="init" >
     <property name="logger"><ref bean="search-logger"/></property>
     <property name="searchIndexBuilder"><ref bean="org.sakaiproject.search.SearchIndexBuilder"/></property>
-    <property name="indexDirectory"><value>sakai/searchindex</value></property>
+    <property name="indexDirectory"><value>${sakai.home}/searchindex</value></property>
   </bean> 
     
   <bean id="org.sakaiproject.search.SearchIndexBuilder"

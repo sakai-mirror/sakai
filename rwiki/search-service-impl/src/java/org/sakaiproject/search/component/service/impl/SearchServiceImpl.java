@@ -23,6 +23,7 @@
 
 package org.sakaiproject.search.component.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -224,6 +225,9 @@ public class SearchServiceImpl implements SearchService {
 
 		long reloadStart = System.currentTimeMillis();
 		try {
+			File indexDirectoryFile = new File(indexDirectory);
+			indexDirectoryFile.mkdirs();
+			
 			IndexSearcher indexSearcher = new IndexSearcher(indexDirectory);
 			if (indexSearcher != null) {
 				runningIndexSearcher = indexSearcher;
