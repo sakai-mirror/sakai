@@ -591,7 +591,6 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<input type="hidden" name="realm" value="${currentRWikiObject.realm }"/>
 				<c:if test="${realmBean.siteUpdateAllowed}">
 				  In addition to editing the page permissions you may <a href="${realmBean.editRealmUrl}">edit site permissions</a>
-				  <c:out value="${requestScope.rsacMap.experimental}" />
 				</c:if>
 			      </p>
 			    </div>
