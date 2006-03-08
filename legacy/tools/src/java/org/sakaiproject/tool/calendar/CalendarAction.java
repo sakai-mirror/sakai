@@ -26,6 +26,7 @@ package org.sakaiproject.tool.calendar;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -1897,7 +1898,7 @@ extends VelocityPortletStateAction
 	
 	private final static String SSTATE_ATTRIBUTE_DELFIELDS_CONFIRM =
 	"delfieldsConfirm";
-	
+
 	private final static String STATE_NEW = "new";
 	
 	private static final String EVENT_REFERENCE_PARAMETER = "eventReference";
@@ -5991,6 +5992,104 @@ extends VelocityPortletStateAction
 		String peid = ((JetspeedRunData)data).getJs_peid();
 		SessionState sstate = ((JetspeedRunData)data).getPortletSessionState(peid);
 		
+		Time m_time = TimeService.newTime();
+		TimeBreakdown b = m_time.breakdownLocal();
+		int stateYear = b.getYear();
+		int stateMonth = b.getMonth();
+		int stateDay = b.getDay();
+		if ((sstate.getAttribute(STATE_YEAR) != null) && (sstate.getAttribute(STATE_MONTH) != null) && (sstate.getAttribute(STATE_DAY) != null))
+		{
+			stateYear = ((Integer)sstate.getAttribute(STATE_YEAR)).intValue();
+			stateMonth = ((Integer)sstate.getAttribute(STATE_MONTH)).intValue();
+			stateDay = ((Integer)sstate.getAttribute(STATE_DAY)).intValue();
+		}
+		
+		String sM;
+		String eM;
+		String sD;
+		String eD;
+		String sY;
+		String eY;
+		
+		CalendarUtil calObj = new CalendarUtil();
+		calObj.setDay(stateYear, stateMonth, stateDay);
+
+		String prevState = state.getState().toString();
+		if (prevState.equals("day"))
+		{
+			sY = new Integer(calObj.getYear()).toString();
+			sM = new Integer(calObj.getMonthInteger()).toString();
+			sD = new Integer(calObj.getDayOfMonth()).toString();
+			eY = new Integer(calObj.getYear()).toString();
+			eM = new Integer(calObj.getMonthInteger()).toString();
+			eD = new Integer(calObj.getDayOfMonth()).toString();
+		}
+		else if (prevState.equals("week"))
+		{
+			int dayofweek = calObj.getDay_Of_Week();
+			for(int i = dayofweek; i>1;i--)
+			{
+				calObj.getPrevDate();
+			}
+			sY = new Integer(calObj.getYear()).toString();
+			sM = new Integer(calObj.getMonthInteger()).toString();
+			sD = new Integer(calObj.getDayOfMonth()).toString();
+			
+			for(int i = 0; i<6; i++)
+			{
+				calObj.getNextDate();
+			}
+			eY = new Integer(calObj.getYear()).toString();
+			eM = new Integer(calObj.getMonthInteger()).toString();
+			eD = new Integer(calObj.getDayOfMonth()).toString();
+		}
+		else if (prevState.equals("month"))
+		{
+			sY = new Integer(calObj.getYear()).toString();
+			sM = new Integer(calObj.getMonthInteger()).toString();
+			sD = new String("1");
+			calObj.setDay(stateYear, stateMonth, 1);
+		
+			GregorianCalendar cal = new GregorianCalendar(calObj.getYear(), calObj.getMonthInteger()-1, 1);
+			int daysInMonth = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+			for (int i=1; i<daysInMonth; i++)
+				calObj.getNextDate();
+			eY = new Integer(calObj.getYear()).toString();
+			eM = new Integer(calObj.getMonthInteger()).toString();
+			eD = new Integer(calObj.getDayOfMonth()).toString();
+		}
+		else
+		{
+			// for other conditions: show the current year
+			sY = new Integer(stateYear).toString();
+			sM = "1";
+			sD = "1";
+			eY = new Integer(stateYear).toString();
+			eM = "12";
+			eD = "31";
+		}
+		
+		if (sM.length() == 1) sM = "0"+sM;
+		if (eM.length() == 1) eM = "0"+eM;
+		if (sD.length() == 1) sD = "0"+sD;
+		if (eD.length() == 1) eD = "0"+eD;
+		sY = sY.substring(2);
+		eY = eY.substring(2);
+		
+		String startingDateStr = sM + "/" + sD + "/" + sY;
+		String endingDateStr   = eM + "/" + eD + "/" + eY;
+		state.getCalendarFilter().setListViewFilterMode(CalendarFilter.SHOW_CUSTOM_RANGE);
+		
+		// Pass in a buffer for a possible error message.
+		StringBuffer errorMessage = new StringBuffer();
+		
+		// Try to simultaneously set the start/end dates.
+		// If that doesn't work, add an error message.
+		if ( !state.getCalendarFilter().setStartAndEndListViewDates(startingDateStr, endingDateStr, errorMessage) )
+		{
+			addAlert(sstate, errorMessage.toString());
+		}
+		
 		state.setState("list");
 	}   // doList
 	
@@ -6058,6 +6157,18 @@ extends VelocityPortletStateAction
 		String peid = ((JetspeedRunData)runData).getJs_peid();
 		SessionState sstate = ((JetspeedRunData)runData).getPortletSessionState(peid);
 		
+		Time m_time = TimeService.newTime();
+		TimeBreakdown b = m_time.breakdownLocal();
+		int stateYear = b.getYear();
+		int stateMonth = b.getMonth();
+		int stateDay = b.getDay();
+		if ((sstate.getAttribute(STATE_YEAR) != null) && (sstate.getAttribute(STATE_MONTH) != null) && (sstate.getAttribute(STATE_DAY) != null))
+		{
+			stateYear = ((Integer)sstate.getAttribute(STATE_YEAR)).intValue();
+			stateMonth = ((Integer)sstate.getAttribute(STATE_MONTH)).intValue();
+			stateDay = ((Integer)sstate.getAttribute(STATE_DAY)).intValue();
+		}
+		
 		// Set up list filtering information in the context.
 		context.put(TIME_FILTER_OPTION_VAR, state.getCalendarFilter().getListViewFilterMode());
 
@@ -6071,33 +6182,60 @@ extends VelocityPortletStateAction
 		context.put("ddStartYear", new Integer(userCal.get(java.util.Calendar.YEAR) - 3));
 		context.put("ddEndYear", new Integer(userCal.get(java.util.Calendar.YEAR) + 4));
 		
+		String sM;
+		String eM;
+		String sD;
+		String eD;
+		String sY;
+		String eY;
+		
 		if (state.getCalendarFilter().isCustomListViewDates() )
 		{
 			sDate = state.getCalendarFilter().getStartingListViewDateString();
 			eDate = state.getCalendarFilter().getEndingListViewDateString();
-		}	
+			
+			sM = sDate.substring(0, 2);
+			eM = eDate.substring(0, 2);
+			sD = sDate.substring(3, 5);
+			eD = eDate.substring(3, 5);
+			sY = "20" + sDate.substring(6);
+			eY = "20" + eDate.substring(6);
+		}
 		else
 		{
-			// default to entire current year?
-			int userYear = userCal.get(java.util.Calendar.YEAR) - 2000;
-			if ((userYear < 10) && (userYear >= 0))
-			{ 
-				sDate = "01/01/0"+ userYear;
-				eDate = "12/31/0"+ userYear;
-			}
-			else
+			//default to current week
+			CalendarUtil calObj = new CalendarUtil();
+			calObj.setDay(stateYear, stateMonth, stateDay);
+
+			int dayofweek = calObj.getDay_Of_Week();
+			
+			String ssdate = calObj.getTodayDate();
+			String eedate = calObj.getTodayDate();
+			
+			for(int i = dayofweek; i>1;i--)
 			{
-				sDate = "01/01/"+ userYear;
-				eDate = "12/31/"+ userYear;
+				calObj.getPrevDate();
 			}
+			sY = new Integer(calObj.getYear()).toString();
+			if (calObj.getMonthInteger()<10)
+				sM = "0" + new Integer(calObj.getMonthInteger()).toString();
+			else
+				sM = new Integer(calObj.getMonthInteger()).toString();
+				
+			sD = new Integer(calObj.getDayOfMonth()).toString();
+			
+			for(int i = 0; i<6; i++)
+			{
+				calObj.getNextDate();
+			}
+			eY = new Integer(calObj.getYear()).toString();
+			if (calObj.getMonthInteger()<10)
+				eM = "0" + new Integer(calObj.getMonthInteger()).toString();
+			else
+				eM = new Integer(calObj.getMonthInteger()).toString();
+				
+			eD = new Integer(calObj.getDayOfMonth()).toString();
 		}
-		
-		String sM = sDate.substring(0, 2);
-		String eM = eDate.substring(0, 2);
-		String sD = sDate.substring(3, 5);
-		String eD = eDate.substring(3, 5);
-		String sY = "20" + sDate.substring(6);
-		String eY = "20" + eDate.substring(6);
 		
 		context.put(TIME_FILTER_SETTING_CUSTOM_START_YEAR,  Integer.valueOf(sY));
 		context.put(TIME_FILTER_SETTING_CUSTOM_END_YEAR,    Integer.valueOf(eY));
@@ -6106,17 +6244,6 @@ extends VelocityPortletStateAction
 		context.put(TIME_FILTER_SETTING_CUSTOM_START_DAY,   Integer.valueOf(sD));
 		context.put(TIME_FILTER_SETTING_CUSTOM_END_DAY,     Integer.valueOf(eD));
 		
-		Time m_time = TimeService.newTime();
-		TimeBreakdown b = m_time.breakdownLocal();
-		int stateYear = b.getYear();
-		int stateMonth = b.getMonth();
-		int stateDay = b.getDay();
-		if ((sstate.getAttribute(STATE_YEAR) != null) && (sstate.getAttribute(STATE_MONTH) != null) && (sstate.getAttribute(STATE_DAY) != null))
-		{
-			stateYear = ((Integer)sstate.getAttribute(STATE_YEAR)).intValue();
-			stateMonth = ((Integer)sstate.getAttribute(STATE_MONTH)).intValue();
-			stateDay = ((Integer)sstate.getAttribute(STATE_DAY)).intValue();
-		}
 		CalendarUtil calObj= new CalendarUtil();
 		calObj.setDay(stateYear, stateMonth, stateDay);
 		dateObj1.setTodayDate(calObj.getMonthInteger(),calObj.getDayOfMonth(),calObj.getYear());
