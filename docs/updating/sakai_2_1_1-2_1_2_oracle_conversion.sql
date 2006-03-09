@@ -16,16 +16,16 @@ alter table SAM_ITEMGRADING_T modify column PUBLISHEDITEMID integer not null;
 alter table SAM_ITEMGRADING_T modify column PUBLISHEDITEMTEXTID integer not null;
 alter table SAM_ITEMGRADING_T modify column PUBLISHEDANSWERID integer;
 
-drop index FKB68E6756D4927;
+--drop index FKB68E6756D4927;
 alter table SAM_ITEMGRADING_T drop constraint FKB68E6756D4927;
 
-drop index FKB68E6756A75F9029;
+--drop index FKB68E6756A75F9029;
 alter table SAM_ITEMGRADING_T drop constraint FKB68E6756A75F9029;
 
-drop index FKB68E6756C42AA2BC;
+--drop index FKB68E6756C42AA2BC;
 alter table SAM_ITEMGRADING_T drop constraint FKB68E6756C42AA2BC;
 
-drop index FKB2E48A65C07F835D;
+--drop index FKB2E48A65C07F835D;
 alter table SAM_PUBLISHEDASSESSMENT_T drop constraint FKB2E48A65C07F835D;
 
 

@@ -565,3 +565,15 @@ INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM wher
 INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), 'Can read, revise, delete and add both content and participants to a site.');
 INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Student'), 'Can read content, and add content to a site where appropriate.');
 INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), 'Can read, add, and revise most content in their sections.');
+
+-- OSP RELATED TABLES
+CREATE TABLE OSP_STRUCTURED_ARTIFACT_DEF (id varchar(36) not null, description varchar(255), documentRoot varchar(255) not null, owner varchar(255) not null, created datetime not null, modified datetime not null, systemOnly bit not null, externalType varchar(255) not null, siteId varchar(255), siteState integer not null, globalState integer not null, schemaData longblob not null, instruction text, primary key (id));
+CREATE TABLE OSP_REPOSITORY_LOCK (id varchar(36) not null, asset_id varchar(36), qualifier_id varchar(36), is_active bit, is_system bit, reason varchar(36), date_added datetime, date_removed datetime, primary key (id));
+
+-- SYLLABUS ATTACHMENTS
+CREATE TABLE SAKAI_SYLLABUS_ATTACH (syllabusAttachId bigint not null auto_increment, lockId integer not null, attachmentId text not null, syllabusAttachName text not null, syllabusAttachSize text, syllabusAttachType text, createdBy text, syllabusAttachUrl text not null, lastModifiedBy text, syllabusId bigint, primary key (syllabusAttachId))
+ALTER TABLE SAKAI_SYLLABUS_ATTACH add index FK4BF41E45A09831E0 (syllabusId), add constraint FK4BF41E45A09831E0 foreign key (syllabusId) references SAKAI_SYLLABUS_DATA (id);
+
+
+
+

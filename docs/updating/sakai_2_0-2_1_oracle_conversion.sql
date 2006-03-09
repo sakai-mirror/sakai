@@ -565,3 +565,13 @@ INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM wher
 INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Instructor'), 'Can read, revise, delete and add both content and participants to a site.');
 INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Student'), 'Can read content, and add content to a site where appropriate.');
 INSERT INTO SAKAI_REALM_ROLE_DESC VALUES((select REALM_KEY from SAKAI_REALM where REALM_ID = '!group.template.course'), (select ROLE_KEY from SAKAI_REALM_ROLE where ROLE_NAME = 'Teaching Assistant'), 'Can read, add, and revise most content in their sections.');
+
+-- OSP RELATED TABLES
+CREATE TABLE OSP_STRUCTURED_ARTIFACT_DEF (id varchar2(36) not null, description varchar2(255), documentRoot varchar2(255) not null, owner varchar2(255) not null, created date not null, modified date not null, systemOnly number(1,0) not null, externalType varchar2(255) not null, siteId varchar2(255), siteState number(10,0) not null, globalState number(10,0) not null, schemaData long raw not null, instruction clob, primary key (id));
+CREATE TABLE OSP_REPOSITORY_LOCK (id varchar2(36) not null, asset_id varchar2(36), qualifier_id varchar2(36), is_active number(1,0), is_system number(1,0), reason varchar2(36), date_added date, date_removed date, primary key (id));
+
+-- SYLLABUS ATTACHMENTS
+CREATE TABLE SAKAI_SYLLABUS_ATTACH (syllabusAttachId number(19,0) not null, lockId number(10,0) not null, attachmentId varchar2(256) not null, syllabusAttachName varchar2(256) not null, syllabusAttachSize varchar2(256), syllabusAttachType varchar2(256), createdBy varchar2(256), syllabusAttachUrl varchar2(256) not null, lastModifiedBy varchar2(256), syllabusId number(19,0), primary key (syllabusAttachId));
+ALTER TABLE SAKAI_SYLLABUS_ATTACH add constraint FK4BF41E45A09831E0 foreign key (syllabusId) references SAKAI_SYLLABUS_DATA;
+CREATE SEQUENCE SYLLABUSATTACHIMPL_SEQ;
+
