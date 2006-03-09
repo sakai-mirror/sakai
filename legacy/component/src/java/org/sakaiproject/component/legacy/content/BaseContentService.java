@@ -25,28 +25,6 @@
 package org.sakaiproject.component.legacy.content;
 
 // import
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.Stack;
-import java.util.TreeSet;
-import java.util.Vector;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.xerces.impl.dv.util.Base64;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
@@ -54,19 +32,7 @@ import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.component.legacy.notification.SiteEmailNotificationContent;
-import org.sakaiproject.exception.CopyrightException;
-import org.sakaiproject.exception.EmptyException;
-import org.sakaiproject.exception.IdInvalidException;
-import org.sakaiproject.exception.IdLengthException;
-import org.sakaiproject.exception.IdUniquenessException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.exception.InconsistentException;
-import org.sakaiproject.exception.OverQuotaException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.*;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.framework.memory.Cache;
@@ -78,21 +44,10 @@ import org.sakaiproject.service.legacy.archive.ArchiveService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.content.ContentCollection;
-import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.content.ContentResourceEdit;
+import org.sakaiproject.service.legacy.content.*;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.email.MailArchiveService;
-import org.sakaiproject.service.legacy.entity.Edit;
-import org.sakaiproject.service.legacy.entity.Entity;
-import org.sakaiproject.service.legacy.entity.EntityManager;
-import org.sakaiproject.service.legacy.entity.EntityProducer;
-import org.sakaiproject.service.legacy.entity.HttpAccess;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.entity.*;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
@@ -116,6 +71,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.*;
 
 /**
  * <p>
@@ -1572,7 +1532,8 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// if the edit is newly created during an add collection process, remove it from the storage
 		if (((BaseCollectionEdit) edit).getEvent().equals(EVENT_RESOURCE_ADD))
 		{
-			m_storage.removeCollection(edit);
+         removeRecursive(edit);
+         m_storage.removeCollection(edit);
 		}
 
 		// close the edit object
@@ -1580,29 +1541,61 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 
 	} // cancelCollection
 
-	/**********************************************************************************************************************************************************************************************************************************************************
-	 * Resources
-	 *********************************************************************************************************************************************************************************************************************************************************/
+   /**
+    * used to remove any members of a collection whoes add was canceled.
+    * @param parent
+    */
+   protected void removeRecursive(ContentCollection parent) {
+      List members = parent.getMemberResources();
 
-	/**
-	 * check permissions for addResource().
-	 * 
-	 * @param id
-	 *        The id of the new resource.
-	 * @return true if the user is allowed to addResource(id), false if not.
-	 */
-	public boolean allowAddResource(String id)
-	{
-		// resource must also NOT end with a separator characters (we fix it)
-		if (id.endsWith(Entity.SEPARATOR))
-		{
-			id = id.substring(0, id.length() - 1);
-		}
+      for (Iterator i=members.iterator();i.hasNext();) {
+         Object resource = i.next();
+         try {
+            if (resource instanceof ContentResource) {
+               removeResource(((ContentResource)resource).getId());
+            }
+            else if (resource instanceof ContentCollection) {
+               ContentCollection collection = (ContentCollection) resource;
+               removeRecursive(collection);
+               removeCollection(collection.getId());
+            }
+         } catch (IdUnusedException e) {
+            m_logger.warn("failed to removed canceled collection child", e);
+         } catch (TypeException e) {
+            m_logger.warn("failed to removed canceled collection child", e);
+         } catch (PermissionException e) {
+            m_logger.warn("failed to removed canceled collection child", e);
+         } catch (InUseException e) {
+            m_logger.warn("failed to removed canceled collection child", e);
+         } catch (ServerOverloadException e) {
+            m_logger.warn("failed to removed canceled collection child", e);
+         }
+      }
+   }
 
-		// check security
-		return unlockCheck(EVENT_RESOURCE_ADD, id);
+   /**********************************************************************************************************************************************************************************************************************************************************
+    * Resources
+    *********************************************************************************************************************************************************************************************************************************************************/
 
-	} // allowAddResource
+   /**
+    * check permissions for addResource().
+    *
+    * @param id
+    *        The id of the new resource.
+    * @return true if the user is allowed to addResource(id), false if not.
+    */
+   public boolean allowAddResource(String id)
+   {
+      // resource must also NOT end with a separator characters (we fix it)
+      if (id.endsWith(Entity.SEPARATOR))
+      {
+         id = id.substring(0, id.length() - 1);
+      }
+
+      // check security
+      return unlockCheck(EVENT_RESOURCE_ADD, id);
+
+   } // allowAddResource
 
 	/**
 	 * Create a new resource with the given resource id.
