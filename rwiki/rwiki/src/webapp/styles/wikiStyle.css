@@ -488,6 +488,20 @@ img.float-right {
   margin-bottom: 3px;
 }
 
+/*****************************************/
+/*          Div positioning              */
+div.float-right {
+	float: right;
+	border-left: 1px solid #ccc;
+	padding-left: 10px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	width: 150px;
+	font-size: 80%;
+	text-align: left;
+	color: #006699;
+	overflow-y: auto;
+}
 
 .heading-1, .heading-h1, .heading-h2 {
   color: #000000;
