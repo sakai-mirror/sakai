@@ -74,6 +74,9 @@
 							#if ($endHour > 12)
 									#set ($endHour = $endHour - 12)
 							#end
+							#if ($endHour == 0)
+								#set ($endHour = 12)
+							#end
 							$startTime - $endHour:#if(($endMin == 0)||($endMin == 5))0$endMin#else$endMin#end $endTimeType
 						#end
 						$timezone
