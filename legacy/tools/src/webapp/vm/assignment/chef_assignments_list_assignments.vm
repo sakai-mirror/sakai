@@ -4,6 +4,8 @@
   focus_path = ["search"];
 </script>
 <div class="portletBody">
+	#if ($allowAddAssignment || ($withGrade && $!allowGradeSubmission))
+	## for user who cannot create assignment nor grade submission, no need to show "Assignment List" link at all since there is really no other toolbar choices
 	<div class="navIntraTool">
 		#set($prevAction=false)
 		#if ($allowAddAssignment)
@@ -16,9 +18,9 @@
 			#set($prevAction=true)
 		#end
 		#if (!$!view.equals($!tlang.getString('gen.liofass')))
-				<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
+			<a href="#toolLinkParam("$action" "doView" "view=$validator.escapeUrl($!tlang.getString('gen.liofass'))")" title="$!tlang.getString('gen.liofass')">$!tlang.getString('gen.liofass')</a>
 		#else
-				<span style="margin:.5em">$!tlang.getString("gen.liofass")</span>
+			<span style="margin:.5em">$!tlang.getString("gen.liofass")</span>
 		#end
 		#if ($withGrade && $!allowGradeSubmission)
 			#if ($prevAction)
@@ -47,6 +49,7 @@
 			<a href="#toolLink("$action" "doPermissions")" title="$tlang.getString('permis')">$tlang.getString('permis')</a>
 		#end
 	</div>
+	#end
 	#if ($alertMessage)<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div><div style="display:block;clear:both" />#end
 	<h3>
 		$!tlang.getString('gen.liofass')
