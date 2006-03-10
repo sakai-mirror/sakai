@@ -5792,7 +5792,7 @@ extends PagedResourceActionII
 				{
 					result = 1;
 				}
-				if (t1.before (t2))
+				else if (t1.before (t2))
 				{
 					result = -1;
 				}
