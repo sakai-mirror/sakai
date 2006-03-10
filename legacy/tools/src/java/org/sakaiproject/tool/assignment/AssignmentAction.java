@@ -1334,7 +1334,10 @@ extends PagedResourceActionII
 					grade = grade.substring(0, grade.length()-1) + "." + grade.substring(grade.length()-1);
 				}
 			}
-			catch (NumberFormatException e){}
+			catch (NumberFormatException e)
+			{
+				alertInvalidPoint(state, grade);
+			}
 		}
 		else
 		{
@@ -1950,7 +1953,10 @@ extends PagedResourceActionII
 									addAlert(state, rb.getString("grad2"));
 								}
 							}
-							catch (NumberFormatException e){}
+							catch (NumberFormatException e)
+							{
+								alertInvalidPoint(state, grade);
+							}
 						}
 					}
 				}
@@ -2253,9 +2259,16 @@ extends PagedResourceActionII
 						if (state.getAttribute(STATE_MESSAGE) == null)
 						{
 							int maxGrade = a.getContent ().getMaxGradePoint (); 
-							if (Integer.parseInt(grade) > maxGrade)
+							try
 							{
-								addAlert(state, rb.getString("grad2"));
+								if (Integer.parseInt(grade) > maxGrade)
+								{
+									addAlert(state, rb.getString("grad2"));
+								}
+							}
+							catch (NumberFormatException e)
+							{
+								alertInvalidPoint(state, grade);
 							}
 						}
 					}
@@ -3381,7 +3394,14 @@ extends PagedResourceActionII
 					ac.setTypeOfGrade (gradeType);
 					if (gradeType==3)
 					{
-						ac.setMaxGradePoint (Integer.parseInt (gradePoints));
+						try
+						{
+							ac.setMaxGradePoint (Integer.parseInt (gradePoints));
+						}
+						catch (NumberFormatException e)
+						{
+							alertInvalidPoint(state, gradePoints);
+						}
 					}
 					ac.setGroupProject (true);
 					ac.setIndividuallyGraded (false);
@@ -3889,7 +3909,14 @@ extends PagedResourceActionII
 		cedit.setTypeOfGrade (gradeType);
 		if (gradeType==3)
 		{
-			cedit.setMaxGradePoint (Integer.parseInt (gradePoints));
+			try
+			{
+				cedit.setMaxGradePoint (Integer.parseInt (gradePoints));
+			}
+			catch (NumberFormatException e)
+			{
+				alertInvalidPoint(state, gradePoints);
+			}
 		}
 		cedit.setGroupProject (true);
 		cedit.setIndividuallyGraded (false);
@@ -6678,7 +6705,6 @@ extends PagedResourceActionII
 	 */ 
 	private void validPointGrade(SessionState state, String grade)
 	{
-		String VALID_CHARS_FOR_INT = "-01234567890";
 		if (grade != null && !grade.equals(""))
 		{
 			if (grade.startsWith("-"))
@@ -6705,14 +6731,14 @@ extends PagedResourceActionII
 						{
 							// decimal points is the only allowed character inside grade
 							// replace it with '1', and try to parse the new String into int
-							String parseString = grade.replace('.', '1');
+							String gradeString = (grade.endsWith("."))?grade.substring(0, index).concat("0"):grade.substring(0,index).concat(grade.substring(index+1));
 							try
 							{
-								Integer.parseInt(parseString);
+								Integer.parseInt(gradeString);
 							}
 							catch (NumberFormatException e)
 							{
-								addAlert(state, rb.getString("plesuse1"));
+								alertInvalidPoint(state, gradeString);
 							}
 						}
 					}	
@@ -6725,37 +6751,47 @@ extends PagedResourceActionII
 				else
 				{
 					// There is no decimal point; should be int number
+					String gradeString = grade + "0";
 					try 
 					{
-						Integer.parseInt(grade);
+						Integer.parseInt(gradeString);
 					}
 					catch (NumberFormatException e)
 					{
-						boolean invalid = false;
-						// case 1: contains invalid char for int
-						for (int i = 0; i<grade.length() && !invalid; i++)
-						{
-							char c = grade.charAt(i);
-							if (VALID_CHARS_FOR_INT.indexOf(c) == -1)
-							{
-								invalid = true;
-							}
-						}
-						if (invalid)
-						{
-							addAlert(state, rb.getString("plesuse1"));
-						}
-						else
-						{
-							// case 2: input String is larger than Integer.MAX_VALUE or smaller than Integer.MIN_VALUE
-							addAlert(state, rb.getString("plesuse4") + Integer.MAX_VALUE + ".");
-						}
+						alertInvalidPoint(state, gradeString);
 					}
 				}
 			}
 		}
 		
 	}	// validPointGrade
+
+	private void alertInvalidPoint(SessionState state, String grade)
+	{
+		String VALID_CHARS_FOR_INT = "-01234567890";
+		
+		boolean invalid = false;
+		// case 1: contains invalid char for int
+		for (int i = 0; i<grade.length() && !invalid; i++)
+		{
+			char c = grade.charAt(i);
+			if (VALID_CHARS_FOR_INT.indexOf(c) == -1)
+			{
+				invalid = true;
+			}
+		}
+		if (invalid)
+		{
+			addAlert(state, rb.getString("plesuse1"));
+		}
+		else
+		{
+			int maxInt = Integer.MAX_VALUE/10;
+			int maxDec = Integer.MAX_VALUE - maxInt*10;
+			// case 2: Due to our internal scaling, input String is larger than Integer.MAX_VALUE/10
+			addAlert(state, rb.getString("plesuse4") + maxInt + "." + maxDec + ".");
+		}
+	}
 	
 	/**
 	 * display grade properly
@@ -6784,7 +6820,10 @@ extends PagedResourceActionII
 						Integer.parseInt(grade);
 						grade = grade.substring(0, grade.length()-1) + "." + grade.substring(grade.length()-1);
 					}
-					catch (NumberFormatException e){}
+					catch (NumberFormatException e)
+					{
+						alertInvalidPoint(state, grade);
+					}
 				}
 			}
 			else
