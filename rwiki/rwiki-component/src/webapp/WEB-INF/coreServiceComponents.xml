@@ -20,7 +20,7 @@
 
     <property name="objectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>
     <property name="renderEngine"><ref bean="baseRenderEngine"/></property>
-    <property name="externalImageLink"><value>&lt;img src="/library/image/sakai/url.gif" alt="external link: " title="external link"/&gt;</value></property>
+    <property name="externalImageLink"><value>&lt;img src="/sakai-rwiki/images/icklearrow.gif" alt="external link: " title="external link"/&gt;</value></property>
   </bean>
 
 
