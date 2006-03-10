@@ -48,7 +48,7 @@ function hourChange(FieldName)
         case 'endHour': <!-- same as minuteChange case endMinute -->
         case 'endMinute':
         {
-            minuteChange(FieldName);
+           minuteChange(FieldName);
         } break;
     }
 }
@@ -157,8 +157,10 @@ function minuteChange(FieldName)
                 duMinute = endMinute - startMinute;
 
                 endHour = parseInt(document.getElementById('endHour').value);
-                duHour = endHour - startHour;
-
+				if (endHour == 12)
+				{
+					endHour = 0;
+				}
                 startAmpmIndex = document.getElementById('startAmpm').selectedIndex;
                 endAmpmIndex = document.getElementById('endAmpm').selectedIndex;
                 sm = (startHour + startAmpmIndex * 12) * 60 + startMinute;
