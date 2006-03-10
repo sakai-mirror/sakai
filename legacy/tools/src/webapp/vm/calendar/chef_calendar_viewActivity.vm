@@ -39,7 +39,7 @@
 	<table class="itemSummary" cellspacing="0" border="0" style="clear:both">
 		<tr>
 			<th>$tlang.getString("gen.date")</th> 
-			<td>$event.getRange().firstTime().toStringLocalFull().substring(0,12)</td>
+			<td>$event.getRange().firstTime().toStringLocalDate()</td>
 		</tr>
 		<tr>
 			<th>$tlang.getString("gen.time")</th>
