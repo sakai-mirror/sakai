@@ -88,7 +88,7 @@
 		    <jsp:attribute name="value"><c:out value="${editBean.previousContent }"/></jsp:attribute>
 		  </jsp:element>
 		</p>
-		<pre>
+		<pre class="rwiki_previousContent">
 		  <c:out value="${editBean.previousContent}"/>
 		</pre>
 
