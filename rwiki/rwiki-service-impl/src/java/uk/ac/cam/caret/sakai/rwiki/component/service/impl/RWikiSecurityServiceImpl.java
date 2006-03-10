@@ -145,8 +145,7 @@ public class RWikiSecurityServiceImpl implements RWikiSecurityService {
 	public String createPermissionsReference(String pageSpace) {
 		// Page space is assumed to be a ppage space reference
 		// Turn into an entity and then get a reference
-		// TODO Auto-generated method stub
-		Reference ref = EntityManager.newReference(RWikiObjectService.REFERENCE_ROOT+pageSpace);
+		Reference ref = EntityManager.newReference(RWikiObjectService.REFERENCE_ROOT + pageSpace + ".");
 		return ref.getReference();
 	}
 	
