@@ -2793,7 +2793,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 			newProps.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
 			displayName = name;
 		}
-
+		
 		if (m_logger.isDebugEnabled()) m_logger.debug(this + ".copyCollection adding colletion=" + new_folder_id + " name=" + name);
 		
 		String base_id = new_folder_id + "-";
@@ -2806,6 +2806,21 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				try
 				{
 					ContentCollection newCollection = addCollection(new_folder_id, newProps);
+					
+					// use the creator and creation-date of the original instead of the copy
+					BaseCollectionEdit collection = (BaseCollectionEdit) m_storage.editCollection(newCollection.getId());
+					ResourcePropertiesEdit props = collection.getPropertiesEdit();
+					String creator = properties.getProperty(ResourceProperties.PROP_CREATOR);
+					if(creator != null && ! creator.trim().equals(""))
+					{
+						props.addProperty(ResourceProperties.PROP_CREATOR, creator);
+					}
+					String created = properties.getProperty(ResourceProperties.PROP_CREATION_DATE);
+					if(created != null)
+					{
+						props.addProperty(ResourceProperties.PROP_CREATION_DATE, created);
+					}
+					m_storage.commitCollection(collection);
 				
 					if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveCollection successful");
 					still_trying = false;
@@ -2921,6 +2936,21 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 				ContentResource newResource = addResource(new_id, thisResource.getContentType(), thisResource.getContent(), newProps,
 						NotificationService.NOTI_NONE);
 
+				// use the creator and creation-date of the original instead of the copy
+				BaseResourceEdit resource = (BaseResourceEdit) m_storage.editResource(newResource.getId());
+				ResourcePropertiesEdit props = resource.getPropertiesEdit();
+				String creator = properties.getProperty(ResourceProperties.PROP_CREATOR);
+				if(creator != null && ! creator.trim().equals(""))
+				{
+					props.addProperty(ResourceProperties.PROP_CREATOR, creator);
+				}
+				String created = properties.getProperty(ResourceProperties.PROP_CREATION_DATE);
+				if(created != null)
+				{
+					props.addProperty(ResourceProperties.PROP_CREATION_DATE, created);
+				}
+				m_storage.commitResource(resource);
+			
 				if (m_logger.isDebugEnabled()) m_logger.debug(this + ".moveResource successful");
 				still_trying = false;
 			}
