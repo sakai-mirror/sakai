@@ -59,6 +59,25 @@
 <p>The basic idea of a provisional release is to allow sites to test these new capabilities for a release before promoting them to be part of the official release. Your feedback on the suitability of these tools for inclusion in an upcoming Sakai release is an important part of this process.</p>
 
 <p>You are encouraged to use these tools taking careful care to test them in your environment and with your users. Some of the tools can be partially enabled to give you a way to roll out the tools to a subset of the users on your system.</p>
+
+<table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
+         <tbody>
+           <tr>
+
+             <th>Disabled vs. "Stealth" tools</th>
+           </tr>
+           <tr>
+             <td class="white">
+<p>Tools can be hidden from the possibility of being added to a site by the site manager (e.g. by using the "Worksite Setup" tool), and this can be accomplished in two different ways. The first method involves editing an XML file in the source, and requires a new build of the code, while the second method is handled through a setting in sakai.properties, and requires only a restart of Tomcat to take effect (rather than a new build).</p>
+
+<p>e.g., in sakai.properties:</p>
+
+<p><pre><span style="code"># STEALTH TOOLS.  A stealth tool is a tool that is running in Sakai, but which is nevertheless not available to be added<br/># to a site in Worksite Setup (it can however still be added through the Admin "Sites" tool).<br/># List any tools to be stealthed, using their tool ids, in a comma-separated string (no spaces).<br/># In this example, the rwiki tool, su tool, roster tool, and the assignment tool w/o grading are stealthed:<br/># stealthTools@org.sakaiproject.api.kernel.tool.ActiveToolManager=sakai.rwiki,sakai.su,sakai.site.roster,sakai.assignment</span></pre>
+
+<p>It's important to note - especially in the context of provisional tools - that "unstealthing" a tool will not make it visible if the tool XML file is not already set appropriately. Unstealthing a tool, in other words, is not in itself a sufficient method for enabling provisional tools.</p></td>
+           </tr>
+         </tbody>
+    </table>
 <br/>
 <a name="rwiki"></a>
 <h2>RWiki</h2>

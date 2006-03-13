@@ -114,7 +114,7 @@ sakai.properties file</a> </li>
 Sakai is available for three different installation methods.
 <ul>
 <li><b>Demo</b>: this archive provides the quickest and easiest way to try out Sakai.  It includes the Tomcat container and pre-built webapps, so that the only prerequisite for getting started is Java (version 1.4.2).</li>
-<li><b>Binary</b>:  this archive is a kind of Tomcat overlay.  If you have a working Tomcat appropriately configured, the binary installation provides a quick way to drop the Sakai application bundle into place without modification.  This may be a good choice if you're already comfortable with Sakai installation and configuration, but it is not recommended for a first look at the software.</li>
+<li><b>Binary</b>:  this archive is a kind of Tomcat overlay.  If you have a working Tomcat appropriately configured, the binary installation provides a quick way to drop the Sakai application bundle into place without requiring a maven build.  This may be a good choice if you're already comfortable with Sakai installation and configuration, but it is not recommended for a first look at the software.</li>
 <li><b>Source</b>:  this archive includes only the source code to build Sakai, and therefore calls for separate, preparatory installations of Tomcat and the Maven build tool, along with a preferred database.</li>
 </ul>
 
@@ -183,7 +183,7 @@ To stop the demo:
 <p></p>
 <span class="code">sakai-demo/sakai/db/sakai.db.*</span>
 <p></p>
-Objects created and modified during runs of the Sakai demo will persist through server restarts. [Warning: HSQLDB is not appropriate for running Sakai in any sort of production environment. For such cases we recommend MySql or Oracle (see <a href="dbconfig.html">Database Configuration</a>)]
+Objects created and modified during runs of the Sakai demo will persist through server restarts. [Warning: HSQLDB is not appropriate for running Sakai in any sort of production environment. For such cases we recommend MySql or Oracle (see <a href="dbconfig.html">Database Configuration</a>).
 <p></p>
 <b>Email not configured in the Demo:</b>
 	<ul>
@@ -212,29 +212,17 @@ The Demo and Binary Installations can freely skip most of these phases, with exc
 
 <a name="migrating"></a>
 <h2>1.5 Migrating from a Previous Release</h2>
-<p>There are database schema changes between 2.1.0 and 2.1.1, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the docs/updating folder of the release or on subversion:</p>
+<p><b>CSS Changes</b>: tool_base.css has been altered from 2.1.1, and institutions with custom skins will need to note this. See the below Jira item for more details:
+</p>
 
-<p>MySQL: <a href="https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql">
+<p><a href="http://bugs.sakaiproject.org/jira/browse/SAK-3743">
 
-    https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql</a><br />
+    SAK-3743 Jira issue</a>.</p>
 
-    Oracle: <a href="https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql">
 
-    https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql</a></p>
 
-<p>In the same directory you'll also find conversion scripts for earlier Sakai versions.  Migration from an earlier version will require the successive application of all intermediate update scripts. You cannot, for example, move from 2.0.1 to 2.1.1 by applying a single DB script. You will need to move first from 2.0.1 to 2.1.0, and then to 2.1.1.</p>
+<p><b>Database Conversion Scripts</b>: see the <a href="dbconfig.html">Database Configuration</a> section of this guide.</p>
 
-<br/><table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
-       <tbody>
-         <tr>
-
-           <th>Examine Before Using</th>
-         </tr>
-         <tr>
-           <td class="white">As a general rule, be sure to read through these conversion scripts before applying them.  The 2.0-2.1 script, in particular, includes notes about roles that may spare you a potential headache if you've been running 2.0 in production.</td>
-         </tr>
-       </tbody>
-    </table>
 
 
 <!--END CONTENT-->

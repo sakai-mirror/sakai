@@ -152,6 +152,18 @@ component, and so this configuration can in principle be achieved by also editin
 <pre><span class="code">name@component-name=value</span></pre></p>
     <p>New value settings can be freely added to the sakai.properties file, since any component property can in principle be overridden here, and so any sample sakai.properties will show only a small fraction of all the possible settings.</p>
 
+    <table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
+	             <tbody>
+	               <tr>
+	                 <th>Learning more about sakai.properties</th>
+	               </tr>
+	               <tr>
+	                 <td class="white">sakai.properties documentation: to find the most detailed documentation on the full variety of possible sakai.properties settings, look for sakai_properties.doc in docs/architecture of the source archive. A direct link to the documentation file in the 2-1-2 tag of subversion is below:<br/>
+https://source.sakaiproject.org/svn/tags/sakai_2-1-2/docs/architecture/sakai_properties.doc</td>
+	               </tr>
+	             </tbody>
+    </table>
+
   <a name="personalize"></a>
 
     <p><h2>4.3 Personalizing Sakai</h2></p>
@@ -194,7 +206,7 @@ value and adding bottomnav.N values (1 through the number of links).
                  <th>User Presence Enabled by Default</th>
                </tr>
                <tr>
-                 <td class="white">User presence is on automatically in this release, although it has not been in recent releases. If you do not wish to use it at your institution, you must explicitly turn it off in sakai.properties:
+                 <td class="white">User presence is on automatically in this release, although it has not been in recent releases. If you do not wish to use it at your institution, you must explicitly set its value to be false in sakai.properties:
 
 <pre># to enable presence display in the portal
 display.users.present=false</pre></td>
@@ -250,12 +262,12 @@ James on another, non-restricted port, then. &nbsp;For example:</p>
 	               </tr>
 	             </tbody>
     </table>
-    <p>The standard way to control the JVM options when Tomcat starts up is to have an environment variable JAVA_OPTS defined with JVM startup options. Since potential Sakai installs can range from developers just wanting to kick the tires all the way up to large-scale deployments, it's hard to recommend a single set of such options as the preferred ones for every case.  But we can start with a bare minimum, which provides for sufficient heap size and the permanent generation to at least avoid "Out of Memory" errors:</p>
+    <p>The standard way to control the JVM options when Tomcat starts up is to have an environment variable JAVA_OPTS defined with JVM startup options. Since any given Sakai instance may be deployed for a variety of purposes - ranging from developers doing private testing to large-scale deployments - it's hard to recommend a single set of such options as the preferred ones for every case. We can, however, start with a bare minimum which will at least avoid "Out of Memory" errors:</p>
     <pre><span class="code">JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=128m -XX:MaxPermSize=128m"</span></pre>
     <p>This is an adequate - if minimal - starting point: it selects server mode, sets an adequate heap size [We have found the best results when the min and max memory settings (Xms and Xmx, respectively) are set to be the same values], and sizes the permanent generation to accommodate more longer-persisting objects. These settings will allow things to be functional for testing, but will hardly be adequate for serving multiple concurrent users.  A more suitable production environment on a 32-bit machine might use a set of options like:</p>
     <pre><span class="code">JAVA_OPTS="-server -Xms1500m -Xmx1500m -XX:NewSize=400m -XX:MaxNewSize=400m<br>-XX:PermSize=128m -XX:MaxPermSize=128m -verbose:gc -XX:+PrintGCTimeStamps -XX:+PrintGCDetails"</span></pre>
     <p>This is better: a larger heap size is set for smoother performance, and garbage collection messages are turned on.  Another important setting is the NewSize - actually, the ratio of it to the heap size.  We want as large a NewSize as we can fit in the total heap, while keeping the total heap significantly bigger than NewSize in order for Java to properly garbage collect.</p>
-    <p>As you can see, there's a lot to think about here, and in practice each implementing institution uses a different JAVA_OPTS that they've settled on for their deployment and hardware, many of which use considerably more option arguments than we've shown here.  This discussion is meant only as a head start, and there is no replacement for doing your own testing.</p>
+    <p>As you can see, there's a lot to think about here, and in practice each implementing institution uses their own particular JAVA_OPTS that they've settled on for their deployment and hardware, and these typically use more option arguments than we've shown here. This discussion is meant only as a head start, and there is no replacement for doing your own testing.</p>
     <p>In any event, once you set JAVA_OPTS Tomcat will see this environment variable upon startup and use it. Instead of putting this in an environment variable, you might modify the $CATALINA_HOME/bin/catalina.bat or $CATALINA_HOME/bin/catalina.sh file to automatically set these values during startup.</p>
     <br/><table bgcolor="#ccddff" border="0" cellpadding="2" cellspacing="2">
 		             <tbody>
