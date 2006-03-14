@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.Stack;
 
 import org.apache.xerces.impl.dv.util.Base64;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.cover.Log;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
@@ -110,8 +111,8 @@ public class RWikiEntityImpl implements RWikiEntity {
 	 * {@inheritDoc}
 	 */
 	public String getUrl() {
-		if ( rwo == null ) return RWikiObjectService.REFERENCE_ROOT + reference.getId()+".";
-		return RWikiObjectService.REFERENCE_ROOT +rwo.getName()+".";
+		if ( rwo == null ) return ServerConfigurationService.getAccessUrl()+RWikiObjectService.REFERENCE_ROOT + reference.getId()+".";
+		return ServerConfigurationService.getAccessUrl()+RWikiObjectService.REFERENCE_ROOT +rwo.getName()+".";
 	}
 	/**
 	 * {@inheritDoc}

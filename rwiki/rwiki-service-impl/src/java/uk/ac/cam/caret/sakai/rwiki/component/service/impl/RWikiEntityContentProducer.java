@@ -97,6 +97,21 @@ public class RWikiEntityContentProducer implements EntityContentProducer {
 	public String getUrl(Entity entity) {
 		return entity.getUrl()+"html";
 	}
+
+	public String getSiteId(Reference ref) {
+		String context = ref.getContext();
+		if ( context.startsWith("/site/") ) {
+			context = context.substring("/site/".length());
+		}
+		if ( context.startsWith("/") ) {
+			context = context.substring(1);
+		}
+		int slash = context.indexOf("/");
+		if ( slash > 0 ) {
+			context = context.substring(0,slash);
+		}
+		return context;
+	}
 	
 	
 

@@ -105,16 +105,19 @@ public class SearchIndexBuilderImpl implements SearchIndexBuilder {
 					sb.setSearchaction(action);
 					sb.setName(resourceName);
 					sb.setSearchstate(SearchBuilderItem.STATE_PENDING);
+					dlog.debug(" Didnt Find Resource, created new ");
 				} else {
 					sb.setSearchaction(action);
 					sb.setName(resourceName);
 					sb.setSearchstate(SearchBuilderItem.STATE_PENDING);
 				}
 				searchBuilderItemDao.update(sb);
+				sb = searchBuilderItemDao.findByName(resourceName);
+				dlog.debug(" Added Resource "+action+" "+sb.getName());
 				break;
 			} catch (Throwable t) {
 				logger.warn("Retrying to register " + resourceName
-						+ " with the search engine");
+						+ " with the search engine ",t);
 				retries--;
 			}
 		}
@@ -134,7 +137,7 @@ public class SearchIndexBuilderImpl implements SearchIndexBuilder {
 		SearchBuilderItem sb = searchBuilderItemDao
 				.findByName(SearchBuilderItem.INDEX_MASTER);
 		if (sb == null) {
-			dlog.info("Created NEW " + SearchBuilderItem.INDEX_MASTER);
+			dlog.debug("Created NEW " + SearchBuilderItem.INDEX_MASTER);
 			sb = searchBuilderItemDao.create();
 		}
 		if (!SearchBuilderItem.ACTION_REBUILD.equals(sb.getSearchaction())) {
@@ -280,7 +283,7 @@ public class SearchIndexBuilderImpl implements SearchIndexBuilder {
 	 */
 	public boolean isBuildQueueEmpty() {
 		int n = searchBuilderItemDao.countPending();
-		dlog.info("Queue has "+n);
+		dlog.debug("Queue has "+n);
 		return (n == 0);
 	}
 

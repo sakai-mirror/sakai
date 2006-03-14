@@ -95,7 +95,7 @@ public class SearchNotificationAction implements NotificationAction {
 	 * @{inheritDoc}
 	 */
 	public void notify(Notification notification, Event event) {
-		dlog.debug("Notify");
+		dlog.debug("Notify "+event.getEvent());
 		// This is done so that we can persist the Actions if we want without
 		// having to keep a reference to the SearchIndexBuilder
 		searchIndexBuilder.addResource(notification,event);		

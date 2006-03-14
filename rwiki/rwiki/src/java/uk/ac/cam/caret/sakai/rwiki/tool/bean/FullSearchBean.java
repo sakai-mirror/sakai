@@ -27,8 +27,11 @@ package uk.ac.cam.caret.sakai.rwiki.tool.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.search.SearchList;
 import org.sakaiproject.search.SearchService;
+import org.sakaiproject.service.framework.current.cover.CurrentService;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 import uk.ac.cam.caret.sakai.rwiki.tool.util.WikiPageAction;
 
@@ -150,7 +153,7 @@ public class FullSearchBean {
     public List search() {
     		if ( searchResults == null ) {
     		List l = new ArrayList();
-    		l.add(realm);
+    		l.add(PortalService.getCurrentSiteId());
     		long start = System.currentTimeMillis();
     		int searchStart = requestPage * pagesize;
 		int searchEnd = searchStart + pagesize;

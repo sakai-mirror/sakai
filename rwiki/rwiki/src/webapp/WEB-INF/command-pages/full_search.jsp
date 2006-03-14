@@ -62,10 +62,10 @@
  			  		<c:forEach var="foundItem" items="${searchResults}" >
      		<p>
      		<c:out value="${foundItem.index}" />:&#160; 
-     		<jsp:setProperty name="searchViewBean" value="${foundItem.id}" property="pageName"/>
-     		<jsp:element name="a"><jsp:attribute name="href"><c:out value="${searchViewBean.viewUrl}"/></jsp:attribute>
-     		<c:out value="${searchViewBean.localName}"/>
-     		</jsp:element><br />
+                       <jsp:element name="a">
+                       <jsp:attribute name="href"><c:out value="${foundItem.url}"  escapeXml="false" /></jsp:attribute>
+                   <c:out value="${foundItem.title}"  escapeXml="false" /> 
+                       </jsp:element><br />
      		    Content: <br />
      		    			<c:out value="${foundItem.searchResult}"  escapeXml="false" /> 
      		    		<br />

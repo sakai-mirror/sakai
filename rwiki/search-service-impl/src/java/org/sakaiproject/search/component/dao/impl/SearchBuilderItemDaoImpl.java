@@ -86,6 +86,7 @@ public class SearchBuilderItemDaoImpl extends HibernateDaoSupport implements
 	 */
 	public void update(SearchBuilderItem sb) {
 		getHibernateTemplate().saveOrUpdate(sb);
+		
 	}
 
 	/**
@@ -144,7 +145,7 @@ public class SearchBuilderItemDaoImpl extends HibernateDaoSupport implements
 				if (l == null || l.size() == 0) {
 					return new Integer(0);
 				} else {
-					dlog.info("Found " + l.get(0) + " Pending Documents ");
+					dlog.debug("Found " + l.get(0) + " Pending Documents ");
 					return l.get(0);
 				}
 

@@ -55,7 +55,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 
 	private static Log dlog = LogFactory.getLog(SearchIndexBuilderWorker.class);
 
-	private final int numThreads = 5;
+	private final int numThreads = 1;
 
 	/**
 	 * The maximum sleep time for the wait/notify semaphore
@@ -132,7 +132,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
     		if ( !enabled ) return;
 		String threadName = Thread.currentThread().getName();
 		String tn = threadName.substring(0, 1);
-		dlog.info("Index Builder Run " + tn + "_" + threadName);
+		dlog.debug("Index Builder Run " + tn + "_" + threadName);
 		int threadno = Integer.parseInt(tn);
 		String threadID = getThreadID();
 
@@ -145,12 +145,14 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 				try {
 					while (runThreads) {
 						try {
+							SessionManager.setCurrentSession(s);
 							hsession = getSession();
 							if (s == null) {
 								s = SessionManager.startSession();
 								User u = UserDirectoryService.getUser("admin");
 								s.setUserId(u.getId());
 							}
+							SessionManager.setCurrentSession(s);
 							// process the list
 							int pending = countPending(true);
 							if (pending == 0) {
@@ -205,7 +207,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 			dlog.warn("Failed in IndexBuilder ", t);
 		} finally {
 
-			dlog.info("IndexBuilder run exit " + threadName);
+			dlog.debug("IndexBuilder run exit " + threadName);
 			indexBuilderThread[threadno] = null;
 		}
 	}
@@ -234,7 +236,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 			// Load the list
 
 			List runtimeToDo = txfindPending(indexBatchSize);
-			dlog.info("Processing " + runtimeToDo.size() + " documents");
+			dlog.debug("Processing " + runtimeToDo.size() + " documents");
 			totalDocs = runtimeToDo.size();
 
 			if (totalDocs > 0) {
@@ -302,6 +304,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 										+ sbi);
 					}
 					Entity entity = ref.getEntity();
+	
 					Document doc = new Document();
 					if (ref.getContext() == null) {
 						dlog.warn("Context is null for " + sbi);
@@ -332,13 +335,14 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 									true));
 							doc.add(Field.Keyword("tool", sep.getTool()));
 							doc.add(Field.Keyword("url", sep.getUrl(entity)));
+							doc.add(Field.Keyword("siteid", sep.getSiteId(ref)));
 
 						} else {
 							doc.add(Field.Text("title", ref.getReference(),
 									true));
 							doc.add(Field.Keyword("tool", ref.getType()));
 							doc.add(Field.Keyword("url", ref.getUrl()));
-							
+							doc.add(Field.Keyword("siteid", ref.getContext()));
 						}
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -367,7 +371,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 							}
 						}
 					} catch (Exception ex) {
-						dlog.info("Concurrent modification, will reindex "
+						dlog.warn("Concurrent modification, will reindex "
 								+ sbi.getName());
 					}
 				}
@@ -497,7 +501,6 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 							// no record, create one and grab it
 							swl = new SearchWriterLockImpl();
 							swl.setVersion(new Date());
-							dlog.info("new object");
 						} else {
 							// there is a record
 							Date threadDeathDate = new Date();
@@ -506,7 +509,6 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 									- (10L * 60L * 1000L));
 							swl = (SearchWriterLock) lockRecord.get(0);
 							if (swl.getVersion() == null) {
-								dlog.info("Null version ");
 								swl.setVersion(new Date());
 							}
 							dlog.debug(" Lock Object " + swl.getId() + ":"
@@ -580,7 +582,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 							t.commit();
 							return new Integer(0);
 						} else {
-							dlog.info("GOT " + l.get(0) + " Locking to  "
+							dlog.debug("GOT " + l.get(0) + " Locking to  "
 									+ writerThreadID + " in " + session);
 							swl.setLockkey(LOCKKEY);
 							swl.setNodename(writerThreadID);
@@ -767,11 +769,11 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 						throws HibernateException {
 					SearchBuilderItem masterItem = getMasterItem();
 					Integer masterAction = getMasterAction(masterItem);
-					dlog.info(" Master Item is "+masterItem.getName()+":"+masterItem.getSearchaction()+":"+masterItem.getSearchstate()+"::"+masterItem.getVersion());
+					dlog.debug(" Master Item is "+masterItem.getName()+":"+masterItem.getSearchaction()+":"+masterItem.getSearchstate()+"::"+masterItem.getVersion());
 					if (SearchBuilderItem.ACTION_REFRESH.equals(masterAction)) {
-						dlog.info(" Master Action is "+masterAction);
-						dlog.info("  REFRESH = "+SearchBuilderItem.ACTION_REFRESH);
-						dlog.info("  RELOAD = "+SearchBuilderItem.ACTION_REBUILD);
+						dlog.debug(" Master Action is "+masterAction);
+						dlog.debug("  REFRESH = "+SearchBuilderItem.ACTION_REFRESH);
+						dlog.debug("  RELOAD = "+SearchBuilderItem.ACTION_REBUILD);
 						// get a complete list of all items, before the master
 						// action version
 						// if there are none, update the master action action to
@@ -787,21 +789,21 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 									.setSearchstate(SearchBuilderItem.STATE_COMPLETED);
 							session.saveOrUpdate(masterItem);
 						}
-						dlog.info("RESET NEXT 100 RECORDS ===========================================================");
+						dlog.debug("RESET NEXT 100 RECORDS ===========================================================");
 
 						for (Iterator i = l.iterator(); i.hasNext();) {
 							SearchBuilderItem sbi = (SearchBuilderItem) i
 									.next();
 							sbi.setSearchstate(SearchBuilderItem.STATE_PENDING);
 						}
-						dlog.info("DONE RESET NEXT 100 RECORDS ===========================================================");
+						dlog.debug("DONE RESET NEXT 100 RECORDS ===========================================================");
 
 						return l;
 					} else if (SearchBuilderItem.ACTION_REBUILD
 							.equals(masterAction)) {
 						// delete all and return the master action only
 						// the caller will then rebuild the index from scratch
-						dlog.info("DELETE ALL RECORDS ==========================================================");
+						dlog.debug("DELETE ALL RECORDS ==========================================================");
 						session.flush();
 						try {
 							session.connection().createStatement().execute("delete from searchbuilderitem");
@@ -810,8 +812,8 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 						}
 						
 						// THIS DOES NOT WORK IN H 2.1 session.delete("from "+SearchBuilderItemImpl.class.getName());
-						dlog.info("DONE DELETE ALL RECORDS ===========================================================");
-						dlog.info("ADD ALL RECORDS ===========================================================");
+						dlog.debug("DONE DELETE ALL RECORDS ===========================================================");
+						dlog.debug("ADD ALL RECORDS ===========================================================");
 						for (Iterator i = searchIndexBuilder.getContentProducers().iterator(); i.hasNext();) {
 							EntityContentProducer ecp = (EntityContentProducer) i
 									.next();
@@ -831,9 +833,9 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 									session.saveOrUpdate(sbi);
 								}
 							}
-							dlog.info(" Added "+added);
+							dlog.debug(" Added "+added);
 						}
-						dlog.info("DONE ADD ALL RECORDS ===========================================================");
+						dlog.debug("DONE ADD ALL RECORDS ===========================================================");
 
 						// return normal first set
 						return session.createCriteria(
@@ -863,7 +865,7 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 
 		} finally {
 			long finish = System.currentTimeMillis();
-			dlog.info(" txfindPending took " + (finish - start) + " ms");
+			dlog.debug(" txfindPending took " + (finish - start) + " ms");
 		}
 	}
 

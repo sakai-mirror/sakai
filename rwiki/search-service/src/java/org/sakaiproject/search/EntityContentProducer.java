@@ -92,6 +92,8 @@ public interface EntityContentProducer {
 	boolean matches(Event event);
 
 	String getTool();
+	
+	String getSiteId(Reference  ref);
 
 
 }

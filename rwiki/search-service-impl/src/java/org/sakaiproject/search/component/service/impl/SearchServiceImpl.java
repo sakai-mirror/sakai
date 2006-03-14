@@ -119,7 +119,9 @@ public class SearchServiceImpl implements SearchService {
 			notification.setFunction(SearchService.EVENT_TRIGGER_SEARCH);
 			if (triggerFunctions != null) {
 				for (Iterator ifn = triggerFunctions.iterator(); ifn.hasNext();) {
-					notification.addFunction((String) ifn.next());
+					String function = (String) ifn.next();
+					notification.addFunction(function);
+					dlog.debug("Adding Search Register "+function);
 				}
 			}
 
@@ -177,6 +179,7 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	public void registerFunction(String function) {
 		notification.addFunction(function);
+		dlog.debug("Adding Function "+function);
 	}
 
 	/**
@@ -187,7 +190,7 @@ public class SearchServiceImpl implements SearchService {
 			BooleanQuery query = new BooleanQuery();
 			BooleanQuery contextQuery = new BooleanQuery();
 			for (Iterator i = contexts.iterator(); i.hasNext();) {
-				contextQuery.add(new TermQuery(new Term("context", (String) i
+				contextQuery.add(new TermQuery(new Term("siteid", (String) i
 						.next())), true, false);
 			}
 
