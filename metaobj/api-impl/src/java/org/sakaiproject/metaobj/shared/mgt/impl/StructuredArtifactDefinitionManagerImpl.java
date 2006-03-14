@@ -246,6 +246,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
    public boolean isGlobal() {
       String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      return isGlobal(siteId);
+   }
+
+   protected boolean isGlobal(String siteId) {
 
       if (getGlobalSites().contains(siteId)) {
          return true;
@@ -713,6 +717,12 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       bean.setSiteState(publish ? StructuredArtifactDefinitionBean.STATE_PUBLISHED :
             StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
 
+      if (isGlobal(worksite)) {
+         bean.setGlobalState(publish ? StructuredArtifactDefinitionBean.STATE_PUBLISHED :
+            StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
+         bean.setSiteId(null);
+      }
+
       ZipEntry currentEntry = zis.getNextEntry();
       if (currentEntry != null) {
          if (currentEntry.getName().endsWith("xml")) {
@@ -751,11 +761,11 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       try {
          byte[] bytes = readStreamToBytes(inStream);
          //  for some reason the SAX Builder sometimes won't recognize
-         //these bytes as correct utf-8 characters.  So we want to read it in 
+         //these bytes as correct utf-8 characters.  So we want to read it in
          //as utf-8 and spot it back out as utf-8 and this will correct the
          //bytes.  In my test, it added two bytes somewhere in the string.
          //and adding those two bytes made the string work for saxbuilder.
-         //   
+         //
          bytes = (new String(bytes, "UTF-8")).getBytes("UTF-8");
          Document document = builder.build(new ByteArrayInputStream(bytes));
 
