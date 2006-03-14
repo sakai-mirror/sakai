@@ -23,15 +23,16 @@
 
 package org.sakaiproject.util.java;
 
-import java.util.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.preference.Preferences;
 import org.sakaiproject.service.legacy.preference.cover.PreferencesService;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
+
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * ResourceLoader provides an alternate implementation of org.util.ResourceBundle, dynamically selecting
@@ -244,6 +245,11 @@ public class ResourceLoader extends DummyMap implements Map
     {
         return getString(key.toString());
     }
+
+   public Object getFormattedMessage(Object key, Object[]args) {
+      String pattern = (String) get(key);
+      return MessageFormat.format(pattern, args);
+   }
 
    public Set keySet() {
       return getBundleAsMap().keySet();

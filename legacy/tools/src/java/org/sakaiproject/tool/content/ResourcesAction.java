@@ -25,60 +25,14 @@
 // package
 package org.sakaiproject.tool.content;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeSet;
-import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.sakaiproject.util.java.ResourceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.sakaiproject.cheftool.Context;
-import org.sakaiproject.cheftool.JetspeedRunData;
-import org.sakaiproject.cheftool.PagedResourceHelperAction;
-import org.sakaiproject.cheftool.PortletConfig;
-import org.sakaiproject.cheftool.RunData;
-import org.sakaiproject.cheftool.VelocityPortlet;
-import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
-import org.sakaiproject.cheftool.menu.Menu;
-import org.sakaiproject.cheftool.menu.MenuEntry;
-import org.sakaiproject.exception.EmptyException;
-import org.sakaiproject.exception.IdInvalidException;
-import org.sakaiproject.exception.IdLengthException;
-import org.sakaiproject.exception.IdUniquenessException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.exception.InconsistentException;
-import org.sakaiproject.exception.OverQuotaException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.cheftool.*;
+import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
@@ -113,16 +67,24 @@ import org.sakaiproject.tool.helper.AttachmentAction;
 import org.sakaiproject.tool.helper.PermissionsAction;
 import org.sakaiproject.util.ContentHostingComparator;
 import org.sakaiproject.util.FileItem;
-import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
+import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.java.StringUtil;
+import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.xml.Xml;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
+import org.w3c.dom.*;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
 * <p>ResourceAction is a ContentHosting application</p>
@@ -2718,8 +2680,16 @@ public class ResourcesAction
 					{
 						AttachItem item = (AttachItem) it.next();
 						Reference ref = EntityManager.newReference(ContentHostingService.getReference(item.getId()));
-						attachments.add(ref);
-					}
+
+                  if (checkSelctItemFilter((ContentResource) ref.getEntity(), state)) {
+                     attachments.add(ref);
+                  }
+                  else {
+                     it.remove();
+                     addAlert(state, (String) rb.getFormattedMessage("filter",
+                        new Object[]{item.getDisplayName()}));
+                  }
+               }
 				}
 			}
 			popFromStack(state);
@@ -9128,13 +9098,24 @@ public class ResourcesAction
       ContentResourceFilter filter = (ContentResourceFilter)state.getAttribute(STATE_RESOURCE_FILTER);
 
       if (filter != null) {
-         newItem.setCanSelect(filter.allowSelect(resource));
+         if (newItem != null) {
+            newItem.setCanSelect(filter.allowSelect(resource));
+         }
          return filter.allowView(resource);
       }
-      else {
+      else if (newItem != null) {
          newItem.setCanSelect(true);
       }
 
+      return true;
+   }
+
+   protected static boolean checkSelctItemFilter(ContentResource resource, SessionState state) {
+      ContentResourceFilter filter = (ContentResourceFilter)state.getAttribute(STATE_RESOURCE_FILTER);
+
+      if (filter != null) {
+         return filter.allowSelect(resource);
+      }
       return true;
    }
 
