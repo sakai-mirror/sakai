@@ -597,7 +597,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
    public void writeSADasXMLtoStream(StructuredArtifactDefinitionBean bean, OutputStream os) throws IOException {
       Document doc = exportSADAsXML(bean);
       String docStr = (new XMLOutputter()).outputString(doc);
-      os.write(docStr.getBytes());
+      os.write(docStr.getBytes("UTF-8"));
    }
 
    public void writeSADtoZip(StructuredArtifactDefinitionBean bean, ZipOutputStream zos) throws IOException {
@@ -750,6 +750,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
       try {
          byte[] bytes = readStreamToBytes(inStream);
+         //  for some reason the SAX Builder sometimes won't recognize
+         //these bytes as correct utf-8 characters.  So we want to read it in 
+         //as utf-8 and spot it back out as utf-8 and this will correct the
+         //bytes.  In my test, it added two bytes somewhere in the string.
+         //and adding those two bytes made the string work for saxbuilder.
+         //   
+         bytes = (new String(bytes, "UTF-8")).getBytes("UTF-8");
          Document document = builder.build(new ByteArrayInputStream(bytes));
 
          Element topNode = document.getRootElement();
@@ -760,6 +767,7 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
       catch (Exception jdome) {
          logger.error(jdome);
+         throw new RuntimeException(jdome);
       }
       return bean;
    }
