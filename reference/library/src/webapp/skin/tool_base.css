@@ -288,10 +288,22 @@ span.abc a, span.abc a:link  {
 	margin:1em 
 } 
 
+/*all purpose clear - add to block that may find an unexpected floated element above it
+	clear:before to deal with FF/SAF */
+
 .clear {
-	margin: 3em 0;
+	margin: 1em 0 ;
 	clear: both;
 }
+.clear:before{
+	padding:.5em 0;
+	 content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+	} 
+
 
 /*validation message - overrides other rules in effect*/
 .validation  { 
