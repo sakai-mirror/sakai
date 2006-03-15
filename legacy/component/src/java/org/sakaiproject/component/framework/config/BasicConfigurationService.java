@@ -43,6 +43,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.xml.Xml;
+import org.springframework.core.io.ClassPathResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -159,6 +160,27 @@ public class BasicConfigurationService implements ServerConfigurationService
 				catch (Throwable t)
 				{
 					m_logger.warn(this + ".init(): trouble loading tool order from : " + getSakaiHomePath() + toolOrderFile + " : " + t.toString());
+				}
+			}
+			else
+			{
+				// start with the distributed defaults from the classpath
+				try
+				{
+					ClassPathResource rsrc = new ClassPathResource("org/sakaiproject/config/toolOrder.xml");
+					
+					try
+					{
+						loadToolOrder(rsrc.getInputStream());
+					}
+					catch (Throwable t)
+					{
+						m_logger.warn(this + ".init(): trouble loading tool order from org/sakaiproject/config/toolOrder.xml: " + t.toString());
+					}
+				}
+				catch (Throwable t)
+				{
+					m_logger.warn(t.toString());
 				}
 			}
 		}
@@ -470,8 +492,6 @@ public class BasicConfigurationService implements ServerConfigurationService
 	 */
 	protected void loadToolOrder(InputStream in)
 	{
-		Map categories = new HashMap();
-
 		Document doc = Xml.readDocumentFromStream(in);
 		Element root = doc.getDocumentElement();
 		if (!root.getTagName().equals("toolOrder"))
