@@ -406,4 +406,93 @@ function appendLoader(loaderFunc) {
 	_LOADERS[_LOADERS.length] = loaderFunc;
 }
 
+function setMainFrameHeightNoScroll(id) {
+	// run the script only if this window's name matches the id parameter
+	// this tells us that the iframe in parent by the name of 'id' is the one who spawned us
+	id = id.replace(/[^a-zA-Z0-9]/g,"x");
+	id = "Main" + id;
+
+	if (typeof window.name != "undefined" && id != window.name) id = window.name;
+
+	var frame = parent.document.getElementById(id);
+	if (frame)
+	{
+		// reset the scroll
+		parent.window.scrollTo(0,0);
+
+		var objToResize = (frame.style) ? frame.style : frame;
+//		alert("After objToResize");
+
+		var height; 
+		
+		var scrollH = document.body.scrollHeight;
+		var offsetH = document.body.offsetHeight;
+		var clientH = document.body.clientHeight;
+		var innerDocScrollH = null;
+
+		if (typeof(frame.contentDocument) != 'undefined' || typeof(frame.contentWindow) != 'undefined')
+		{
+			// very special way to get the height from IE on Windows!
+			// note that the above special way of testing for undefined variables is necessary for older browsers
+			// (IE 5.5 Mac) to not choke on the undefined variables.
+ 			var innerDoc = (frame.contentDocument) ? frame.contentDocument : frame.contentWindow.document;
+			innerDocScrollH = (innerDoc != null) ? innerDoc.body.scrollHeight : null;
+		}
+
+//		alert("After innerDocScrollH");
+	
+		if (document.all && innerDocScrollH != null)
+		{
+			// IE on Windows only
+			height = innerDocScrollH;
+		}
+		else
+		{
+			// every other browser!
+			height = offsetH;
+		}
+
+		// here we fudge to get a little bigger
+		//gsilver: changing this from 50 to 10, and adding extra bottom padding to the portletBody		
+		var newHeight = height + 10;
+		
+		// no need to be smaller than...
+		//if (height < 200) height = 200;
+		objToResize.height=newHeight + "px";
+		
+		
+		var s = " scrollH: " + scrollH + " offsetH: " + offsetH + " clientH: " + clientH + " innerDocScrollH: " + innerDocScrollH + " Read height: " + height + " Set height to: " + newHeight;
+//		window.status = s;
+//		alert(s);
+		//window.location.hash = window.location.hash;
+		var anchor = document.location.hash;
+		if (anchor.length > 0 && anchor.charAt(0) == '#') {
+		  anchor = anchor.substring(1);
+		}
+		var coords = getAnchorPosition(anchor);
+		parent.window.scrollTo(coords.x, coords.y);
+	}
+
+}
+
+function getAnchorPosition( anchorName){ 
+ if (document.layers) {
+    var anchor = document.anchors[anchorName];
+    return { x: anchor.x, y: anchor.y };
+  }
+  else if (document.getElementById) {
+    var anchor = document.anchors[anchorName];
+    var coords = {x: 0, y: 0 };
+    while (anchor) {
+      coords.x += anchor.offsetLeft;
+      coords.y += anchor.offsetTop;
+      anchor = anchor.offsetParent;
+    }
+    return coords;
+  }
+}
+
 appendLoader(autoInit_trees);
+
+
+
