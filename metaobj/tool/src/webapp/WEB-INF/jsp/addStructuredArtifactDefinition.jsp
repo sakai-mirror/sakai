@@ -41,8 +41,6 @@
 </p>
 </c:if>
 
-<h4><fmt:message key="header_form"/></h4>
-
 <p class="shorttext">
 <spring:bind path="bean.description">
 <span class="reqStar">*</span><label>Name</label>
@@ -100,7 +98,14 @@
 </p>
 
 <p class="act">
-<input name="action" type="submit" value="<fmt:message key="button_save"/>"/>
+<c:if test="${empty bean.id}">
+<input name="action" type="submit" class="active" value="<fmt:message key="button_save"/>"/>
+</c:if>
+
+<c:if test="${!empty bean.id}">
+<input name="action" type="submit" class="active" value="<fmt:message key="button_saveEdit"/>"/>
+</c:if>
+
 <input name="action" id="action" type="hidden" value=""/>
 <input name="filePickerAction" id="filePickerAction" type="hidden" value="" />
 <input name="filePickerFrom" id="filePickerFrom" type="hidden" value="" />
