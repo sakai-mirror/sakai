@@ -5758,6 +5758,16 @@ public class SiteAction extends PagedResourceActionII
 				isFutureTerm = true;
 			}
 			
+			// message subject
+			if (termExist)
+			{
+				message_subject = rb.getString("java.sitereqfrom")+" " + sessionUserName + " " + rb.getString("java.for") + " " + term.getId();
+			}
+			else
+			{
+				message_subject = rb.getString("java.official")+" " + sessionUserName;
+			}
+			
 			// there is no offical instructor for future term sites
 			String requestId = (String) state.getAttribute(STATE_SITE_QUEST_UNIQNAME);
 			if (!isFutureTerm)
@@ -5772,14 +5782,6 @@ public class SiteAction extends PagedResourceActionII
 						to = instructor.getEmail();
 						headerTo = instructor.getEmail();
 						replyTo = requestEmail;
-						if (termExist)
-						{
-							message_subject = rb.getString("java.sitereqfrom")+" " + sessionUserName;
-						}
-						else
-						{
-							message_subject = rb.getString("java.official")+" ";
-						}
 						buf.append(rb.getString("java.hello")+" \n\n");
 						buf.append(rb.getString("java.receiv")+" " + sessionUserName + ", ");
 						buf.append(rb.getString("java.who")+"\n");
@@ -5825,7 +5827,6 @@ public class SiteAction extends PagedResourceActionII
 			to = requestEmail;
 			headerTo = requestEmail;
 			replyTo = UserDirectoryService.getCurrentUser().getEmail();
-			message_subject = rb.getString("java.sitereqfrom")+" " + sessionUserName;
 			buf.setLength(0);
 			buf.append(rb.getString("java.to")+"\t\t" + productionSiteName + " "+rb.getString("java.supp")+"\n");
 			buf.append("\n"+rb.getString("java.from")+"\t" + sessionUserName + "\n");
@@ -5931,12 +5932,12 @@ public class SiteAction extends PagedResourceActionII
 			Time time = TimeService.newTime();
 			String local_time = time.toStringLocalTime();
 			String local_date = time.toStringLocalDate();
-			String message_subject = rb.getString("java.official")+ " " + UserDirectoryService.getCurrentUser().getDisplayName();
 			String term_name = "";
 			if (state.getAttribute(STATE_TERM_SELECTED) != null)
 			{
 				term_name = ((Term) state.getAttribute(STATE_TERM_SELECTED)).getId();
 			}
+			String message_subject = rb.getString("java.official")+ " " + UserDirectoryService.getCurrentUser().getDisplayName() + " " + rb.getString("java.for") + " " + term_name;
 			
 			String from = NULL_STRING;
 			String to = NULL_STRING;
