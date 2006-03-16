@@ -412,7 +412,7 @@ function setMainFrameHeightNoScroll(id) {
 	id = id.replace(/[^a-zA-Z0-9]/g,"x");
 	id = "Main" + id;
 
-	if (typeof window.name != "undefined" && id != window.name) id = window.name;
+	if (typeof window.name != "undefined" && id != window.name) return;
 
 	var frame = parent.document.getElementById(id);
 	if (frame)
