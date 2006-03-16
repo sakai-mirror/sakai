@@ -24,7 +24,7 @@
 			<h4>$tlang.getString("imp.select")</h4>
 		#elseif ($importWizardState == "GENERIC_SELECT_FILE")
 			<p class="instruction">$tlang.getString("imp.todo")<br /><br />
-				<a href="#scheduleLink("CToolsCalendarTemplate.zip")" title="CToolsCalendarTemplate.zip" target="_blank">
+				<a href="#scheduleLink("CalendarTemplate.zip")" title="CalendarTemplate.zip" target="_blank">
 				<img src = "#imageLink("sakai/excel_sc.gif")" border="0" alt="$tlang.getString('imp.generic')" />
 				$tlang.getString("imp.generic")
 				</a><br /><br />
