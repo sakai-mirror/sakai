@@ -2476,7 +2476,6 @@ public abstract class BaseAssignmentService
 				try
 				{
 					ZipOutputStream out = new ZipOutputStream(b.outputStream());
-					InputStream in = null;
 					
 					// create the folder structor - named after the assignment's title
 					String root = Validator.escapeZipEntry(a.getTitle()) + Entity.SEPARATOR;
@@ -2487,10 +2486,6 @@ public abstract class BaseAssignmentService
 					{
 						exceptionMessage.append("There is no submission yet. ");
 					}
-	
-					// Create a buffer for reading the files
-					byte[] buf = new byte[1024];
-					int len;
 					
 					// Create the ZIP file				
 					String submittersName = "";
@@ -2528,15 +2523,9 @@ public abstract class BaseAssignmentService
 									{
 										//create the text file only when a text submission is allowed
 										ZipEntry textEntry = new ZipEntry(submittersName + submittersString + "_submissionText.txt");
-										in = (new Blob(FormattedText.convertFormattedTextToPlaintext(submittedText).getBytes())).inputStream();
 										out.putNextEntry(textEntry);
-										
-										while ((len = in.read(buf)) > 0)
-										{
-											out.write(buf, 0, len);
-										}
+										out.write(FormattedText.convertFormattedTextToPlaintext(submittedText).getBytes());
 										out.closeEntry();
-										in.close();
 									}
 	
 									// create the attachment file(s)
@@ -2562,25 +2551,10 @@ public abstract class BaseAssignmentService
 											}
 	
 											ZipEntry attachmentEntry = new ZipEntry(submittersName + displayName);
-	
-											// if the attachment's content is null, use the empty constructor %%%zqian 
-											if (content != null)
-											{
-												in = (new Blob(content)).inputStream();
-											}
-											else
-											{
-												in = (new Blob()).inputStream();
-											}
-	
+
 											out.putNextEntry(attachmentEntry);
-											while ((len = in.read(buf)) > 0)
-											{
-												out.write(buf, 0, len);
-											}
+											out.write(content);
 											out.closeEntry();
-											in.close();
-	
 										}
 										catch (PermissionException e)
 										{
