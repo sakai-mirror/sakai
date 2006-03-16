@@ -23,7 +23,11 @@
 package org.sakaiproject.metaobj.shared.mgt;
 
 import org.jdom.Element;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.ImportException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
@@ -80,13 +84,18 @@ public interface StructuredArtifactDefinitionManager {
    public StructuredArtifactHomeInterface convertToHome(StructuredArtifactDefinitionBean sad);
 
    public boolean importSADResource(Id worksiteId, String resourceId, boolean findExisting)
-         throws IOException, ServerOverloadException;
+         throws IOException, ServerOverloadException, PermissionException, 
+                IdUnusedException, ImportException, UnsupportedFileTypeException;
 
    public void packageFormForExport(String formId, OutputStream os) throws IOException;
 
    public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
-                                                     boolean findExisting, boolean publish)
-         throws IOException;
+                boolean findExisting, boolean publish)
+         throws IOException, ImportException;
+   
+   public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
+                boolean findExisting, boolean publish, boolean foundThrowsException)
+         throws IOException, ImportException;
 
    public Element createFormViewXml(String formId, String returnUrl);
 }

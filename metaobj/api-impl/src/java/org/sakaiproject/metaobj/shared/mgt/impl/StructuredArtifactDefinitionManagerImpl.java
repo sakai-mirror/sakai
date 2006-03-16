@@ -36,6 +36,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.ImportException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
@@ -636,7 +638,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
     * @param findExisting
     */
    public boolean importSADResource(Id worksiteId, String resourceId, boolean findExisting)
-         throws IOException, ServerOverloadException {
+         throws IOException, ServerOverloadException, PermissionException, 
+               IdUnusedException, ImportException, UnsupportedFileTypeException
+         {
       String id = getContentHosting().resolveUuid(resourceId);
 
       try {
@@ -651,24 +655,23 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
             return bean != null;
          }
          else {
-            throw new OspException("Unsupported file type");
+            throw new UnsupportedFileTypeException("The import file must be a zip file.");
          }
-      }
-      catch (PermissionException pe) {
-         logger.error(pe);
       }
       catch (TypeException te) {
          logger.error(te);
-      }
-      catch (IdUnusedException iue) {
-         logger.error(iue);
       }
       return false;
    }
 
    public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
                                                      boolean findExisting, boolean publish)
-         throws IOException {
+         throws IOException, ImportException {
+      return importSad(worksiteId, in, findExisting, publish, true);
+   }
+   public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
+                                                     boolean findExisting, boolean publish, boolean foundThrowsException)
+         throws IOException, ImportException {
       ZipInputStream zis = new ZipInputStream(in);
 
       StructuredArtifactDefinitionBean bean = readSADfromZip(zis, worksiteId.getValue(), publish);
@@ -676,7 +679,10 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
          if (findExisting) {
             StructuredArtifactDefinitionBean found = findBean(bean);
             if (found != null) {
-               return found;
+               if(foundThrowsException)
+                  throw new ImportException("The Structured Artifact Definition being imported already exists and has been published");
+               else
+                  return found;
             }
          }
 
@@ -771,9 +777,9 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
 
          Element topNode = document.getRootElement();
 
-         bean.setDescription(topNode.getChildTextTrim("description"));
-         bean.setInstruction(topNode.getChildTextTrim("instruction"));
-         bean.setDocumentRoot(topNode.getChildTextTrim("documentRootNode"));
+         bean.setDescription(new String(topNode.getChildTextTrim("description").getBytes(), "UTF-8"));
+         bean.setInstruction(new String(topNode.getChildTextTrim("instruction").getBytes(), "UTF-8"));
+         bean.setDocumentRoot(new String(topNode.getChildTextTrim("documentRootNode").getBytes(), "UTF-8"));
       }
       catch (Exception jdome) {
          logger.error(jdome);

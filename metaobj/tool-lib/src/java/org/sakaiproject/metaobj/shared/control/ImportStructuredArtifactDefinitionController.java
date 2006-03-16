@@ -26,6 +26,8 @@ import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
+import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.metaobj.shared.model.FormUploadForm;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
@@ -108,6 +110,16 @@ return prepareListView(request, null);
                catch (InvalidUploadException e) {
                   logger.warn("Failed uploading template", e);
                   errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
+                  view = "failed";
+               }
+               catch(UnsupportedFileTypeException ufte) {
+                  logger.warn("Failed uploading template", ufte);
+                  errors.rejectValue("uploadedForm", ufte.getMessage(), ufte.getMessage());
+                  view = "failed";
+               }
+               catch(ImportException ie) {
+                  logger.warn("Failed uploading template", ie);
+                  errors.rejectValue("uploadedForm", ie.getMessage(), ie.getMessage());
                   view = "failed";
                }
                catch (Exception e) {
