@@ -39,9 +39,9 @@
 			$tlang.getString("lis.emasen")<br />
 			<ul  style="margin:15px">
 				#foreach ($alias in $aliases)
-					<li style="margin:5px 5px 5px 15px;list-style-type: none;">${alias.getId()}@${serverName}</li>
+					<li style="margin:5px 5px 5px 15px;list-style-type: none;"><a href="mailto:${alias.getId()}@${serverName}">${alias.getId()}@${serverName}</a></li>
 				#end
-				<li style="margin:5px 5px 5px 15px;list-style-type: none;">${nonAlias}@${serverName}</li>
+				<li style="margin:5px 5px 5px 15px;list-style-type: none;"><a href="mailto:${nonAlias}@${serverName}">${nonAlias}@${serverName}</a></li>
 			</ul>
 		#else
 			$tlang.getString("lis.youarenot")<hr />
