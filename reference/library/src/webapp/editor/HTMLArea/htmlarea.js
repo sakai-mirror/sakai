@@ -259,9 +259,9 @@ HTMLArea.Config = function () {
 	for (var i in this.btnList) {
 		var btn = this.btnList[i];
 		btn[1] = _editor_url + this.imgURL + btn[1];
-		if (typeof HTMLArea.I18N.tooltips[i] != "undefined") {
-			btn[0] = HTMLArea.I18N.tooltips[i];
-		}
+		//if (typeof HTMLArea.I18N.tooltips[i] != "undefined") {
+		//	btn[0] = HTMLArea.I18N.tooltips[i];
+		//}
 	}
 };
 
