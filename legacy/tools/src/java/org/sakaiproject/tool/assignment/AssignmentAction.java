@@ -1426,7 +1426,7 @@ extends PagedResourceActionII
 		{
 			GradebookService g = (GradebookService) (org.sakaiproject.service.gradebook.shared.GradebookService) ComponentManager.get("org.sakaiproject.service.gradebook.GradebookService");
 			String gradebookUid = ToolManager.getInstance().getCurrentPlacement().getContext();
-			if (g.gradebookExists(gradebookUid))
+			if (g.isGradebookDefined(gradebookUid))
 			{
 				context.put("withGradebook", Boolean.TRUE);
 			}
@@ -1580,7 +1580,7 @@ extends PagedResourceActionII
 		try
 		{
 			// assignment has a setting to integrate with Gradebook
-			if (g.gradebookExists(gradebookUid))
+			if (g.isGradebookDefined(gradebookUid))
 		    {
 				gradebookExists = true;
 		    }
@@ -4965,7 +4965,7 @@ extends PagedResourceActionII
 			  String assignmentId = StringUtil.trimToNull(params.getString("assignmentId"));
 			  if(assignmentId != null)
 			  {
-			    Assignment a = AssignmentService.getAssignment (assignmentId);
+			    AssignmentService.getAssignment (assignmentId);
 			    List existedAttachments = (List) state.getAttribute (ATTACHMENTS);
 
 			    if(existedAttachments.size() > 0)
