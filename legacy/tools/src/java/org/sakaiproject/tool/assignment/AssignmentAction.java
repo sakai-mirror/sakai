@@ -6628,28 +6628,32 @@ extends PagedResourceActionII
 			{
 				Assignment a = AssignmentService.getAssignment ((String) state.getAttribute (EXPORT_ASSIGNMENT_REF));
 				Vector submissions = iterator_to_vector(AssignmentService.getSubmissions(a));
-			
-				if (search != null && !search.equals(""))
+				
+				//filtering if searching based on submitter's display name and sort name
+				for (int i=0; i<submissions.size(); i++)
 				{
-					// filtering if searching based on submitter's display name and sort name
-					for (int i=0; i<submissions.size(); i++)
+					AssignmentSubmission submission = (AssignmentSubmission) submissions.get(i);
+					
+					if (submission.getSubmitted())
 					{
-						AssignmentSubmission submission = (AssignmentSubmission) submissions.get(i);
-						User[] users = submission.getSubmitters();
-						for (int j = 0; j < users.length; j++)
+						if (search != null && !search.equals(""))
 						{
-							User user = users[j];
-						
-							if (	StringUtil.containsIgnoreCase(user.getDisplayName(), search))
+							User[] users = submission.getSubmitters();
+							for (int j = 0; j < users.length; j++)
 							{
-								size++;
+								User user = users[j];
+							
+								if (	StringUtil.containsIgnoreCase(user.getDisplayName(), search))
+								{
+									size++;
+								}
 							}
 						}
+						else
+						{
+							size++;
+						}
 					}
-				}
-				else
-				{
-					size = submissions.size();
 				}
 				
 			}
