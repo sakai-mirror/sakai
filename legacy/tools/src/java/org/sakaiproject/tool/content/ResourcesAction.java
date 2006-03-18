@@ -8695,6 +8695,31 @@ public class ResourcesAction
 		org.sakaiproject.service.legacy.content.ContentHostingService contentService = (org.sakaiproject.service.legacy.content.ContentHostingService) state.getAttribute (STATE_CONTENT_SERVICE);
 		// make sure the channedId is set
 		String currentCollectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		if(! isStackEmpty(state))
+		{
+			Map current_stack_frame = peekAtStack(state);
+			String createCollectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
+			if(createCollectionId == null)
+			{
+				createCollectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			}
+			if(createCollectionId != null)
+			{
+				currentCollectionId = createCollectionId;
+			}
+			else
+			{
+				String editCollectionId = (String) current_stack_frame.get(STATE_EDIT_COLLECTION_ID);
+				if(editCollectionId == null)
+				{
+					editCollectionId = (String) state.get(STATE_EDIT_COLLECTION_ID);
+				}
+				if(editCollectionId != null)
+				{
+					currentCollectionId = editCollectionId;
+				}
+			}
+		}
 		String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
 		String navRoot = (String) state.getAttribute(STATE_NAVIGATION_ROOT);
 		
