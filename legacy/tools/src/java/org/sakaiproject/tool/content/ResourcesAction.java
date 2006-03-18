@@ -25,14 +25,57 @@
 // package
 package org.sakaiproject.tool.content;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeSet;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.sakaiproject.cheftool.*;
-import org.sakaiproject.exception.*;
+import org.sakaiproject.cheftool.Context;
+import org.sakaiproject.cheftool.JetspeedRunData;
+import org.sakaiproject.cheftool.PagedResourceHelperAction;
+import org.sakaiproject.cheftool.PortletConfig;
+import org.sakaiproject.cheftool.RunData;
+import org.sakaiproject.cheftool.VelocityPortlet;
+import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
+import org.sakaiproject.exception.EmptyException;
+import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdLengthException;
+import org.sakaiproject.exception.IdUniquenessException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.InUseException;
+import org.sakaiproject.exception.InconsistentException;
+import org.sakaiproject.exception.OverQuotaException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
@@ -46,7 +89,11 @@ import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.content.*;
+import org.sakaiproject.service.legacy.content.ContentCollection;
+import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
+import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.service.legacy.content.ContentResourceEdit;
+import org.sakaiproject.service.legacy.content.ContentResourceFilter;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -73,18 +120,11 @@ import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.xml.Xml;
-import org.w3c.dom.*;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
 * <p>ResourceAction is a ContentHosting application</p>
@@ -287,6 +327,9 @@ public class ResourcesAction
 	
 	/** The name of the state attribute indicating which dropbox(es) the items should be saved in */
 	public static final String STATE_SAVE_ATTACHMENT_IN_DROPBOX = "resources.save_attachment_in_dropbox";
+	
+	/** The name of the optional state attribute indicating the id of the collection that should be treated as the "home" collection */ 
+	public static final String STATE_ATTACH_COLLECTION_ID = "resources.attach_collection_id";
 	
 	/**
 	 *  The name of the state attribute indicating that the file picker should return links to
@@ -1456,7 +1499,12 @@ public class ResourcesAction
 		boolean dropboxMode = RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES));
 		
 		// make sure the channedId is set
-		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		String collectionId = (String) state.getAttribute(STATE_ATTACH_COLLECTION_ID);
+		if(collectionId == null)
+		{
+			collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		}
+		
 		context.put ("collectionId", collectionId);
 		String navRoot = (String) state.getAttribute(STATE_NAVIGATION_ROOT);
 		String homeCollectionId = (String) state.getAttribute(STATE_HOME_COLLECTION_ID);
@@ -2681,15 +2729,17 @@ public class ResourcesAction
 						AttachItem item = (AttachItem) it.next();
 						Reference ref = EntityManager.newReference(ContentHostingService.getReference(item.getId()));
 
-                  if (checkSelctItemFilter((ContentResource) ref.getEntity(), state)) {
-                     attachments.add(ref);
-                  }
-                  else {
-                     it.remove();
-                     addAlert(state, (String) rb.getFormattedMessage("filter",
-                        new Object[]{item.getDisplayName()}));
-                  }
-               }
+		                  if (checkSelctItemFilter((ContentResource) ref.getEntity(), state)) 
+		                  {
+		                     attachments.add(ref);
+		                  }
+		                  else 
+		                  {
+		                     it.remove();
+		                     addAlert(state, (String) rb.getFormattedMessage("filter",
+		                        new Object[]{item.getDisplayName()}));
+		                  }
+		               }
 				}
 			}
 			popFromStack(state);
@@ -8091,6 +8141,7 @@ public class ResourcesAction
 		state.removeAttribute(STATE_FROM_TEXT);
 		state.removeAttribute(STATE_HAS_ATTACHMENT_BEFORE);
 		state.removeAttribute(STATE_SAVE_ATTACHMENT_IN_DROPBOX);
+		state.removeAttribute(STATE_ATTACH_COLLECTION_ID);
 		
 		state.removeAttribute(COPYRIGHT_FAIRUSE_URL);
 		state.removeAttribute(COPYRIGHT_NEW_COPYRIGHT);
@@ -11642,7 +11693,11 @@ public class ResourcesAction
 	{
 		List other_sites = new Vector();
 		
-		String collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		String collectionId = (String) state.getAttribute (STATE_ATTACH_COLLECTION_ID);
+		if(collectionId == null)
+		{
+			collectionId = (String) state.getAttribute (STATE_COLLECTION_ID);
+		}
 		HashMap expandedCollections = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
 		
 		// set the sort values

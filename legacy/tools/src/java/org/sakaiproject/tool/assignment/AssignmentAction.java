@@ -65,6 +65,7 @@ import org.sakaiproject.service.legacy.calendar.Calendar;
 import org.sakaiproject.service.legacy.calendar.CalendarEvent;
 import org.sakaiproject.service.legacy.calendar.CalendarService;
 import org.sakaiproject.service.legacy.content.ContentTypeImageService;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -4954,11 +4955,21 @@ extends PagedResourceActionII
 			}
 */
 			// setup... we'll use the attachment action's mode
-//chen - SAK-1624 (use new file picker)			state.setAttribute (AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
+			//chen - SAK-1624 (use new file picker)
+			// state.setAttribute (AttachmentAction.STATE_MODE, AttachmentAction.MODE_MAIN);
 			state.setAttribute(ResourcesAction.STATE_MODE, ResourcesAction.MODE_HELPER);
 			state.setAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE, ResourcesAction.MODE_ATTACHMENT_SELECT);
 			String toolName = ToolManager.getCurrentTool().getTitle();
 			state.setAttribute(ResourcesAction.STATE_ATTACH_TOOL_NAME, toolName);
+			
+			// make user's personal workspace the default location to look for an attachment
+			User user = UserDirectoryService.getCurrentUser();
+			String userId = user.getId();
+			String userName = user.getDisplayName();
+			String wsId = SiteService.getUserSiteId(userId);
+			String wsCollectionId = ContentHostingService.getSiteCollection(wsId);
+			// need to set state attribute with that value ...
+			state.setAttribute(ResourcesAction.STATE_ATTACH_COLLECTION_ID, wsCollectionId);
 			
 			try
 			{
