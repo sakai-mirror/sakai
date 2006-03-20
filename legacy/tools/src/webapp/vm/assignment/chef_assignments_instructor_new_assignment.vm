@@ -383,7 +383,7 @@
 					$tlang.getString("gen.addhonple")
 				</label>
 			</p>
-			#if ($!withGrade)
+			#if ($!withGrade && $!withGradebook)
 				<p class="checkbox">
 					#if ($!value_AddToGradebook.equalsIgnoreCase("true"))
 						<input id="$name_Addtogradebook" name="$name_Addtogradebook" type="checkbox" value="true" checked="checked"/>
