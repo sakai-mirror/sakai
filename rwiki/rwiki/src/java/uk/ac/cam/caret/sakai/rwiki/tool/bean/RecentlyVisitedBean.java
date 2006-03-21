@@ -266,9 +266,13 @@ public class RecentlyVisitedBean {
         List links = new ArrayList(uniqueRecentlyVisited.size() + 1);
 
         for (Iterator it = uniqueRecentlyVisited.iterator(); it.hasNext(); ) {
-            links.add(((Visit) it.next()).getPublicLink());
+        	   Visit v = (Visit) it.next();
+        	   String publicLink = v.getPublicLink();
+        	   if ( publicLink.length() > 0 ) {
+        		   links.add(publicLink);
+        	   }
         }
-        return links;
+        return new ArrayList(links);
     }
 
     public String getHomeLink() {
