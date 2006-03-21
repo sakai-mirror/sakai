@@ -113,6 +113,7 @@ public class ListFilter extends LocaleRegexTokenFilter implements CacheFilter {
   private void addList(StringBuffer buffer, BufferedReader reader) throws IOException {
     char[] lastBullet = new char[0];
     String line = null;
+    boolean goneUp = false;
     while ((line = reader.readLine()) != null) {
       // no nested list handling, trim lines:
       line = line.trim();
@@ -139,10 +140,12 @@ public class ListFilter extends LocaleRegexTokenFilter implements CacheFilter {
         }
       }
 
+      goneUp = false;
+      
       for (int i = sharedPrefixEnd; i < lastBullet.length; i++) {
         //Logger.log("closing " + lastBullet[i]);
     	  if (lastBullet[i] != '.') {
-    	        buffer.append(closeList.get(new Character(lastBullet[i]))).append("\n");    		  
+    	        buffer.append("</li>").append(closeList.get(new Character(lastBullet[i]))).append("\n");    		  
     	  }
 
       }
@@ -150,19 +153,23 @@ public class ListFilter extends LocaleRegexTokenFilter implements CacheFilter {
       for (int i = sharedPrefixEnd; i < bullet.length; i++) {
         //Logger.log("opening " + bullet[i]);
     	  if (bullet[i] != '.') {
-    		  buffer.append(openList.get(new Character(bullet[i]))).append("\n");
+    		  buffer.append(openList.get(new Character(bullet[i]))).append("<li>\n");
     	  }
+    	  goneUp = true;
       }
-      buffer.append("<li>");
+      if (!goneUp) { 
+    	  buffer.append("</li>\n<li>");
+      }
+
       buffer.append(line.substring(line.indexOf(' ') + 1));
-      buffer.append("</li>\n");
+
       lastBullet = bullet;
     }
 
     for (int i = lastBullet.length - 1; i >= 0; i--) {
       //Logger.log("closing " + lastBullet[i]);
   	  if (lastBullet[i] != '.') {
-  		  buffer.append(closeList.get(new Character(lastBullet[i])));
+  		  buffer.append("</li>").append(closeList.get(new Character(lastBullet[i])));
   	  }
     }
     buffer.append('\n');
