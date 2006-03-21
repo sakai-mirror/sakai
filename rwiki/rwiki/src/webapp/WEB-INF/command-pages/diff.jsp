@@ -57,7 +57,7 @@
 		      Version <c:out value="${diffBean.left.revision}"/>
 		    </jsp:element>
 		    <br/>
-		    (modified: <fmt:formatDate type="both" value="${diffBean.left.version}"/> by <c:out value="${diffBean.left.user}"/>)
+		    (modified: <fmt:formatDate type="both" value="${diffBean.left.version}"/> by <c:out value="${diffBean.left.userName}"/>)
 		  </td>
 		  <td class="pageRight">
 		    <jsp:setProperty name="historyBean" property="interestedRevision" value="${diffBean.right.revision}"/>
@@ -66,7 +66,7 @@
 		      Version <c:out value="${diffBean.right.revision}"/>
 		    </jsp:element>
 		    <br/>
-		    (modified: <fmt:formatDate type="both" value="${diffBean.right.version}"/> by <c:out value="${diffBean.right.user}"/>)
+		    (modified: <fmt:formatDate type="both" value="${diffBean.right.version}"/> by <c:out value="${diffBean.right.userName}"/>)
 		  </td>
 		</tr>
 		<c:out value="${diffBean.genericDiffBean.colorDiffTable}" escapeXml="false"/>

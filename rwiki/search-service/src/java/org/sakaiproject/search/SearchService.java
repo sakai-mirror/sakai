@@ -59,6 +59,48 @@ public interface SearchService {
 	 *
 	 */
 	void reload();
+	
+	/**
+	 * Trigger an refresh of the whole index
+	 *
+	 */
+	void refreshInstance();
+
+	/**
+	 * trigger a rebuild of the whole index
+	 *
+	 */
+	void rebuildInstance();
+
+	/**
+	 * Refresh the current site only
+	 * @param currentSiteId
+	 */
+	void refreshSite(String currentSiteId);
+
+	/**
+	 * rebuild the current site only
+	 * @param currentSiteId
+	 */
+	void rebuildSite(String currentSiteId);
+
+	/**
+	 * get the status of the search service
+	 * @return
+	 */
+	String getStatus();
+
+	/**
+	 * get the number of documents in the search index
+	 * @return
+	 */
+	int getNDocs();
+
+	/**
+	 * get the number of pending documents in the search index
+	 * @return
+	 */
+	int getPendingDocs();
 
 
 }

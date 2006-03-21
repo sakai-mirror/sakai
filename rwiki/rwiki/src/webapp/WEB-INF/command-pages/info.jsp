@@ -828,7 +828,9 @@ both pages are identical. Any change in the page, will change the digest on the 
 		    <tr>
 		    	<th>Owner<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'ownerhelp'); return false;"
 		    		onMouseOut="hidePopup('ownerhelp');" >?</a></th>
-		      <td colspan="6"><c:out value="${currentRWikiObject.owner}"/></td>
+		      <td colspan="6">
+		      	<c:out value="${currentRWikiObject.ownerName}"/>
+		      </td>
 		    </tr>
 		    <tr>
 		    	<th>Global Name<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'globalhelp'); return false;"
@@ -848,7 +850,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 		    <tr>
 		    	<th>Last Edited<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'lastedithelp'); return false;"
 		    		onMouseOut="hidePopup('lastedithelp');" >?</a></th>
-		      <td colspan="6"><fmt:formatDate type="both" value="${currentRWikiObject.version}"/> by <c:out value="${currentRWikiObject.user}"/></td>
+		      <td colspan="6"><fmt:formatDate type="both" value="${currentRWikiObject.version}"/> by <c:out value="${currentRWikiObject.userName}"/></td>
 		    </tr>
 		    <tr>
 		    	<th>SHA-1<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'digesthelp'); return false;"

@@ -142,7 +142,7 @@ public class RecentChangesMacro extends BaseMacro {
 
 					writer.write(" was last modified "
 						+ dateFormat.format(object.getVersion()));
-					writer.write(" by " + object.getUser());
+					writer.write(" by " + object.getUserName());
 				} 
 
 			}

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" 
   xmlns:c="http://java.sun.com/jsp/jstl/core"
+   xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp" 
@@ -49,6 +50,7 @@
 	  	uk.ac.cam.caret.sakai.rwiki.utils.TimeLogger.printTimer("get recentlyVisitedBean:",start,finish);
 			start = System.currentTimeMillis();
   </jsp:scriptlet>
+  <c:set var="currentRWikiObject" value="${requestScope.rsacMap.currentRWikiObject}"/>
   
   <c:set target="${recentlyVisitedBean}" property="viewPage" value="${viewBean}"/>
   
@@ -62,7 +64,6 @@
     </head>
     <jsp:element name="body">
       <jsp:attribute name="onload">setMainFrameHeightNoScroll('<jsp:expression>request.getAttribute("sakai.tool.placement.id")</jsp:expression>');setFocus(focus_path);parent.updCourier(doubleDeep,ignoreCourier); callAllLoaders();</jsp:attribute>
-      <script>placementId = '<jsp:expression>request.getAttribute("sakai.tool.placement.id")</jsp:expression>';</script>
       <jsp:directive.include file="header.jsp"/>
       <div id="rwiki_container">
 	<div class="portletBody">
@@ -106,6 +107,9 @@
 	      </div>
 	    </div>
 	  </div>
+	 <div style="font-size: smaller;" >
+	 last modified by <c:out value="${currentRWikiObject.userName}" /> on <fmt:formatDate type="both" value="${currentRWikiObject.version}" /> 
+	 </div>
 	</div>
       </div>
       <jsp:directive.include file="comments.jsp"/>

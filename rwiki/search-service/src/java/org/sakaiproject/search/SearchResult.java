@@ -79,5 +79,11 @@ public interface SearchResult {
 	 * @return
 	 */
 	int getIndex();
+	/**
+	 * get the search result content for display
+	 */
+	String getSearchResult();
+	
+	
 
 }

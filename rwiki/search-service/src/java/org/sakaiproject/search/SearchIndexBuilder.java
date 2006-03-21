@@ -85,4 +85,10 @@ public interface SearchIndexBuilder {
 	 */
 	void destroy();
 
+	/**
+	 * get the number of pending documents
+	 * @return
+	 */
+	int getPendingDocuments();
+
 }

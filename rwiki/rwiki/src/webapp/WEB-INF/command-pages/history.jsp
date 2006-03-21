@@ -167,7 +167,7 @@ Page Owner Permissions Group
 		    </jsp:element>
 		  </td>
 		  <td>
-		    <c:out value="${renderBean.rwikiObject.user}"/>
+		    <c:out value="${renderBean.rwikiObject.userName}"/>
 		  </td>
 		  <td>&#160;</td>
 		  <td colspan="2">&#160;</td>
@@ -187,7 +187,7 @@ Page Owner Permissions Group
 			V.<c:out value="${historyObject.revision}" />
 		      </jsp:element>
 		    </td>
-		    <td><c:out value="${historyObject.user}" /></td>
+		    <td><c:out value="${historyObject.userName}" /></td>
 		    <td><fmt:formatDate type="both" value="${historyObject.version}" /></td>
 		    <td>
 		      <jsp:element name="a">

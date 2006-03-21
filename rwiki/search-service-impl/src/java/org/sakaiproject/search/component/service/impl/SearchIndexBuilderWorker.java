@@ -310,7 +310,9 @@ public class SearchIndexBuilderWorker extends HibernateDaoSupport implements
 						dlog.warn("Context is null for " + sbi);
 					}
 					doc.add(Field.Keyword("context", ref.getContext()));
-					doc.add(Field.Keyword("container", ref.getContainer()));
+					String container = ref.getContainer();
+					if ( container == null ) container = ""; 
+					doc.add(Field.Keyword("container", container));
 					doc.add(Field.UnIndexed("id", ref.getId()));
 					doc.add(Field.Keyword("type", ref.getType()));
 					doc.add(Field.Keyword("subtype", ref.getSubType()));

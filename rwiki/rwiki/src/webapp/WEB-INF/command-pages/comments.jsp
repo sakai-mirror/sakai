@@ -6,7 +6,7 @@
 		 <div class="rwikicommentbody_<c:out value="${comment.commentLevel}" />">
 		
 	    <div class="rwikicommentheader">
-	        Comment by: <c:out value="${comment.rwikiObject.user}" /> on <c:out value="${comment.rwikiObject.version}" /> 
+	        Comment by: <c:out value="${comment.rwikiObject.userName}" /> on <c:out value="${comment.rwikiObject.version}" /> 
         		<a href="#" onclick="ajaxRefPopup(this,'<c:out value="${comment.newCommentURL}" />',0); return false;" >Comment</a>
         		<c:if test="${comment.canEdit}" >
         			<a href="#" onclick="ajaxRefPopup(this,'<c:out value="${comment.editCommentURL}" />',0); return false;" >Edit</a>

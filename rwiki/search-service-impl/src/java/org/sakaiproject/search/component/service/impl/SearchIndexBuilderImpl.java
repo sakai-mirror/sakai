@@ -313,4 +313,8 @@ public class SearchIndexBuilderImpl implements SearchIndexBuilder {
 		return new ArrayList(producers);
 	}
 
+	public int getPendingDocuments() {
+		return searchBuilderItemDao.countPending();
+	}
+
 }

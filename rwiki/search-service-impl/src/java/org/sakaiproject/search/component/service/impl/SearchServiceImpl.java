@@ -25,6 +25,7 @@ package org.sakaiproject.search.component.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -87,6 +88,10 @@ public class SearchServiceImpl implements SearchService {
 	 * The index builder dependency
 	 */
 	private SearchIndexBuilder searchIndexBuilder;
+
+	private long reloadStart;
+
+	private long reloadEnd;
 
 	/**
 	 * Register a notification action to listen to events and modify the search
@@ -226,7 +231,7 @@ public class SearchServiceImpl implements SearchService {
 	public void reload() {
 		dlog.info("Reload");
 
-		long reloadStart = System.currentTimeMillis();
+		reloadStart = System.currentTimeMillis();
 		try {
 			File indexDirectoryFile = new File(indexDirectory);
 			indexDirectoryFile.mkdirs();
@@ -235,7 +240,7 @@ public class SearchServiceImpl implements SearchService {
 			if (indexSearcher != null) {
 				runningIndexSearcher = indexSearcher;
 			}
-			long reloadEnd = System.currentTimeMillis();
+			reloadEnd = System.currentTimeMillis();
 			dlog.info("Reload Complete " + indexSearcher.maxDoc() + " in "
 					+ (reloadEnd - reloadStart));
 
@@ -296,6 +301,42 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	public void setSearchIndexBuilder(SearchIndexBuilder searchIndexBuilder) {
 		this.searchIndexBuilder = searchIndexBuilder;
+	}
+
+	public void refreshInstance() {
+		searchIndexBuilder.refreshIndex();
+		
+	}
+
+	public void rebuildInstance() {
+		searchIndexBuilder.rebuildIndex();
+	}
+
+	public void refreshSite(String currentSiteId) {
+		searchIndexBuilder.refreshIndex();		
+	}
+
+	public void rebuildSite(String currentSiteId) {
+		searchIndexBuilder.rebuildIndex();
+		
+	}
+
+	public String getStatus() {
+		String lastLoad = (new Date(reloadEnd)).toString();
+		String loadTime = String.valueOf((double)(0.001*(reloadEnd-reloadStart)));
+		return "Index Last Loaded "+lastLoad+" in "+loadTime + " seconds";
+	}
+
+	public int getNDocs() {
+		try {
+			return runningIndexSearcher.maxDoc();
+		} catch (IOException e) {
+			return -1;
+		}
+	}
+
+	public int getPendingDocs() {
+		return searchIndexBuilder.getPendingDocuments();
 	}
 
 }
