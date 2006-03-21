@@ -195,7 +195,19 @@ public class RealmsAction
 
 		// put all realms into the context
 		context.put("realms", realms);
-
+		
+		int pageSize = Integer.valueOf(state.getAttribute(STATE_PAGESIZE).toString()).intValue();
+		int currentPageNubmer = Integer.valueOf(state.getAttribute(STATE_CURRENT_PAGE).toString()).intValue();
+		int startNumber = pageSize * (currentPageNubmer - 1) + 1;
+		int endNumber = pageSize * currentPageNubmer;
+		int totalNumber =  Integer.valueOf(state.getAttribute(STATE_NUM_MESSAGES).toString()).intValue();
+		if (totalNumber < endNumber) 
+			endNumber = totalNumber;
+		
+		context.put("startNumber", new Integer(startNumber));
+		context.put("endNumber", new Integer(endNumber));
+		context.put("totalNumber", new Integer(totalNumber));
+		
 		// build the menu
 		Menu bar = new Menu();
 		if (AuthzGroupService.allowAdd(""))

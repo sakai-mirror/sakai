@@ -10,6 +10,9 @@
 		<div class="instruction">
 			$tlang.getString("realm.list.these")
 		</div>
+		<div class="instruction">
+			$tlang.getString("realm.list.youare") $startNumber - $endNumber $tlang.getString("realm.list.of") $totalNumber $tlang.getString("realm.list.results")
+		</div>
 #if ($realms.size() > 0)
 	#set ($realmCount = 0)
 		<table class="listHier" cellspacing="0" summary ="List of Groups">
