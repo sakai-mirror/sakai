@@ -1,0 +1,8 @@
+component		https://source.sakaiproject.org/svn/framework/trunk/component
+util			https://source.sakaiproject.org/svn/framework/trunk/util
+webapp			https://source.sakaiproject.org/svn/framework/trunk/webapp
+tool			https://source.sakaiproject.org/svn/framework/trunk/tool
+authz			https://source.sakaiproject.org/svn/authz/trunk
+content			https://source.sakaiproject.org/svn/content/trunk
+calendar		https://source.sakaiproject.org/svn/calendar/trunk
+master			https://source.sakaiproject.org/svn/framework/trunk/master
