@@ -3,3 +3,4 @@ util			https://source.sakaiproject.org/svn/framework/trunk/util
 webapp			https://source.sakaiproject.org/svn/framework/trunk/webapp
 tool			https://source.sakaiproject.org/svn/framework/trunk/tool
 master			https://source.sakaiproject.org/svn/framework/trunk/master
+authz			https://source.sakaiproject.org/svn/framework/trunk/authz
