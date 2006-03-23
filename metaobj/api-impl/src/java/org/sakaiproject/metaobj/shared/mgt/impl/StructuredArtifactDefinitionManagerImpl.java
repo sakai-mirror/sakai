@@ -564,9 +564,32 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       packageFormForExport(formIdObj[0], out);
    }
 
+   
+   /**
+    * This is the default method for exporting a form into a stream.  This method does check the
+    * form export permission.
+    * @param formId String
+    * @param os OutputStream
+    * @throws IOException
+    */
    public void packageFormForExport(String formId, OutputStream os)
          throws IOException {
-      getAuthzManager().checkPermission(SharedFunctionConstants.EXPORT_ARTIFACT_DEF,
+      packageFormForExport(formId, os, true);
+   }
+
+
+   /**
+    * This method will export a form into a stream.  It has the ability to turn off checking
+    * for the export form permission.
+    * @param formId String
+    * @param os OutputStream
+    * @param checkPermission boolean
+    * @throws IOException
+    */
+   public void packageFormForExport(String formId, OutputStream os, boolean checkPermission)
+         throws IOException {
+      if(checkPermission)
+         getAuthzManager().checkPermission(SharedFunctionConstants.EXPORT_ARTIFACT_DEF,
             getToolId());
 
       CheckedOutputStream checksum = new CheckedOutputStream(os,
@@ -580,6 +603,12 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       zos.flush();
    }
 
+   /**
+    * Given a bean this method will convert it into a new XML document.
+    * This does not put the schema into XML
+    * @param bean StructuredArtifactDefinitionBean
+    * @return Document - XML
+    */
    public Document exportSADAsXML(StructuredArtifactDefinitionBean bean) {
       Element rootNode = new Element("metaobjForm");
 
@@ -600,6 +629,13 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       return new Document(rootNode);
    }
 
+   
+   /**
+    * Given a bean, this method puts it into a stream via UTF-8 encoding
+    * @param bean StructuredArtifactDefinitionBean
+    * @param os OutputStream
+    * @throws IOException
+    */
    public void writeSADasXMLtoStream(StructuredArtifactDefinitionBean bean, OutputStream os) throws IOException {
       Document doc = exportSADAsXML(bean);
       String docStr = (new XMLOutputter()).outputString(doc);
@@ -730,6 +766,18 @@ public class StructuredArtifactDefinitionManagerImpl extends HibernateDaoSupport
       }
 
       ZipEntry currentEntry = zis.getNextEntry();
+      
+      if(currentEntry == null)
+         return null;
+      
+      // If the zip was opened and re-zipped, then the directory was
+      //    compressed with the files.  we need to deal with 
+      //    the directory
+      if(currentEntry.getName().endsWith("/")) {
+         zis.closeEntry();
+         currentEntry = zis.getNextEntry();
+      }
+      
       if (currentEntry != null) {
          if (currentEntry.getName().endsWith("xml")) {
             readSADfromXML(bean, zis);

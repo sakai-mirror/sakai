@@ -87,7 +87,24 @@ public interface StructuredArtifactDefinitionManager {
          throws IOException, ServerOverloadException, PermissionException, 
                 IdUnusedException, ImportException, UnsupportedFileTypeException;
 
+   /**
+    * This is the default method for exporting a form into a stream.  This method does check the
+    * form export permission.
+    * @param formId String
+    * @param os OutputStream
+    * @throws IOException
+    */
    public void packageFormForExport(String formId, OutputStream os) throws IOException;
+   
+   /**
+    * This method will export a form into a stream.  It has the ability to turn off checking
+    * for the export form permission.
+    * @param formId String
+    * @param os OutputStream
+    * @param checkPermission boolean
+    * @throws IOException
+    */
+   public void packageFormForExport(String formId, OutputStream os, boolean checkPermission) throws IOException;
 
    public StructuredArtifactDefinitionBean importSad(Id worksiteId, InputStream in,
                 boolean findExisting, boolean publish)

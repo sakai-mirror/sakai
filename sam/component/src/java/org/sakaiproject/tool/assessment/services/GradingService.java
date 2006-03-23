@@ -133,7 +133,6 @@ public class GradingService
       System.out.println("**** GradingService: saveTotalScores");
     try {
      AssessmentGradingData gdata = null;
-System.out.println("lydiatest savetotalscore. gdatalist size  = " + gdataList.size());
       if (gdataList.size()>0)
         gdata = (AssessmentGradingData) gdataList.get(0);
       else return;
@@ -141,7 +140,6 @@ System.out.println("lydiatest savetotalscore. gdatalist size  = " + gdataList.si
       Integer scoringType = getScoringType(pub);
       ArrayList oldList = getAssessmentGradingsByScoringType(
           scoringType, gdata.getPublishedAssessmentId());
-System.out.println("lydiatest savetotalscore. oldlist size  = " + oldList.size());
       for (int i=0; i<gdataList.size(); i++){
         AssessmentGradingData ag = (AssessmentGradingData)gdataList.get(i);
         saveOrUpdateAssessmentGrading(ag);
@@ -151,9 +149,7 @@ System.out.println("lydiatest savetotalscore. oldlist size  = " + oldList.size()
       // we only want to notify GB when there are changes
       ArrayList newList = getAssessmentGradingsByScoringType(
         scoringType, gdata.getPublishedAssessmentId());
-System.out.println("lydiatest savetotalscore. newlist size  = " + newList.size());
       ArrayList l = getListForGradebookNotification(newList, oldList);
-System.out.println("lydiatest savetotalscore. l size  = " + l.size());
       
       notifyGradebook(l, pub);
       //}
@@ -232,9 +228,7 @@ System.out.println("lydiatest savetotalscore. l size  = " + l.size());
 
   private void notifyGradebook(ArrayList l, PublishedAssessmentIfc pub){
     for (int i=0; i<l.size(); i++){
-System.out.println("lydiatest i = " + i ); 
       notifyGradebook((AssessmentGradingData)l.get(i), pub);
-System.out.println("lydiatest updated in gradebook");
     }
   }
 
@@ -837,6 +831,44 @@ System.out.println("lydiatest updated in gradebook");
     if (gbsHelper.gradebookExists(GradebookFacade.getGradebookUId(), g)
         && toGradebook.equals(EvaluationModelIfc.TO_DEFAULT_GRADEBOOK.toString())){
         if(log.isDebugEnabled()) log.debug("Attempting to update a score in the gradebook");
+
+    // add retry logic to resolve deadlock problem while sending grades to gradebook
+
+    int retryCount = PersistenceService.getInstance().getRetryCount().intValue();
+    while (retryCount > 0){
+      try {
+        /* for testing the catch block 
+        if (retryCount >2)
+          throw new Exception();
+        */
+        gbsHelper.updateExternalAssessmentScore(data, g);
+        retryCount = 0;
+      }
+      catch (Exception e) {
+        log.warn("problem sending grades to gradebook: "+e.getMessage());
+        log.warn("retrying...sending grades to gradebook. ");
+        String errorMessage = e.getMessage();
+          log.warn("retry....");
+          retryCount--;
+          try {
+            int deadlockInterval = PersistenceService.getInstance().getDeadlockInterval().intValue();
+            System.out.println("****deadlockInterval="+deadlockInterval);
+            Thread.currentThread().sleep(deadlockInterval);
+          }
+          catch(InterruptedException ex){
+            log.warn(ex.getMessage());
+          }
+         if (retryCount==0) {
+            // after retries, still failed updating gradebook
+            log.warn("After all retries, still failed ...  Now throw error to UI");
+            throw new GradebookServiceException(e);
+         }
+      }
+    }
+
+////
+
+/*
         try {
             gbsHelper.updateExternalAssessmentScore(data, g);
         } catch (Exception e) {
@@ -845,6 +877,7 @@ System.out.println("lydiatest updated in gradebook");
             throw new GradebookServiceException(e);
 
         }
+*/
     } else {
        if(log.isDebugEnabled()) log.debug("Not updating the gradebook.  toGradebook = " + toGradebook);
     }

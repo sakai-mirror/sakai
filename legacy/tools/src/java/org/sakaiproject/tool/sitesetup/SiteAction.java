@@ -1432,7 +1432,7 @@ public class SiteAction extends PagedResourceActionII
 						for (int i = 0; i < skins.size(); i++)
 						{
 							Icon s = (Icon)skins.get(i);
-							if(StringUtil.different(s.getUrl(), site.getIconUrl()))
+							if(!StringUtil.different(s.getUrl(), site.getIconUrl()))
 							{
 								context.put("siteUnit", s.getName());
 								break;

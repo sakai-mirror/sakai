@@ -476,22 +476,23 @@ public class AssessmentGradingFacadeQueries extends HibernateDaoSupport implemen
   }
 
   public void saveOrUpdateAssessmentGrading(AssessmentGradingIfc assessment) {
-    int retryCount = 5;
+    int retryCount = PersistenceService.getInstance().getRetryCount().intValue();
     while (retryCount > 0){ 
       try {
-	/* for testing the catch block - daisyf 
+        /* for testing the catch block - daisyf 
         if (retryCount >2)
-          throw new Exception("SQLState: 61000");
-        */
+          throw new Exception("uncategorized SQLException for SQL []; SQL state [61000]; error code [60]; ORA-00060: deadlock detected while waiting for resource");
+	*/ 
         getHibernateTemplate().saveOrUpdate((AssessmentGradingData)assessment);
         retryCount = 0;
       }
       catch (Exception e) {
         log.warn("problem inserting assessmentGrading: "+e.getMessage());
         String errorMessage = e.getMessage();
-        int index = errorMessage.indexOf("SQLState: 61000"); // deadlock 
-        if (index > -1 ){
-          log.warn("retry....");
+        int index = errorMessage.indexOf("ORA-00060"); // deadlock 
+        int index2 = errorMessage.indexOf("SQL state [61000]"); // deadlock 
+        if (index > -1 || index2 > -1){
+          log.warn("retry...."+Thread.currentThread());
 	  retryCount--;
           try {
             int deadlockInterval = PersistenceService.getInstance().getDeadlockInterval().intValue();

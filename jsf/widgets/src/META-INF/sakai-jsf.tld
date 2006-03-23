@@ -653,6 +653,14 @@
       </description>
     </attribute>
     <attribute>
+      <name>styleClass</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+		To allow adding the css class of 'active' to the button in the button_bar that is most likely to be the default
+      </description>
+    </attribute>    
+    <attribute>
       <name>binding</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
