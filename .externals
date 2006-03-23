@@ -5,3 +5,4 @@ tool			https://source.sakaiproject.org/svn/framework/trunk/tool
 master			https://source.sakaiproject.org/svn/framework/trunk/master
 authz			https://source.sakaiproject.org/svn/framework/trunk/authz
 config			https://source.sakaiproject.org/svn/framework/trunk/config
+courier			https://source.sakaiproject.org/svn/framework/trunk/courier
