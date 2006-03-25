@@ -1,6 +1,6 @@
-component		https://source.sakaiproject.org/svn/framework/trunk/component
-util			https://source.sakaiproject.org/svn/framework/trunk/util
-webapp			https://source.sakaiproject.org/svn/framework/trunk/webapp
-master			https://source.sakaiproject.org/svn/framework/trunk/master
-authz			https://source.sakaiproject.org/svn/framework/trunk/authz
-courier			https://source.sakaiproject.org/svn/framework/trunk/courier
+component		https://source.sakaiproject.org/svn/component/trunk
+util			https://source.sakaiproject.org/svn/util/trunk
+webapp			https://source.sakaiproject.org/svn/webapp/trunk
+master			https://source.sakaiproject.org/svn/master/trunk
+authz			https://source.sakaiproject.org/svn/authz/trunk
+courier			https://source.sakaiproject.org/svn/courier/trunk
