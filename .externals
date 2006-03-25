@@ -3,5 +3,4 @@ util			https://source.sakaiproject.org/svn/framework/trunk/util
 webapp			https://source.sakaiproject.org/svn/framework/trunk/webapp
 master			https://source.sakaiproject.org/svn/framework/trunk/master
 authz			https://source.sakaiproject.org/svn/framework/trunk/authz
-config			https://source.sakaiproject.org/svn/framework/trunk/config
 courier			https://source.sakaiproject.org/svn/framework/trunk/courier
