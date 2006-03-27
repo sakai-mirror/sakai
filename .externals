@@ -5,3 +5,4 @@ master			https://source.sakaiproject.org/svn/master/trunk
 authz			https://source.sakaiproject.org/svn/authz/trunk
 courier			https://source.sakaiproject.org/svn/courier/trunk
 event			https://source.sakaiproject.org/svn/event/trunk
+entity			https://source.sakaiproject.org/svn/entity/trunk
