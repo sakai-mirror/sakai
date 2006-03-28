@@ -42,7 +42,7 @@ public class PrePopulateBean {
     
     private String currentGroup;
 
-    private String currentUser;
+    private String woksiteOwner;
 
     private Logger log;
 
@@ -50,11 +50,12 @@ public class PrePopulateBean {
      * Populates the current realm, relying on the service for caching etc.
      */
     public void doPrepopulate() {
-        log.debug(this.getClass().getName() + " current-user: " + currentUser
+        log.debug(this.getClass().getName() + " current-user: " + woksiteOwner
                 + " pre-populating realm " + currentPageRealm);
 
         // Populate the realm...
-        populateService.populateRealm(currentUser, currentPageRealm, currentGroup);
+        
+        populateService.populateRealm(woksiteOwner, currentPageRealm, currentGroup);
     }
 
     /**
@@ -77,16 +78,16 @@ public class PrePopulateBean {
      * The current user.
      * @return current user
      */
-    public String getCurrentUser() {
-        return currentUser;
+    public String getWoksiteOwner() {
+        return woksiteOwner;
     }
 
     /**
      * Set the current user.
      * @param currentUser
      */
-    public void setCurrentUser(String currentUser) {
-        this.currentUser = currentUser;
+    public void setWoksiteOwner(String currentUser) {
+        this.woksiteOwner = currentUser;
     }
 
     /**

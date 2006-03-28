@@ -33,6 +33,7 @@ package org.sakaiproject.exception;
 public class CopyrightException extends Exception
 {
 	private String m_msg = null;
+	protected String m_ref = null;
 
 	public CopyrightException()
 	{
@@ -43,8 +44,19 @@ public class CopyrightException extends Exception
 		m_msg = msg;
 	}
 
+	public CopyrightException(String msg, String ref)
+	{
+		m_msg = msg;
+		m_ref = ref;
+	}
+
 	public String toString()
 	{
 		return super.toString() + ((m_msg != null) ? (" : " + m_msg): "");
+	}
+	
+	public String getReference()
+	{
+		return m_ref;
 	}
 }

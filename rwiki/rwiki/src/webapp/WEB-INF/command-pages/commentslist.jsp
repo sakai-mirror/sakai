@@ -20,7 +20,7 @@
 			<jsp:attribute name="class">rwikicommentbody_<c:out value="${comment.commentLevel}" /></jsp:attribute>
 		
 	    <div class="rwikicommentheader">
-	        Comment by: <c:out value="${comment.rwikiObject.userName}" /> on <c:out value="${comment.rwikiObject.version}" /> 
+	        Comment by: <rwiki:formatDisplayName name="${(comment.rwikiObject.user)}" /> on <c:out value="${comment.rwikiObject.version}" /> 
 			<jsp:element name="a">
 				<jsp:attribute name="href">#</jsp:attribute>
 				<jsp:attribute name="onclick">ajaxRefPopup(this,'<c:out value="${comment.newCommentURL}" />',1); return false;</jsp:attribute>

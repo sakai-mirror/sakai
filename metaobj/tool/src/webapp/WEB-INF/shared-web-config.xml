@@ -91,7 +91,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">listStructuredArtifactDefinitions</prop>
+            <prop key="success">listStructuredArtifactDefinitionsRedirect</prop>
             <prop key="preview">previewStructuredArtifactDefinitionRedirect</prop>
             <prop key="failure">addStructuredArtifactDefinition</prop>
             <prop key="pickSchema">pickSchemaFileRedirect</prop>
@@ -218,7 +218,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">listStructuredArtifactDefinitions</prop>
+            <prop key="success">listStructuredArtifactDefinitionsRedirect</prop>
             <prop key="preview">previewStructuredArtifactDefinitionRedirect</prop>
             <prop key="failure">addStructuredArtifactDefinition</prop>
             <prop key="pickSchema">pickSchemaFileRedirect</prop>

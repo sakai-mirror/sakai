@@ -159,6 +159,8 @@ public class InputRichTextRenderer extends Renderer
         (String) RendererUtil.getAttribute(context, component, "javascriptLibraryURL");
 //  If true show XPath at bottom of editor.  Default is true.
     String showXPath = (String) RendererUtil.getAttribute(context, component, "showXPath");
+    showXPath = RendererUtil.makeSwitchString(showXPath, true, true, true, false, false, true);
+
     ///////////////////////////////////////////////////////////////////////////
 
     // set up dimensions
@@ -205,7 +207,7 @@ public class InputRichTextRenderer extends Renderer
      }
 
      // hook up configuration object
-     writeConfigurationScript(context, component, clientId, toolbarScript, widthPx, heightPx, locale, writer);
+     writeConfigurationScript(context, component, clientId, toolbarScript, widthPx, heightPx, showXPath, locale, writer);
    }
 
   }
@@ -335,7 +337,7 @@ public class InputRichTextRenderer extends Renderer
    * @param heightPx rows
    */
   protected void writeConfigurationScript(FacesContext context, UIComponent component, String clientId,
-    String toolbar, int widthPx, int heightPx, Locale locale, ResponseWriter writer)
+    String toolbar, int widthPx, int heightPx, String showXPath, Locale locale, ResponseWriter writer)
     throws IOException
   {
     // script creates unique Config object
@@ -348,6 +350,7 @@ public class InputRichTextRenderer extends Renderer
     writer.write("  " + configVar + ".toolbar = " + toolbar + ";\n");
     writer.write("  " + configVar + ".width=\"" + widthPx + "px\";\n");
     writer.write("  " + configVar + ".height=\"" + heightPx + "px\";\n");
+    writer.write("  " + configVar + ".statusBar=" + showXPath + ";\n");
     writeAdditionalConfig(context, component, configVar, clientId,
           toolbar, widthPx, heightPx, locale,  writer);
     writer.write(  "sakaiSetupRichTextarea(\"");

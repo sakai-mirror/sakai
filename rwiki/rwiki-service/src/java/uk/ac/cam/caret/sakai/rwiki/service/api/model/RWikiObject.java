@@ -115,12 +115,6 @@ public interface RWikiObject extends Comparable
 	 */
 	String getUser();
 	
-	/**
-	 * get the username rather thant the user id, this  is read only
-	 * @return
-	 */
-	String getUserName();
-
     /**
      * The user that owns this record
      */
@@ -130,12 +124,6 @@ public interface RWikiObject extends Comparable
      * @return The user that owns this record
      */
     String getOwner();
-
-	/**
-	 * get the owner name rather than the user id, this  is read only
-	 * @return
-	 */
-    String getOwnerName();
     
 	/**
 	 * Can the user read the page

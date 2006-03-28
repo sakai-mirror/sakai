@@ -3,6 +3,7 @@
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:rwiki="urn:jsptld:/WEB-INF/rwiki.tld"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp" 
@@ -167,7 +168,7 @@ Page Owner Permissions Group
 		    </jsp:element>
 		  </td>
 		  <td>
-		    <c:out value="${renderBean.rwikiObject.userName}"/>
+		    <rwiki:formatDisplayName name="${(renderBean.rwikiObject.user)}"/>
 		  </td>
 		  <td>&#160;</td>
 		  <td colspan="2">&#160;</td>
@@ -187,7 +188,7 @@ Page Owner Permissions Group
 			V.<c:out value="${historyObject.revision}" />
 		      </jsp:element>
 		    </td>
-		    <td><c:out value="${historyObject.userName}" /></td>
+		    <td><rwiki:formatDisplayName name="${(historyObject.user)}" /></td>
 		    <td><fmt:formatDate type="both" value="${historyObject.version}" /></td>
 		    <td>
 		      <jsp:element name="a">

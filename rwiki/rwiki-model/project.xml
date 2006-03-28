@@ -53,12 +53,12 @@
       <artifactId>sakai-rwiki-service</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-      <dependency>
+    <!--
+    <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-legacy-service</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <!--
       <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-util-xml</artifactId>

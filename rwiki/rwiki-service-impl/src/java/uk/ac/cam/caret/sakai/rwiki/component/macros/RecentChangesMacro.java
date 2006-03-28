@@ -44,6 +44,7 @@ import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException;
 import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
+import uk.ac.cam.caret.sakai.rwiki.utils.UserDisplayHelper;
 
 /**
  * FIXME needs localisation
@@ -142,7 +143,7 @@ public class RecentChangesMacro extends BaseMacro {
 
 					writer.write(" was last modified "
 						+ dateFormat.format(object.getVersion()));
-					writer.write(" by " + object.getUserName());
+					writer.write(" by " + UserDisplayHelper.formatDisplayName(object.getUser()));
 				} 
 
 			}

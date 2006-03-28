@@ -385,13 +385,15 @@ public class RendererUtil
                 switchValue = true;
             if ("off".equalsIgnoreCase(rawSwitch))
                 switchValue = false;
-        } else if (supportTrueFalse)
+        } 
+        if (supportTrueFalse)
         {
             if ("true".equalsIgnoreCase(rawSwitch))
                 switchValue = true;
             if ("false".equalsIgnoreCase(rawSwitch))
                 switchValue = false;
-        } else if (supportYesNo)
+        } 
+        if (supportYesNo)
         {
             if ("yes".equalsIgnoreCase(rawSwitch))
                 switchValue = true;

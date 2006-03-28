@@ -28,10 +28,6 @@ package uk.ac.cam.caret.sakai.rwiki.model;
 import java.security.MessageDigest;
 import java.util.Date;
 
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
-
 import uk.ac.cam.caret.sakai.rwiki.service.api.dao.RWikiObjectContentDao;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
 import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObjectContent;
@@ -707,33 +703,6 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		}// end for loop
 		return output.toUpperCase();
 	}// end byteArrayToHexStr
-
-	/**
-	 * This should not be here its horrible, but jspx and el has forced it
-	 * @{inheritDoc}
-	 */
-	public String getOwnerName() {
-		User user;
-		try {
-			user = UserDirectoryService.getUser(m_owner);
-		} catch (IdUnusedException e) {
-			return "Unknown ("+m_owner+")";
-		}
-		return user.getDisplayName() + " ("+ m_owner + ")";
-	}
-
-	/**
-	 * @{inheritDoc}
-	 */
-	public String getUserName() {
-		User user;
-		try {
-			user = UserDirectoryService.getUser(m_user);
-		} catch (IdUnusedException e) {
-			return "Unknown ("+m_user+")";
-		}
-		return user.getDisplayName() + " ("+ m_user + ")";
-	}
 }
 
 /*******************************************************************************

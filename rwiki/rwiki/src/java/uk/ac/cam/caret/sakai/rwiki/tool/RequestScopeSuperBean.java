@@ -28,10 +28,14 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.search.SearchService;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.springframework.context.ApplicationContext;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
@@ -253,6 +257,14 @@ public class RequestScopeSuperBean {
         }
         return (String) map.get(key);
     }
+    public String getWorksiteOwner() {
+		try {
+			Site s = SiteService.getSite(PortalService.getCurrentSiteId());
+	    		return s.getCreatedBy().getId();
+		} catch (IdUnusedException e) {
+		}
+		return "admin";
+    }
 
     public ViewBean getViewBean() {
         String key = "viewBean";
@@ -350,7 +362,7 @@ public class RequestScopeSuperBean {
             ppb.setPopulateService(populateService);
             ppb.setCurrentGroup(getCurrentDefaultRealm());
             ppb.setCurrentPageRealm(getCurrentPageSpace());
-            ppb.setCurrentUser(getCurrentUser());
+            ppb.setWoksiteOwner(getWorksiteOwner());
             ppb.setLog(logger);
             map.put(key, ppb);
         }

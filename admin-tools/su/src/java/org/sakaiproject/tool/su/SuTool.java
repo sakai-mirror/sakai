@@ -148,7 +148,9 @@ public class SuTool
 		sakaiSession.setUserEid(validatedUserId);
 
 		// refesh the user's realms, so any recent changes to their site membership will take effect
-		M_authzGroupService.refreshUser(validatedUserId);
+                if (M_authzGroupService != null) {
+		    M_authzGroupService.refreshUser(validatedUserId);
+                }
 
 		return "redirect";
 	}

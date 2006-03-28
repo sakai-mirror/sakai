@@ -25,14 +25,57 @@
 // package
 package org.sakaiproject.tool.content;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeSet;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.sakaiproject.cheftool.*;
-import org.sakaiproject.exception.*;
+import org.sakaiproject.cheftool.Context;
+import org.sakaiproject.cheftool.JetspeedRunData;
+import org.sakaiproject.cheftool.PagedResourceHelperAction;
+import org.sakaiproject.cheftool.PortletConfig;
+import org.sakaiproject.cheftool.RunData;
+import org.sakaiproject.cheftool.VelocityPortlet;
+import org.sakaiproject.cheftool.VelocityPortletPaneledAction;
+import org.sakaiproject.exception.EmptyException;
+import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdLengthException;
+import org.sakaiproject.exception.IdUniquenessException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.InUseException;
+import org.sakaiproject.exception.InconsistentException;
+import org.sakaiproject.exception.OverQuotaException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.control.SchemaBean;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactValidationService;
@@ -46,7 +89,11 @@ import org.sakaiproject.service.framework.session.SessionState;
 import org.sakaiproject.service.framework.session.UsageSession;
 import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.content.*;
+import org.sakaiproject.service.legacy.content.ContentCollection;
+import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
+import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.service.legacy.content.ContentResourceEdit;
+import org.sakaiproject.service.legacy.content.ContentResourceFilter;
 import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.content.cover.ContentTypeImageService;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -73,18 +120,11 @@ import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.text.FormattedText;
 import org.sakaiproject.util.xml.Xml;
-import org.w3c.dom.*;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
 * <p>ResourceAction is a ContentHosting application</p>
@@ -411,6 +451,150 @@ public class ResourcesAction
 	private static final String DEFAULT_COPYRIGHT_ALERT = "default_copyright_alert";
 	private static final String COPYRIGHT_FAIRUSE_URL = "copyright_fairuse_url";
 	private static final String NEW_COPYRIGHT_INPUT = "new_copyright_input";
+	/**
+	 * Add a new folder to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.
+	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
+	 * the items are added to the collection identified by the state attribute named STATE_STACK_CREATE_COLLECTION_ID.
+	 * @param state
+	 */
+	protected static void createFolders(SessionState state)
+	{
+		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
+		if(alerts == null)
+		{
+			alerts = new HashSet();
+			state.setAttribute(STATE_CREATE_ALERTS, alerts);
+		}
+	
+		Map current_stack_frame = peekAtStack(state);
+	
+		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
+		if(new_items == null)
+		{
+			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
+			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
+			{
+				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
+				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
+			}
+	
+			new_items = new Vector();
+			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
+			{
+				EditItem item = new EditItem(TYPE_FOLDER);
+				item.setCopyrightStatus(defaultCopyrightStatus);
+				new_items.add(item);
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
+	
+		}
+		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
+		if(number == null)
+		{
+			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+		if(number == null)
+		{
+			number = new Integer(1);
+			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
+		}
+	
+		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
+		if(collectionId == null || collectionId.trim().length() == 0)
+		{
+			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
+			if(collectionId == null || collectionId.trim().length() == 0)
+			{
+				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
+			}
+			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
+		}
+	
+		int numberOfFolders = 1;
+		numberOfFolders = number.intValue();
+	
+		outerloop: for(int i = 0; i < numberOfFolders; i++)
+		{
+			EditItem item = (EditItem) new_items.get(i);
+			if(item.isBlank())
+			{
+				continue;
+			}
+			String newCollectionId = collectionId + Validator.escapeResourceName(item.getName()) + Entity.SEPARATOR;
+	
+			if(newCollectionId.length() > RESOURCE_ID_MAX_LENGTH)
+			{
+				alerts.add(rb.getString("toolong") + " " + newCollectionId);
+				continue outerloop;
+			}
+	
+			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
+	
+			try
+			{
+				resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());
+				resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
+				List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
+				saveMetadata(resourceProperties, metadataGroups, item);
+	
+				ContentCollection collection = ContentHostingService.addCollection (newCollectionId, resourceProperties);
+	
+				if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
+				{
+					// deal with pubview in resource mode//%%%
+					// boolean pubviewset = ContentHostingService.isInheritingPubView(collection.getId());
+					if (!item.isPubviewset())
+					{
+						ContentHostingService.setPubView(collection.getId(), item.isPubview());
+					}
+				}
+			}
+			catch (IdUsedException e)
+			{
+				alerts.add(rb.getString("resotitle") + " " + item.getName() + " " + rb.getString("used4"));
+			}
+			catch (IdInvalidException e)
+			{
+				alerts.add(rb.getString("title") + " " + e.getMessage ());
+			}
+			catch (PermissionException e)
+			{
+				alerts.add(rb.getString("notpermis5") + " " + item.getName());
+			}
+			catch (InconsistentException e)
+			{
+				alerts.add(RESOURCE_INVALID_TITLE_STRING);
+			}	// try-catch
+		}
+	
+		HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
+		if(!currentMap.containsKey(collectionId))
+		{
+			try
+			{
+				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
+				state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
+	
+				// add this folder id into the set to be event-observed
+				addObservingPattern(collectionId, state);
+			}
+			catch (IdUnusedException ignore)
+			{
+			}
+			catch (TypeException ignore)
+			{
+			}
+			catch (PermissionException ignore)
+			{
+			}
+		}
+		state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
+	
+		state.setAttribute(STATE_CREATE_ALERTS, alerts);
+	
+	}	// createFolders
+
 	private static final String COPYRIGHT_SELF_COPYRIGHT = rb.getString("cpright2");
 	private static final String COPYRIGHT_NEW_COPYRIGHT = rb.getString("cpright3");
 	private static final String COPYRIGHT_ALERT_URL = ServerConfigurationService.getAccessUrl() + COPYRIGHT_PATH;
@@ -3180,150 +3364,6 @@ public class ResourcesAction
 	}	// validateStructuredArtifact
 
 	/**
-	 * Add a new folder to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.
-	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
-	 * the items are added to the collection identified by the state attribute named STATE_STACK_CREATE_COLLECTION_ID.
-	 * @param state
-	 */
-	protected static void createFolders(SessionState state)
-	{
-		Set alerts = (Set) state.getAttribute(STATE_CREATE_ALERTS);
-		if(alerts == null)
-		{
-			alerts = new HashSet();
-			state.setAttribute(STATE_CREATE_ALERTS, alerts);
-		}
-
-		Map current_stack_frame = peekAtStack(state);
-
-		List new_items = (List) current_stack_frame.get(STATE_STACK_CREATE_ITEMS);
-		if(new_items == null)
-		{
-			String defaultCopyrightStatus = (String) state.getAttribute(DEFAULT_COPYRIGHT);
-			if(defaultCopyrightStatus == null || defaultCopyrightStatus.trim().equals(""))
-			{
-				defaultCopyrightStatus = ServerConfigurationService.getString("default.copyright");
-				state.setAttribute(DEFAULT_COPYRIGHT, defaultCopyrightStatus);
-			}
-
-			new_items = new Vector();
-			for(int i = 0; i < CREATE_MAX_ITEMS; i++)
-			{
-				EditItem item = new EditItem(TYPE_FOLDER);
-				item.setCopyrightStatus(defaultCopyrightStatus);
-				new_items.add(item);
-			}
-			current_stack_frame.put(STATE_STACK_CREATE_ITEMS, new_items);
-
-		}
-		Integer number = (Integer) current_stack_frame.get(STATE_STACK_CREATE_NUMBER);
-		if(number == null)
-		{
-			number = (Integer) state.getAttribute(STATE_CREATE_NUMBER);
-			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
-		}
-		if(number == null)
-		{
-			number = new Integer(1);
-			current_stack_frame.put(STATE_STACK_CREATE_NUMBER, number);
-		}
-
-		String collectionId = (String) current_stack_frame.get(STATE_STACK_CREATE_COLLECTION_ID);
-		if(collectionId == null || collectionId.trim().length() == 0)
-		{
-			collectionId = (String) state.getAttribute(STATE_CREATE_COLLECTION_ID);
-			if(collectionId == null || collectionId.trim().length() == 0)
-			{
-				collectionId = ContentHostingService.getSiteCollection(ToolManager.getCurrentPlacement().getContext());
-			}
-			current_stack_frame.put(STATE_STACK_CREATE_COLLECTION_ID, collectionId);
-		}
-
-		int numberOfFolders = 1;
-		numberOfFolders = number.intValue();
-
-		outerloop: for(int i = 0; i < numberOfFolders; i++)
-		{
-			EditItem item = (EditItem) new_items.get(i);
-			if(item.isBlank())
-			{
-				continue;
-			}
-			String newCollectionId = collectionId + Validator.escapeResourceName(item.getName()) + Entity.SEPARATOR;
-
-			if(newCollectionId.length() > RESOURCE_ID_MAX_LENGTH)
-			{
-				alerts.add(rb.getString("toolong") + " " + newCollectionId);
-				continue outerloop;
-			}
-
-			ResourcePropertiesEdit resourceProperties = ContentHostingService.newResourceProperties ();
-
-			try
-			{
-				resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, item.getName());
-				resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, item.getDescription());
-				List metadataGroups = (List) state.getAttribute(STATE_METADATA_GROUPS);
-				saveMetadata(resourceProperties, metadataGroups, item);
-
-				ContentCollection collection = ContentHostingService.addCollection (newCollectionId, resourceProperties);
-
-				if (RESOURCES_MODE_RESOURCES.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
-				{
-					// deal with pubview in resource mode//%%%
-					// boolean pubviewset = ContentHostingService.isInheritingPubView(collection.getId());
-					if (!item.isPubviewset())
-					{
-						ContentHostingService.setPubView(collection.getId(), item.isPubview());
-					}
-				}
-			}
-			catch (IdUsedException e)
-			{
-				alerts.add(rb.getString("resotitle") + " " + item.getName() + " " + rb.getString("used4"));
-			}
-			catch (IdInvalidException e)
-			{
-				alerts.add(rb.getString("title") + " " + e.getMessage ());
-			}
-			catch (PermissionException e)
-			{
-				alerts.add(rb.getString("notpermis5") + " " + item.getName());
-			}
-			catch (InconsistentException e)
-			{
-				alerts.add(RESOURCE_INVALID_TITLE_STRING);
-			}	// try-catch
-		}
-
-		HashMap currentMap = (HashMap) state.getAttribute(STATE_EXPANDED_COLLECTIONS);
-		if(!currentMap.containsKey(collectionId))
-		{
-			try
-			{
-				currentMap.put (collectionId,ContentHostingService.getCollection (collectionId));
-				state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
-
-				// add this folder id into the set to be event-observed
-				addObservingPattern(collectionId, state);
-			}
-			catch (IdUnusedException ignore)
-			{
-			}
-			catch (TypeException ignore)
-			{
-			}
-			catch (PermissionException ignore)
-			{
-			}
-		}
-		state.setAttribute(STATE_EXPANDED_COLLECTIONS, currentMap);
-
-		state.setAttribute(STATE_CREATE_ALERTS, alerts);
-
-	}	// createFolders
-
-	/**
 	 * Add a new file to ContentHosting for each EditItem in the state attribute named STATE_STACK_CREATE_ITEMS.
 	 * The number of items to be added is indicated by the state attribute named STATE_STACK_CREATE_NUMBER, and
 	 * the items are added to the collection identified by the state attribute named STATE_STACK_CREATE_COLLECTION_ID.
@@ -4892,10 +4932,14 @@ public class ResourcesAction
 
 		state.setAttribute(STATE_LIST_SELECTIONS, new TreeSet());
 
-		Map current_stack_frame = peekAtStack(state);
-		current_stack_frame.put(STATE_HELPER_CANCELED_BY_USER, Boolean.TRUE.toString());
+		if(!isStackEmpty(state))
+		{
+			Map current_stack_frame = peekAtStack(state);
+			current_stack_frame.put(STATE_HELPER_CANCELED_BY_USER, Boolean.TRUE.toString());
 
-		popFromStack(state);
+			popFromStack(state);
+		}
+
 		resetCurrentMode(state);
 
 	}	// doCancel
@@ -9130,23 +9174,28 @@ public class ResourcesAction
 
 	}	// getBrowseItems
 
-   protected static boolean checkItemFilter(ContentResource resource, BrowseItem newItem, SessionState state) {
-      ContentResourceFilter filter = (ContentResourceFilter)state.getAttribute(STATE_RESOURCE_FILTER);
+	protected static boolean checkItemFilter(ContentResource resource, BrowseItem newItem, SessionState state) 
+	{
+		ContentResourceFilter filter = (ContentResourceFilter)state.getAttribute(STATE_RESOURCE_FILTER);
+	
+	      if (filter != null) 
+	      {
+	    	  	if (newItem != null) 
+	    	  	{
+	    	  		newItem.setCanSelect(filter.allowSelect(resource));
+	    	  	}
+	    	  	return filter.allowView(resource);
+	      }
+	      else if (newItem != null) 
+	      {
+	    	  	newItem.setCanSelect(true);
+	      }
 
-      if (filter != null) {
-         if (newItem != null) {
-            newItem.setCanSelect(filter.allowSelect(resource));
-         }
-         return filter.allowView(resource);
-      }
-      else if (newItem != null) {
-         newItem.setCanSelect(true);
-      }
+	      return true;
+	}
 
-      return true;
-   }
-
-   protected static boolean checkSelctItemFilter(ContentResource resource, SessionState state) {
+   protected static boolean checkSelctItemFilter(ContentResource resource, SessionState state) 
+   {
       ContentResourceFilter filter = (ContentResourceFilter)state.getAttribute(STATE_RESOURCE_FILTER);
 
       if (filter != null) {
@@ -9869,7 +9918,7 @@ public class ResourcesAction
 		protected boolean m_isCopied;
 		protected boolean m_canAddItem;
 		protected boolean m_canAddFolder;
-      protected boolean m_canSelect;
+		protected boolean m_canSelect;
 
 		protected List m_members;
 		protected boolean m_isEmpty;
@@ -9917,7 +9966,7 @@ public class ResourcesAction
 			m_isCopied = false;
 			m_isMoved = false;
 			m_isAttached = false;
-         m_canSelect = true; // default is true.
+			m_canSelect = true; // default is true.
 			m_hasDeletableChildren = false;
 			m_hasCopyableChildren = false;
 			m_createdBy = "";

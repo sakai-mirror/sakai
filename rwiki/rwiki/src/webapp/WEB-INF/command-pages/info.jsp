@@ -3,6 +3,7 @@
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:rwiki="urn:jsptld:/WEB-INF/rwiki.tld"
   ><jsp:directive.page language="java"
 		contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"
 		errorPage="/WEB-INF/command-pages/errorpage.jsp"
@@ -342,14 +343,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 			    <jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 			    <c:set var="pmcounter" value="${pmcounter+1}" />
 			    <jsp:attribute name="class">rwiki_info_secure_granted</jsp:attribute>
-			    <c:choose>
-			      <c:when test="${role.secureCreate}">
-				yes
-			      </c:when>
-			      <c:otherwise>
-				no
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted span="false" granted="${role.secureCreate}"/>
 			  </jsp:element>
 			</td>
 			<td>
@@ -359,14 +353,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 				<c:set var="pmcounter" value="${pmcounter+1}" />
 				<jsp:attribute name="class">rwiki_info_secure_granted</jsp:attribute>
-				<c:choose>		    						
-				  <c:when test="${role.secureRead}">
-				    yes
-				  </c:when>
-				  <c:otherwise>
-				    no
-				  </c:otherwise>
-				</c:choose>
+				  <rwiki:granted span="false" granted="${role.secureRead}"/>
 			      </jsp:element>
 			    </c:when>
 			    <c:otherwise>
@@ -374,14 +361,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 				<c:set var="pmcounter" value="${pmcounter+1}" />
 				<jsp:attribute name="class">rwiki_info_secure_denied</jsp:attribute>
-				<c:choose>
-				  <c:when test="${role.secureRead}">
-				    yes
-				  </c:when>
-				  <c:otherwise>
-				    no
-				  </c:otherwise>
-				</c:choose>
+				  <rwiki:granted span="false" granted="${role.secureRead}"/>
 			      </jsp:element>
 			    </c:otherwise>
 			  </c:choose>
@@ -393,14 +373,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 				<c:set var="pmcounter" value="${pmcounter+1}" />
 				<jsp:attribute name="class">rwiki_info_secure_granted</jsp:attribute>
-				<c:choose>
-				  <c:when test="${role.secureUpdate}">
-				    yes
-				  </c:when>
-				  <c:otherwise>
-				    no
-				  </c:otherwise>
-				</c:choose>
+				  <rwiki:granted span="false" granted="${role.secureUpdate}"/>
 			      </jsp:element>
 			    </c:when>
 			    <c:otherwise>
@@ -408,14 +381,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 				<c:set var="pmcounter" value="${pmcounter+1}" />
 				<jsp:attribute name="class">rwiki_info_secure_denied</jsp:attribute>
-				<c:choose>
-				  <c:when test="${role.secureUpdate}">
-				    yes
-				  </c:when>
-				  <c:otherwise>
-				    no
-				  </c:otherwise>
-				</c:choose>
+				  <rwiki:granted span="false" granted="${role.secureUpdate}"/>
 			      </jsp:element>	
 			    </c:otherwise>
 			  </c:choose>
@@ -427,14 +393,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 				<c:set var="pmcounter" value="${pmcounter+1}" />
 				<jsp:attribute name="class">rwiki_info_secure_granted</jsp:attribute>
-				<c:choose>
-				  <c:when test="${role.secureAdmin}">
-				    yes
-				  </c:when>
-				  <c:otherwise>
-				    no
-				  </c:otherwise>
-				</c:choose>
+				  <rwiki:granted span="false" granted="${role.secureAdmin}"/>
 			      </jsp:element>
 			    </c:when>
 			    <c:otherwise>
@@ -442,14 +401,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 				<jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 				<c:set var="pmcounter" value="${pmcounter+1}" />
 				<jsp:attribute name="class">rwiki_info_secure_denied</jsp:attribute>
-				<c:choose>
-				  <c:when test="${role.secureAdmin}">
-				    yes
-				  </c:when>
-				  <c:otherwise>
-				    no
-				  </c:otherwise>
-				</c:choose>
+				  <rwiki:granted span="false" granted="${role.secureAdmin}"/>
 			      </jsp:element>
 			    </c:otherwise>
 			  </c:choose>
@@ -459,14 +411,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 			    <jsp:attribute name="id" >permissions_<c:out value="${pmcounter}" /></jsp:attribute>
 			    <c:set var="pmcounter" value="${pmcounter+1}" />
 			    <jsp:attribute name="class">rwiki_info_secure_granted</jsp:attribute>
-			    <c:choose>
-			      <c:when test="${role.secureSuperAdmin}">
-				yes
-			      </c:when>
-			      <c:otherwise>
-				no
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted span="false" granted="${role.secureSuperAdmin}"/>
 			  </jsp:element>
 			</td>
 		      </tr>
@@ -625,46 +570,18 @@ both pages are identical. Any change in the page, will change the digest on the 
 			      onMouseOut="hidePopup('siteenabledisphelp');" >?</a></th>
 			  <td></td>
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.groupRead}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			  	<rwiki:granted granted="${currentRWikiObject.groupRead }"/>
 			  </td>
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.groupWrite}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.groupWrite}"/>
 			  </td>
 			  <!--
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.groupDelete}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.groupDelete}"/>
 			  </td>
 			  -->
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.groupAdmin}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.groupAdmin}"/>
 			  </td>
 			  <td></td>
 			</tr>
@@ -677,46 +594,18 @@ both pages are identical. Any change in the page, will change the digest on the 
 			      onMouseOut="hidePopup('pageownerdisphelp');" >?</a></th>
 			  <td>&#160;</td>
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.ownerRead}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.ownerRead}"/>
 			  </td>
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.ownerWrite}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.ownerWrite}"/>
 			  </td>
 			  <!--
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.ownerDelete}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.ownerDelete}"/>
 			  </td>
 			  -->
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.ownerAdmin}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.ownerAdmin}"/>
 			  </td>
 			  <td>&#160;</td>
 			</tr>
@@ -725,24 +614,10 @@ both pages are identical. Any change in the page, will change the digest on the 
 			      onMouseOut="hidePopup('publicdisphelp');" >?</a></th>
 			  <td></td>
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.publicRead}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.publicRead}"/>
 			  </td>
 			  <td>
-			    <c:choose>
-			      <c:when test="${currentRWikiObject.publicWrite}">
-				<span class="rwiki_info_page_granted" >yes</span>
-			      </c:when>
-			      <c:otherwise>
-				<span class="rwiki_info_page_denied" >no</span>
-			      </c:otherwise>
-			    </c:choose>
+			      <rwiki:granted granted="${currentRWikiObject.publicWrite}"/>
 			  </td>
 			  <!--<td></td>-->
 			  <td></td>
@@ -829,7 +704,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 		    	<th>Owner<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'ownerhelp'); return false;"
 		    		onMouseOut="hidePopup('ownerhelp');" >?</a></th>
 		      <td colspan="6">
-		      	<c:out value="${currentRWikiObject.ownerName}"/>
+		      	<rwiki:formatDisplayName name="${(currentRWikiObject.owner)}"/>
 		      </td>
 		    </tr>
 		    <tr>
@@ -850,7 +725,7 @@ both pages are identical. Any change in the page, will change the digest on the 
 		    <tr>
 		    	<th>Last Edited<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'lastedithelp'); return false;"
 		    		onMouseOut="hidePopup('lastedithelp');" >?</a></th>
-		      <td colspan="6"><fmt:formatDate type="both" value="${currentRWikiObject.version}"/> by <c:out value="${currentRWikiObject.userName}"/></td>
+		      <td colspan="6"><fmt:formatDate type="both" value="${currentRWikiObject.version}"/> by <rwiki:formatDisplayName name="${(currentRWikiObject.user)}"/></td>
 		    </tr>
 		    <tr>
 		    	<th>SHA-1<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'digesthelp'); return false;"
