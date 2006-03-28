@@ -9,3 +9,4 @@ entity			https://source.sakaiproject.org/svn/entity/trunk
 legacy			https://source.sakaiproject.org/svn/legacy/trunk
 user			https://source.sakaiproject.org/svn/user/trunk
 memory			https://source.sakaiproject.org/svn/memory/trunk
+db				https://source.sakaiproject.org/svn/db/trunk
