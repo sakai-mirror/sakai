@@ -6,7 +6,7 @@ authz			https://source.sakaiproject.org/svn/authz/trunk
 courier			https://source.sakaiproject.org/svn/courier/trunk
 event			https://source.sakaiproject.org/svn/event/trunk
 entity			https://source.sakaiproject.org/svn/entity/trunk
-legacy			https://source.sakaiproject.org/svn/legacy/trunk
+velocity		https://source.sakaiproject.org/svn/velocity/trunk
 user			https://source.sakaiproject.org/svn/user/trunk
 memory			https://source.sakaiproject.org/svn/memory/trunk
 db				https://source.sakaiproject.org/svn/db/trunk
