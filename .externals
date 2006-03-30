@@ -11,3 +11,5 @@ user			https://source.sakaiproject.org/svn/user/trunk
 memory			https://source.sakaiproject.org/svn/memory/trunk
 db				https://source.sakaiproject.org/svn/db/trunk
 site			https://source.sakaiproject.org/svn/site/trunk
+email			https://source.sakaiproject.org/svn/email/trunk
+alias			https://source.sakaiproject.org/svn/alias/trunk
