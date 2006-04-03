@@ -8038,9 +8038,13 @@ public class SiteAction extends PagedResourceActionII
 					String skin = params.getString("skin");
 					if (skin != null)
 					{
-						// if there is a skin input
+						// if there is a skin input for course site
 						skin = StringUtil.trimToNull(skin);
 						state.setAttribute(FORM_SITEINFO_SKIN, skin);
+					}
+					else
+					{
+						// if ther is a icon input for non-course site
 						String icon = StringUtil.trimToNull(params.getString("icon"));		
 						if (icon != null)
 						{

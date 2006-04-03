@@ -59,22 +59,22 @@ public abstract class PagedResourceHelperAction
 	protected static final String PARAM_PAGESIZE = "pagesize";
 
 	/** state attribute names. */
-	protected static final String STATE_VIEW_ID = "view-id";
-	protected static final String STATE_TOP_PAGE_MESSAGE = "msg-top";
-	protected static final String STATE_PAGESIZE = "page-size";
-	protected static final String STATE_NUM_MESSAGES = "num-messages";
-	protected static final String STATE_NEXT_PAGE_EXISTS = "msg-next-page";
-	protected static final String STATE_PREV_PAGE_EXISTS = "msg-prev-page";
-	protected static final String STATE_GO_NEXT_PAGE = "msg-go-next-page";
-	protected static final String STATE_GO_PREV_PAGE = "msg-go-prev-page";
-	protected static final String STATE_GO_NEXT = "msg-go-next";
-	protected static final String STATE_GO_PREV = "msg-go-prev";
-	protected static final String STATE_NEXT_EXISTS = "msg-next";
-	protected static final String STATE_PREV_EXISTS = "msg-prev";
-	protected static final String STATE_GO_FIRST_PAGE = "msg-go-first-page";
-	protected static final String STATE_GO_LAST_PAGE = "msg-go-last-page";
-	protected static final String STATE_SEARCH = "search";
-	protected static final String STATE_MANUAL_REFRESH = "manual";
+	protected static final String STATE_VIEW_ID = "prha.view-id";
+	protected static final String STATE_TOP_PAGE_MESSAGE = "prha.msg-top";
+	protected static final String STATE_PAGESIZE = "prha.page-size";
+	protected static final String STATE_NUM_MESSAGES = "prha.num-messages";
+	protected static final String STATE_NEXT_PAGE_EXISTS = "prha.msg-next-page";
+	protected static final String STATE_PREV_PAGE_EXISTS = "prha.msg-prev-page";
+	protected static final String STATE_GO_NEXT_PAGE = "prha.msg-go-next-page";
+	protected static final String STATE_GO_PREV_PAGE = "prha.msg-go-prev-page";
+	protected static final String STATE_GO_NEXT = "prha.msg-go-next";
+	protected static final String STATE_GO_PREV = "prha.msg-go-prev";
+	protected static final String STATE_NEXT_EXISTS = "prha.msg-next";
+	protected static final String STATE_PREV_EXISTS = "prha.msg-prev";
+	protected static final String STATE_GO_FIRST_PAGE = "prha.msg-go-first-page";
+	protected static final String STATE_GO_LAST_PAGE = "prha.msg-go-last-page";
+	protected static final String STATE_SEARCH = "prha.search";
+	protected static final String STATE_MANUAL_REFRESH = "prha.manual";
 
 	/** Form fields. */
 	protected static final String FORM_SEARCH = "search";

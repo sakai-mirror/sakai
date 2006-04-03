@@ -28,10 +28,6 @@ should be included in file importing DeliveryMessages
 -->
   <h:outputText escape="false" value="#{question.itemData.text}" />
   <f:verbatim><br/>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
-    <h:graphicImage id="image" alt="#{msg.audio_recording}."
-       url="/images/recordresponse.gif" />
-
-  <f:verbatim><br/>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
   <h:outputText escape="false" value="#{msg.time_allowed_seconds} #{question.itemData.duration}" />
   <f:verbatim><br/>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
 

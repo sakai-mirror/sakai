@@ -162,7 +162,7 @@ function chef_setupformattedtext(textarea_id, width, height, toolbar_num_button_
 		],
 		[ 
 		  "orderedlist", "unorderedlist", "outdent", "indent",
-		  "htmlmode", "separator", 
+		  "htmlmode", "separator", "createlink", "separator",
 		  "popupeditor", "separator","showhelp", "about" ]
 		];
 	}

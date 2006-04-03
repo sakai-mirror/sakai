@@ -159,7 +159,7 @@ public class RWikiServlet extends HttpServlet {
 
         TimeLogger.printTimer("Response Complete", start, finish);
         if ((finish - start) > 500) {
-            log.warn("Slow Wiki Page " + (finish - start) + " ms URL "
+            log.debug("Slow Wiki Page " + (finish - start) + " ms URL "
                     + request.getRequestURL() + "?" + request.getQueryString());
         } else if (TimeLogger.getLogResponse()) {
             log.info("Wiki Page Response " + (finish - start) + " ms URL "

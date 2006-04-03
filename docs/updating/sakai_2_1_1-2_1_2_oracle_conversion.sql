@@ -55,6 +55,10 @@ alter table SAM_ITEMGRADING_T drop constraint FKB68E6756C42AA2BC;
 --drop index FKB2E48A65C07F835D;
 alter table SAM_PUBLISHEDASSESSMENT_T drop constraint FKB2E48A65C07F835D;
 
+-- change constraint name for hbm change
+alter table SAM_PUBLISHEDANSWER_T drop constraint FKB41EA361B9BF0B8E;
+alter table SAM_PUBLISHEDANSWER_T add constraint FKB41EA3618152036E foreign key (ITEMID) references SAM_PUBLISHEDITEM_T;
+
 
 -- OSP
 alter table osp_structured_artifact_def add schema_hash varchar(255);

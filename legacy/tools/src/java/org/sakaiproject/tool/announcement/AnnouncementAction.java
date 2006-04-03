@@ -161,6 +161,10 @@ extends PagedResourceActionII
 	
 	private static final String STATE_SELECTED_VIEW = "state.selected.view";
 	
+	private static final String SC_TRUE = "true";
+	private static final String SC_FALSE = "false";
+	private static final String PUBLIC_DISPLAY_BOOLEAN = "publicDisplayBoolean";
+	
 	/**
 	 * Used by callback to convert channel references to channels.
 	 */
@@ -1707,6 +1711,8 @@ extends PagedResourceActionII
 		context.put("newAnn", (state.getIsNewAnnouncement()) ? "true" : "else");
 		
 		context.put("announceToGroups", state.getTempAnnounceToGroups());
+		
+		context.put("publicDisable", sstate.getAttribute(PUBLIC_DISPLAY_BOOLEAN));
 		
 		String template = (String) getContext(rundata).get("template");
 		return template + "-revise";
@@ -3695,6 +3701,13 @@ extends PagedResourceActionII
 		{
 			loadDisplayOptionsFromPortletConfig(portlet, annState);
 		}
+		
+		// default is to not disable the public selection - FALSE
+		String publicDisplayDisable = StringUtil.trimToZero(ServerConfigurationService.getString("announcements.disable.public", SC_FALSE));
+		if (publicDisplayDisable.equals(SC_TRUE))
+			state.setAttribute(PUBLIC_DISPLAY_BOOLEAN, Boolean.TRUE);
+		else
+			state.setAttribute(PUBLIC_DISPLAY_BOOLEAN, Boolean.FALSE);
 		
 	} // initState
 

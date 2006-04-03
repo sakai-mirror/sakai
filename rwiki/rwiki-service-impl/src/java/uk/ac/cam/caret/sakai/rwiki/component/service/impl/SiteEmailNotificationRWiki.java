@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.email.cover.EmailService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.digest.DigestMessage;
@@ -392,6 +393,9 @@ public class SiteEmailNotificationRWiki extends SiteEmailNotification {
 		if (event.getPriority() == NotificationService.NOTI_NONE)
 			return;
 
+		if ( CurrentService.getInThread(RWikiObjectService.SMALL_CHANGE_IN_THREAD) != null ) 
+			return;
+			
 		// get the list of potential recipients
 		List recipients = getRecipients(event);
 

@@ -120,6 +120,8 @@ public class RequestScopeSuperBean {
 	private SearchService searchService;
 
 	private boolean experimental = false;
+	
+	private boolean withnotification = false;
 
     public static RequestScopeSuperBean getFromRequest(
             HttpServletRequest request) {
@@ -161,7 +163,8 @@ public class RequestScopeSuperBean {
                 this.getCurrentPageName(),
                 this.getCurrentPageSpace());
         }
-        experimental  = new Boolean(ServerConfigurationService.getString("wiki.experimental","false")).booleanValue();
+        experimental  = ServerConfigurationService.getBoolean("wiki.experimental",false);
+        withnotification  = ServerConfigurationService.getBoolean("wiki.notification",false);
         
     }
 
@@ -627,6 +630,20 @@ public class RequestScopeSuperBean {
 		} else {
 			return WikiPageAction.SEARCH_ACTION.getName();
 		}
+	}
+
+	/**
+	 * @return Returns the withnotification.
+	 */
+	public boolean isWithnotification() {
+		return withnotification;
+	}
+
+	/**
+	 * @param withnotification The withnotification to set.
+	 */
+	public void setWithnotification(boolean withnotification) {
+		this.withnotification = withnotification;
 	}
 }
 

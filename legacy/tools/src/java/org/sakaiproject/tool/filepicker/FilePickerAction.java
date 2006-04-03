@@ -53,6 +53,9 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
          }
          else {
             toolSession.setAttribute(FilePickerHelper.FILE_PICKER_CANCEL, "true");
+            //Cleanup some session variables only on a cancel
+            toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+            sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
          }
 
          cleanup(sstate);
@@ -82,6 +85,14 @@ public class FilePickerAction extends VelocityPortletPaneledAction {
       sstate.removeAttribute(ResourcesAction.STATE_RESOURCES_HELPER_MODE);
       sstate.removeAttribute(ResourcesAction.STATE_ATTACHMENTS);
       sstate.removeAttribute(ResourcesAction.STATE_HELPER_CANCELED_BY_USER);
+      sstate.removeAttribute(ResourcesAction.STATE_RESOURCE_FILTER);
+      sstate.removeAttribute(ResourcesAction.STATE_ATTACH_CARDINALITY);
+      
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
+      if (toolSession != null) {
+         toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS);
+         toolSession.removeAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
+      }
    }
 
    /**

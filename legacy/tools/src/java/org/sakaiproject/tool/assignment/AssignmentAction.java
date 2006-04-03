@@ -1194,10 +1194,14 @@ extends PagedResourceActionII
 																SessionState state)
 	{
 		context.put("tlang",rb);
+		int gradeType = -1;
+		
 		// assignment
 		try
 		{
-			context.put ("assignment", AssignmentService.getAssignment ((String) state.getAttribute (GRADE_SUBMISSION_ASSIGNMENT_ID)));
+			Assignment a = AssignmentService.getAssignment ((String) state.getAttribute (GRADE_SUBMISSION_ASSIGNMENT_ID));
+			context.put ("assignment", a);
+			gradeType = a.getContent().getTypeOfGrade();
 		}
 		catch (IdUnusedException e )
 		{
@@ -1266,7 +1270,7 @@ extends PagedResourceActionII
 		}	
 		
 		// format to show one decimal place in grade
-		context.put ("value_grade", displayGrade(state, (String) state.getAttribute (GRADE_SUBMISSION_GRADE)));
+		context.put ("value_grade", (gradeType==3)?displayGrade(state, (String) state.getAttribute (GRADE_SUBMISSION_GRADE)):state.getAttribute (GRADE_SUBMISSION_GRADE));
 		
 		context.put("assignment_expand_flag", state.getAttribute(GRADE_SUBMISSION_ASSIGNMENT_EXPAND_FLAG));
 		context.put ("gradingAttachments", state.getAttribute (ATTACHMENTS));
@@ -1286,9 +1290,12 @@ extends PagedResourceActionII
 	{
 		
 		// assignment
+		int gradeType = -1;
 		try
 		{
-			context.put ("assignment", AssignmentService.getAssignment ((String) state.getAttribute (GRADE_SUBMISSION_ASSIGNMENT_ID)));
+			Assignment a = AssignmentService.getAssignment ((String) state.getAttribute (GRADE_SUBMISSION_ASSIGNMENT_ID));
+			context.put ("assignment", a);
+			gradeType = a.getContent().getTypeOfGrade();
 		}
 		catch (IdUnusedException e )
 		{
@@ -1328,24 +1335,9 @@ extends PagedResourceActionII
 
 		// format to show one decimal place
 		String grade = (String) state.getAttribute (GRADE_SUBMISSION_GRADE);
-		if (grade != null)
+		if (gradeType == 3)
 		{
-			try 
-			{
-				Integer.parseInt(grade);
-				if (grade.indexOf(".") == -1 && (grade.length() >= 1))
-				{
-					grade = grade.substring(0, grade.length()-1) + "." + grade.substring(grade.length()-1);
-				}
-			}
-			catch (NumberFormatException e)
-			{
-				alertInvalidPoint(state, grade);
-			}
-		}
-		else
-		{
-			grade = "";
+			grade = displayGrade(state, grade);
 		}
 		context.put ("grade", grade);
 		
@@ -3474,208 +3466,213 @@ extends PagedResourceActionII
 					aPropertiesEdit.addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_ADD_DUE_DATE, checkAddDueTime);
 					aPropertiesEdit.addProperty (ResourceProperties.NEW_ASSIGNMENT_CHECK_AUTO_ANNOUNCE, checkAutoAnnounce);
 					aPropertiesEdit.addProperty (NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, addtoGradebook);
-
-					// add the due date to schedule
-					Calendar c = (Calendar) state.getAttribute (CALENDAR);
-					String dueDateScheduled = a.getProperties ().getProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED);
-					boolean dueDateEventModified = false;
-					CalendarEvent e = null;
-					
-					if (dueDateScheduled!=null && dueDateScheduled.equalsIgnoreCase (Boolean.TRUE.toString ()))
-					{
-						// find the old event
-						boolean found = false;
-						String oldEventId = aPropertiesEdit.getProperty (ResourceProperties.PROP_ASSIGNMENT_DUEDATE_CALENDAR_EVENT_ID);
-						if (oldEventId != null && c != null)
-						{
-							try
-							{					
-								e = c.getEvent(oldEventId);
-								found = true;
-							}
-							catch (IdUnusedException ee)
-							{
-								Log.warn("chef", "The old event has been deleted: event id=" + oldEventId + ". ");
-							}
-							catch (PermissionException ee)
-							{
-								Log.warn("chef", "You do not have the permission to view the schedule event id= " + oldEventId + ".");
-							}
-						}
-						else
-						{
-							TimeBreakdown b = oldDueTime.breakdownLocal ();
-							// TODO: check- this was new Time(year...), not local! -ggolden
-							Time startTime = TimeService.newTimeLocal(b.getYear (), b.getMonth (), b.getDay (), 0, 0, 0, 0);
-							Time endTime = TimeService.newTimeLocal(b.getYear (), b.getMonth (), b.getDay (), 23, 59, 59, 999);
-							try
-							{
-								Iterator events = c.getEvents (TimeService.newTimeRange(startTime, endTime), null).iterator ();
-	
-								while ((!found) && (events.hasNext ()))
-								{
-									e = (CalendarEvent) events.next ();
-									if (((String) e.getDisplayName ()).indexOf (rb.getString("assig1")  + " " + title)!=-1)
-									{
-										found = true;
-									}
-								}
-							}
-							catch (PermissionException ignore)
-							{
-								// ignore PermissionException
-							}
-						}
-						
-						if (found)
-						{
-							if (oldDueTime!=null && (!oldDueTime.toStringLocalFull ().equals (dueTime.toStringLocalFull ()))	// due date changed
-									|| !aOldTitle.equals(title)	// title changed
-									|| (!checkAddDueTime.equalsIgnoreCase(Boolean.TRUE.toString ())))	// user choose to not schedule due date
-							{
-								// if the assignment due date or title has been changed, we need to update existing event
-								dueDateEventModified = true;
-							}
-							
-							if (dueDateEventModified && found)
-							{
-								// remove the founded old event
-								try
-								{
-									c.removeEvent (c.editEvent (e.getId ()));
-								}
-								catch (PermissionException ee)
-								{
-									Log.warn("chef", rb.getString("cannotrem") + " "+ title + ". ");
-								}
-								catch (InUseException ee)
-								{
-									Log.warn("chef", INUSE_ERROR_MESSAGE + rb.getString("calen"));
-								}
-							}
-						}
-					}
-					if (checkAddDueTime.equalsIgnoreCase (Boolean.TRUE.toString ()))
-					{
-						if (c != null)
-						{
-							try
-							{
-								e = null;
-								e = c.addEvent (/*TimeRange*/ TimeService.newTimeRange(dueTime.getTime (), /*0 duration*/0*60*1000),
-												/*title*/rb.getString("due") + " "+ title,
-												/*description*/ rb.getString("assig1") + " " + title + " " + "is due on " + dueTime.toStringLocalFull () + ". ",
-												/*type*/rb.getString("deadl"),
-												/*location*/"",
-												/*attachments*/EntityManager.newReferenceList());
-								aPropertiesEdit.addProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED, Boolean.TRUE.toString ());
-								if (e != null)
-								{
-									aPropertiesEdit.addProperty (ResourceProperties.PROP_ASSIGNMENT_DUEDATE_CALENDAR_EVENT_ID, e.getId()); 
-								}
-							}
-							catch (PermissionException ee)
-							{
-								Log.warn("chef", rb.getString("cannotfin1"));
-							}	// try-catch
-						}	// if
-					} //if
-					
-					// the open date been announced
-					if (checkAutoAnnounce.equalsIgnoreCase (Boolean.TRUE.toString ()))
-					{
-						AnnouncementChannel channel = (AnnouncementChannel) state.getAttribute (ANNOUNCEMENT_CHANNEL);
-						if (channel != null)
-						{
-							String openDateAnnounced = a.getProperties ().getProperty (NEW_ASSIGNMENT_OPEN_DATE_ANNOUNCED);
-							
-							// open date has been announced or title has been changed?
-							boolean openDateMessageModified = false;
-							if (openDateAnnounced!=null && openDateAnnounced.equalsIgnoreCase (Boolean.TRUE.toString ()))
-							{
-								if (oldOpenTime!=null && (!oldOpenTime.toStringLocalFull ().equals (openTime.toStringLocalFull ()))	// open time changes
-									|| !aOldTitle.equals(title))	// assignment title changes
-								{
-									// need to change message
-									openDateMessageModified = true;
-								}
-							
-							}
-	
-							// add the open date to annoucement
-							if (openDateAnnounced==null	// no announcement yet
-								|| (openDateAnnounced != null && openDateAnnounced.equalsIgnoreCase (Boolean.TRUE.toString ()) && openDateMessageModified))	// announced, but open date or announcement title changes
-							{
-								// announcement channel is in place
-								try
-								{
-									AnnouncementMessageEdit message = channel.addAnnouncementMessage();
-									AnnouncementMessageHeaderEdit header = message.getAnnouncementHeaderEdit();
-									header.setDraft(/*draft*/false);
-									header.replaceAttachments(/*attachment*/EntityManager.newReferenceList());
-										
-									if (!openDateMessageModified)
-									{
-										header.setSubject(/*subject*/rb.getString("assig6") +" " + title);
-										message.setBody(/*body*/rb.getString("opedat") + " " + FormattedText.convertPlaintextToFormattedText(title)  + " is " + openTime.toStringLocalFull () + ". ");
-									}
-									else
-									{
-										header.setSubject(/*subject*/rb.getString("assig5") + " " + title);
-										message.setBody(/*body*/rb.getString("newope") + " " + FormattedText.convertPlaintextToFormattedText(title)  + " is " + openTime.toStringLocalFull () + ". ");
-									}
-									channel.commitMessage(message, NotificationService.NOTI_NONE);
-									
-									aPropertiesEdit.addProperty (NEW_ASSIGNMENT_OPEN_DATE_ANNOUNCED, Boolean.TRUE.toString ());
-									if (message != null)
-									{
-										aPropertiesEdit.addProperty (ResourceProperties.PROP_ASSIGNMENT_OPENDATE_ANNOUNCEMENT_MESSAGE_ID, message.getId());
-									}
-								}
-								catch (PermissionException ee)
-								{
-									Log.warn("chef", rb.getString("cannotmak"));
-								}
-							}
-						}
-					}	// if
-					
-					// integrate with Gradebook
-					String aReference = a.getReference();
-					String addUpdateRemoveAssignment = "remove";
-					if (Boolean.valueOf(addtoGradebook).booleanValue())
-					{
-						if (newAssignment)
-						{
-							addUpdateRemoveAssignment = "add";
-						}
-						else
-						{
-							addUpdateRemoveAssignment = "update";
-						}
-					}
-					
-					if (!addUpdateRemoveAssignment.equals("remove") && gradeType==3)
-					{
-						try
-						{
-							// no assignment committed yet. Use user input data
-							integrateGradebook(state, aReference, addUpdateRemoveAssignment, title, Integer.parseInt (gradePoints), dueTime, null, null);
-						}
-						catch (NumberFormatException nE)
-						{
-							alertInvalidPoint(state, gradePoints);
-						}
-					}
-					else
-					{
-						integrateGradebook(state, aReference, "remove", null, -1, null, null, null);
-					}
 					
 					if (state.getAttribute(STATE_MESSAGE) == null)
 					{
 						// add to schedule and announcement is successful
 						AssignmentService.commitEdit (a);
+						
+						// add the due date to schedule
+						Calendar c = (Calendar) state.getAttribute (CALENDAR);
+						String dueDateScheduled = a.getProperties ().getProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED);
+						boolean dueDateEventModified = false;
+						CalendarEvent e = null;
+						
+						if (dueDateScheduled!=null && dueDateScheduled.equalsIgnoreCase (Boolean.TRUE.toString ()))
+						{
+							// find the old event
+							boolean found = false;
+							String oldEventId = aPropertiesEdit.getProperty (ResourceProperties.PROP_ASSIGNMENT_DUEDATE_CALENDAR_EVENT_ID);
+							if (oldEventId != null && c != null)
+							{
+								try
+								{					
+									e = c.getEvent(oldEventId);
+									found = true;
+								}
+								catch (IdUnusedException ee)
+								{
+									Log.warn("chef", "The old event has been deleted: event id=" + oldEventId + ". ");
+								}
+								catch (PermissionException ee)
+								{
+									Log.warn("chef", "You do not have the permission to view the schedule event id= " + oldEventId + ".");
+								}
+							}
+							else
+							{
+								TimeBreakdown b = oldDueTime.breakdownLocal ();
+								// TODO: check- this was new Time(year...), not local! -ggolden
+								Time startTime = TimeService.newTimeLocal(b.getYear (), b.getMonth (), b.getDay (), 0, 0, 0, 0);
+								Time endTime = TimeService.newTimeLocal(b.getYear (), b.getMonth (), b.getDay (), 23, 59, 59, 999);
+								try
+								{
+									Iterator events = c.getEvents (TimeService.newTimeRange(startTime, endTime), null).iterator ();
+		
+									while ((!found) && (events.hasNext ()))
+									{
+										e = (CalendarEvent) events.next ();
+										if (((String) e.getDisplayName ()).indexOf (rb.getString("assig1")  + " " + title)!=-1)
+										{
+											found = true;
+										}
+									}
+								}
+								catch (PermissionException ignore)
+								{
+									// ignore PermissionException
+								}
+							}
+							
+							if (found)
+							{
+								if (oldDueTime!=null && (!oldDueTime.toStringLocalFull ().equals (dueTime.toStringLocalFull ()))	// due date changed
+										|| !aOldTitle.equals(title)	// title changed
+										|| (!checkAddDueTime.equalsIgnoreCase(Boolean.TRUE.toString ())))	// user choose to not schedule due date
+								{
+									// if the assignment due date or title has been changed, we need to update existing event
+									dueDateEventModified = true;
+								}
+								
+								if (dueDateEventModified && found)
+								{
+									// remove the founded old event
+									try
+									{
+										c.removeEvent (c.editEvent (e.getId ()));
+									}
+									catch (PermissionException ee)
+									{
+										Log.warn("chef", rb.getString("cannotrem") + " "+ title + ". ");
+									}
+									catch (InUseException ee)
+									{
+										Log.warn("chef", INUSE_ERROR_MESSAGE + rb.getString("calen"));
+									}
+								}
+							}
+						}
+						if (checkAddDueTime.equalsIgnoreCase (Boolean.TRUE.toString ()))
+						{
+							if (c != null)
+							{
+								try
+								{
+									e = null;
+									e = c.addEvent (/*TimeRange*/ TimeService.newTimeRange(dueTime.getTime (), /*0 duration*/0*60*1000),
+													/*title*/rb.getString("due") + " "+ title,
+													/*description*/ rb.getString("assig1") + " " + title + " " + "is due on " + dueTime.toStringLocalFull () + ". ",
+													/*type*/rb.getString("deadl"),
+													/*location*/"",
+													/*attachments*/EntityManager.newReferenceList());
+									aPropertiesEdit.addProperty (NEW_ASSIGNMENT_DUE_DATE_SCHEDULED, Boolean.TRUE.toString ());
+									if (e != null)
+									{
+										aPropertiesEdit.addProperty (ResourceProperties.PROP_ASSIGNMENT_DUEDATE_CALENDAR_EVENT_ID, e.getId()); 
+									}
+								}
+								catch (PermissionException ee)
+								{
+									Log.warn("chef", rb.getString("cannotfin1"));
+								}	// try-catch
+							}	// if
+						} //if
+						
+						// the open date been announced
+						if (checkAutoAnnounce.equalsIgnoreCase (Boolean.TRUE.toString ()))
+						{
+							AnnouncementChannel channel = (AnnouncementChannel) state.getAttribute (ANNOUNCEMENT_CHANNEL);
+							if (channel != null)
+							{
+								String openDateAnnounced = a.getProperties ().getProperty (NEW_ASSIGNMENT_OPEN_DATE_ANNOUNCED);
+								
+								// open date has been announced or title has been changed?
+								boolean openDateMessageModified = false;
+								if (openDateAnnounced!=null && openDateAnnounced.equalsIgnoreCase (Boolean.TRUE.toString ()))
+								{
+									if (oldOpenTime!=null && (!oldOpenTime.toStringLocalFull ().equals (openTime.toStringLocalFull ()))	// open time changes
+										|| !aOldTitle.equals(title))	// assignment title changes
+									{
+										// need to change message
+										openDateMessageModified = true;
+									}
+								
+								}
+		
+								// add the open date to annoucement
+								if (openDateAnnounced==null	// no announcement yet
+									|| (openDateAnnounced != null && openDateAnnounced.equalsIgnoreCase (Boolean.TRUE.toString ()) && openDateMessageModified))	// announced, but open date or announcement title changes
+								{
+									// announcement channel is in place
+									try
+									{
+										AnnouncementMessageEdit message = channel.addAnnouncementMessage();
+										AnnouncementMessageHeaderEdit header = message.getAnnouncementHeaderEdit();
+										header.setDraft(/*draft*/false);
+										header.replaceAttachments(/*attachment*/EntityManager.newReferenceList());
+											
+										if (!openDateMessageModified)
+										{
+											header.setSubject(/*subject*/rb.getString("assig6") +" " + title);
+											message.setBody(/*body*/rb.getString("opedat") + " " + FormattedText.convertPlaintextToFormattedText(title)  + " is " + openTime.toStringLocalFull () + ". ");
+										}
+										else
+										{
+											header.setSubject(/*subject*/rb.getString("assig5") + " " + title);
+											message.setBody(/*body*/rb.getString("newope") + " " + FormattedText.convertPlaintextToFormattedText(title)  + " is " + openTime.toStringLocalFull () + ". ");
+										}
+										channel.commitMessage(message, NotificationService.NOTI_NONE);
+										
+										aPropertiesEdit.addProperty (NEW_ASSIGNMENT_OPEN_DATE_ANNOUNCED, Boolean.TRUE.toString ());
+										if (message != null)
+										{
+											aPropertiesEdit.addProperty (ResourceProperties.PROP_ASSIGNMENT_OPENDATE_ANNOUNCEMENT_MESSAGE_ID, message.getId());
+										}
+									}
+									catch (PermissionException ee)
+									{
+										Log.warn("chef", rb.getString("cannotmak"));
+									}
+								}
+							}
+						}	// if
+						
+						// integrate with Gradebook
+						String aReference = a.getReference();
+						String addUpdateRemoveAssignment = "remove";
+						if (Boolean.valueOf(addtoGradebook).booleanValue())
+						{
+							if (newAssignment)
+							{
+								addUpdateRemoveAssignment = "add";
+							}
+							else
+							{
+								addUpdateRemoveAssignment = "update";
+							}
+						}
+						
+						if (!addUpdateRemoveAssignment.equals("remove") && gradeType==3)
+						{
+							try
+							{
+								// no assignment committed yet. Use user input data
+								integrateGradebook(state, aReference, addUpdateRemoveAssignment, title, Integer.parseInt (gradePoints), dueTime, null, null);
+							}
+							catch (NumberFormatException nE)
+							{
+								alertInvalidPoint(state, gradePoints);
+							}
+						}
+						else
+						{
+							integrateGradebook(state, aReference, "remove", null, -1, null, null, null);
+						}
+						
+						state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
+						
+						state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
+						resetAssignment (state);
 					}
 					else
 					{
@@ -3707,14 +3704,6 @@ extends PagedResourceActionII
 
 			}	// if
 
-		}
-		
-		if (state.getAttribute(STATE_MESSAGE) == null)
-		{		
-			state.setAttribute (STATE_MODE, MODE_LIST_ASSIGNMENTS);
-			
-			state.setAttribute (ATTACHMENTS, EntityManager.newReferenceList());
-			resetAssignment (state);
 		}
 
 	}	//doPost_assignment

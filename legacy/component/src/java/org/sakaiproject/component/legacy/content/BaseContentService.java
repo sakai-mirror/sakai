@@ -3937,7 +3937,7 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// if this entity requires a copyright agreement, and has not yet been set, get one
 		if (resource.requiresCopyrightAgreement() && !copyrightAcceptedRefs.contains(resource.getReference()))
 		{
-			throw new CopyrightException();
+			throw new CopyrightException("", ref.getReference());
 		}
 
 		try

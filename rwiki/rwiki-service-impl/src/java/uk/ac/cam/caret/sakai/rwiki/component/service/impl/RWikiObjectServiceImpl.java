@@ -127,25 +127,31 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	 */
 	public void init() {
 		dlog.debug("init start");
-		// register a transient notification for resources
-		NotificationEdit edit = NotificationService.addTransientNotification();
-
-		// set functions
-		edit.setFunction(RWikiObjectService.EVENT_RESOURCE_ADD);
-		edit.addFunction(RWikiObjectService.EVENT_RESOURCE_WRITE);
-
-		// set the filter to any site related resource
-		edit.setResourceFilter(RWikiObjectService.REFERENCE_ROOT);
-		// %%% is this the best we can do? -ggolden
-
-		// set the action
-		edit.setAction(new SiteEmailNotificationRWiki(this, this.renderService,
-				this.preferenceService));
 
 		EntityManager.registerEntityProducer(this,
 				RWikiObjectService.REFERENCE_ROOT);
-		if ("true".equals(ServerConfigurationService
-				.getString("wiki.experimental"))) {
+		if (ServerConfigurationService.getBoolean("wiki.notification", false)) {
+			// Email notification
+			// register a transient notification for resources
+			NotificationEdit edit = NotificationService
+					.addTransientNotification();
+
+			// set functions
+			edit.setFunction(RWikiObjectService.EVENT_RESOURCE_ADD);
+			edit.addFunction(RWikiObjectService.EVENT_RESOURCE_WRITE);
+
+			// set the filter to any site related resource
+			edit.setResourceFilter(RWikiObjectService.REFERENCE_ROOT);
+			// %%% is this the best we can do? -ggolden
+
+			// set the action
+			edit.setAction(new SiteEmailNotificationRWiki(this,
+					this.renderService, this.preferenceService));
+		}
+		
+		if (ServerConfigurationService
+				.getBoolean("wiki.experimental",false)) {
+
 			searchService = (SearchService) ComponentManager
 					.get(SearchService.class);
 			searchIndexBuilder = (SearchIndexBuilder) ComponentManager

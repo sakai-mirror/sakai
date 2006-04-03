@@ -491,14 +491,15 @@ public class DeliveryBean
   public void setTimeElapse(String timeElapse)
   {
     try{
-      float limit = (new Float(getTimeLimit())).floatValue();
-      float elapsed = (new Float(timeElapse)).floatValue();
-      if (limit > elapsed)
-        this.timeElapse = timeElapse;
-      else
-        this.timeElapse = getTimeLimit();
-      if (timeElapse!=null && !("").equals(timeElapse))
+      if (timeElapse!=null && !("").equals(timeElapse)){
+        float limit = (new Float(getTimeLimit())).floatValue();
+        float elapsed = (new Float(timeElapse)).floatValue();
+        if (limit > elapsed)
+          this.timeElapse = timeElapse;
+        else
+          this.timeElapse = getTimeLimit();
         setTimeElapseFloat((new Float(timeElapse)).floatValue());
+      }
     }
     catch (Exception e){
       log.warn("setTimeElapse error:"+e.getMessage());
@@ -923,7 +924,6 @@ public class DeliveryBean
     try {
       TimeUtil tu = new TimeUtil();
       dateString = tu.getDisplayDateTime(displayFormat, dueDate);
-System.out.println("after tu.getDisplayDateTime due date dateString = " + dateString);
     }
     catch (Exception ex) {
       // we will leave it as an empty string
@@ -1044,14 +1044,12 @@ System.out.println("after tu.getDisplayDateTime due date dateString = " + dateSt
   {
     String dateString = "";
     if (submissionDate== null) {
-System.out.println("timezone test submissiondate = " + submissionDate);
       return dateString;
     }
 
     try {
       TimeUtil tu = new TimeUtil();
       dateString = tu.getDisplayDateTime(displayFormat, submissionDate);
-System.out.println("after tu.getDisplayDateTime dateString = " + dateString);
     }
     catch (Exception ex) {
       // we will leave it as an empty string
@@ -1572,8 +1570,6 @@ System.out.println("after tu.getDisplayDateTime dateString = " + dateString);
       mediaByte = new byte[size];
       mediaStream2.read(mediaByte, 0, size);
 
-      FileOutputStream out = new FileOutputStream("/tmp/test.txt");
-      out.write(mediaByte);
     }
     catch (FileNotFoundException ex)
     {
@@ -1866,7 +1862,6 @@ System.out.println("after tu.getDisplayDateTime dateString = " + dateString);
     try {
       TimeUtil tu = new TimeUtil();
       dateString = tu.getDisplayDateTime(displayFormat, feedbackDate);
-System.out.println("after tu.getDisplayDateTime feedbackdateString = " + dateString);
     }
     catch (Exception ex) {
       // we will leave it as an empty string
@@ -2286,6 +2281,15 @@ System.out.println("after tu.getDisplayDateTime feedbackdateString = " + dateStr
   }
   public void setProtocol(String protocol){
     this.protocol = protocol;
+  }
+
+  private long timeStamp;
+  public long getTimeStamp(){
+    return timeStamp;
+  }
+
+  public void setTimeStamp(long timeStamp){
+    this.timeStamp=timeStamp;
   }
 
 }

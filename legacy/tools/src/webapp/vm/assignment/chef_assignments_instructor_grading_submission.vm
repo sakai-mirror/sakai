@@ -4,8 +4,8 @@
 	<div class="navIntraTool">
 		#if ($allowAddAssignment)
 			<a href="#toolLink("$action" "doNew_assignment")" title="$!tlang.getString("new")">$!tlang.getString("new")</a> |
-			<a href="#" title = "$!tlang.getString('gen.liofass')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.liofass')';document.gradeForm.submit();return false;">$!tlang.getString("gen.liofass")</a>
 		#end
+		<a href="#" title = "$!tlang.getString('gen.liofass')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.liofass')';document.gradeForm.submit();return false;">$!tlang.getString("gen.liofass")</a>
 		#if ($withGrade && $!allowGradeSubmission)
 			| <a href="#" title="$!tlang.getString('gen.grarep')" onclick="javascript:document.gradeForm.onsubmit();document.getElementById('option').value='view';document.getElementById('view').value='$!tlang.getString('gen.grarep')';document.gradeForm.submit();return false;">$!tlang.getString("gen.grarep")</a>
 		#end

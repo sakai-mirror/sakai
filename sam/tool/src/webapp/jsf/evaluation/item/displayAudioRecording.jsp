@@ -1,5 +1,6 @@
 <%-- $Id$
-include file for displaying audio questions
+include file for displaying file upload questions
+should be included in file importing DeliveryMessages
 --%>
 <!--
 <%--
@@ -25,8 +26,27 @@ include file for displaying audio questions
 --%>
 -->
 
-<h:outputText value="#{question.description}" escape="false"/>
-<f:verbatim><br /></f:verbatim>
 <h:outputText value="#{question.text}"  escape="false"/>
-  <h:graphicImage alt="#{msg.alt_recording}" id="image1"
-    url="/images/recordresponse.gif" />
+<f:verbatim><br /></f:verbatim>
+
+  <h:dataTable value="#{question.mediaArray}" var="media">
+    <h:column>
+<%--
+      <h:outputText escape="false" value="
+         <div><embed src=\"/samigo/servlet/ShowMedia?mediaId=#{media.mediaId}\" 
+                volume=\"50\" height=\"25\" width=\"250\" autostart=\"false\"/></div>
+         " />
+--%>
+      <h:outputLink value="/samigo/servlet/ShowMedia?mediaId=#{media.mediaId}" target="new_window">
+             <h:outputText escape="false" value="play audio" />
+      </h:outputLink>
+    </h:column>
+    <h:column>
+      <h:outputText value="#{msg.open_bracket}"/>
+      <h:outputText value="#{media.createdDate}">
+           <f:convertDateTime pattern="#{msg.grading_date_no_time_format}" />
+      </h:outputText>
+      <h:outputText value="#{msg.close_bracket}"/>
+    </h:column>
+  </h:dataTable>
+

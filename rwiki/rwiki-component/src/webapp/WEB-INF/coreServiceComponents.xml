@@ -71,7 +71,9 @@
       <map>
         <entry key=""><ref bean="rwikiRAWHandler" /></entry>
         <entry key="html"><ref bean="rwikiHTMLHandler" /></entry>
+<!--
         <entry key="odf"><ref bean="rwikiODFHandler" /></entry>
+-->
         <entry key="10.rss"><ref bean="rwiki10RSSHandler" /></entry>
         <entry key="09.rss"><ref bean="rwiki09RSSHandler" /></entry>
         <entry key="20.rss"><ref bean="rwiki20RSSHandler" /></entry>
@@ -150,7 +152,7 @@
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
-    <property name="feedFormat"><value>&lt;a href="{0}html" target="_blank"&gt;&lt;img src="/library/image/sakai/html.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="feedFormat"><value>&lt;a href="{0}html" target="feeds"&gt;&lt;img src="/library/image/sakai/html.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
       <map>
         <entry key="content-type"><value>text/html</value></entry>
@@ -187,7 +189,7 @@
     <property name="standardLinkFormat" ><value>/access/wiki{0}.html</value></property>
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
-    <property name="feedFormat"><value>&lt;a href="{0}odf" &gt;&lt;img src="/library/image/sakai/word.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="feedFormat"><value>&lt;a href="{0}odf" target="feeds"&gt;&lt;img src="/library/image/sakai/word.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     
   </bean>
   <bean id="rwiki10RSSHandler"
@@ -205,7 +207,7 @@
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
     <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
-    <property name="feedFormat"><value>&lt;a href="{0}10.rss" &gt;&lt;img src="/sakai-rwiki/images/rss10.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="feedFormat"><value>&lt;a href="{0}10.rss" target="feeds"&gt;&lt;img src="/sakai-rwiki/images/rss10.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
       <map>
         <entry key="content-type"><value>text/xml</value></entry>
@@ -241,7 +243,7 @@
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
     <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
-    <property name="feedFormat"><value>&lt;a href="{0}09.rss" &gt;&lt;img src="/sakai-rwiki/images/rss091.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="feedFormat"><value>&lt;a href="{0}09.rss" target="feeds"&gt;&lt;img src="/sakai-rwiki/images/rss091.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
       <map>
         <entry key="content-type"><value>text/xml</value></entry>
@@ -277,7 +279,7 @@
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
     <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
-    <property name="feedFormat"><value>&lt;a href="{0}20.rss" &gt;&lt;img src="/sakai-rwiki/images/rss20.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="feedFormat"><value>&lt;a href="{0}20.rss" target="feeds"&gt;&lt;img src="/sakai-rwiki/images/rss20.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
       <map>
         <entry key="content-type"><value>text/xml</value></entry>
@@ -313,7 +315,7 @@
     <property name="hrefTagFormat" ><value>&lt;a href="{0}" &gt;{1}&lt;/a&gt;</value></property>
     <property name="accessURLStart" ><value>/wiki/</value></property>
     <property name="rwikObjectService"><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService" /></property>
-    <property name="feedFormat"><value>&lt;a href="{0}atom" &gt;&lt;img src="/sakai-rwiki/images/atom03.gif" border="0" /&gt;&lt;/a&gt;</value></property>
+    <property name="feedFormat"><value>&lt;a href="{0}atom" target="feeds"&gt;&lt;img src="/sakai-rwiki/images/atom03.gif" border="0" /&gt;&lt;/a&gt;</value></property>
     <property name="responseHeaders">
       <map>
         <entry key="content-type"><value>text/xml</value></entry>

@@ -5018,8 +5018,8 @@ public class ResourcesAction
 						{
 							// paste the cutted resource to the new collection - no notification
 							ContentResource newResource = ContentHostingService.addResource (id, resource.getContentType (), resource.getContent (), resourceProperties, NotificationService.NOTI_NONE);
-                     String uuid = ContentHostingService.getUuid(resource.getId());
-                     ContentHostingService.setUuid(id, uuid);
+							String uuid = ContentHostingService.getUuid(resource.getId());
+							ContentHostingService.setUuid(id, uuid);
 						}
 						catch (InconsistentException e)
 						{
@@ -6429,7 +6429,7 @@ public class ResourcesAction
 			}
 		}
 
-		int noti = NotificationService.NOTI_OPTIONAL;
+		int noti = NotificationService.NOTI_NONE;
 		// %%STATE_MODE_RESOURCES%%
 		if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
@@ -6444,9 +6444,9 @@ public class ResourcesAction
 			{
 				noti = NotificationService.NOTI_REQUIRED;
 			}
-			else if ("n".equals(notification))
+			else if ("o".equals(notification))
 			{
-				noti = NotificationService.NOTI_NONE;
+				noti = NotificationService.NOTI_OPTIONAL;
 			}
 		}
 		item.setNotification(noti);
@@ -6818,7 +6818,7 @@ public class ResourcesAction
 			}
 		}
 
-		int noti = NotificationService.NOTI_OPTIONAL;
+		int noti = NotificationService.NOTI_NONE;
 		// %%STATE_MODE_RESOURCES%%
 		if (RESOURCES_MODE_DROPBOX.equalsIgnoreCase((String) state.getAttribute(STATE_MODE_RESOURCES)))
 		{
@@ -6833,9 +6833,9 @@ public class ResourcesAction
 			{
 				noti = NotificationService.NOTI_REQUIRED;
 			}
-			else if ("n".equals(notification))
+			else if ("o".equals(notification))
 			{
-				noti = NotificationService.NOTI_NONE;
+				noti = NotificationService.NOTI_OPTIONAL;
 			}
 		}
 		item.setNotification(noti);

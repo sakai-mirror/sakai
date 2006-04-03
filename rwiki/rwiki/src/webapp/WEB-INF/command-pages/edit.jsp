@@ -151,6 +151,9 @@
 	    </div>
 	    <div class="rwiki_editControl" id="editControl">
 		<p class="act">
+		  <c:if test="${requestScope.rsacMap.withnotification}" >
+		  	<input type="checkbox" name="smallchange" value="smallchange" /> Minor Change <br />
+		  </c:if>
 		  <input type="submit" name="save" value="Save" /><c:out value=" "/>
 		  <c:if test="${((editBean.saveType eq 'preview' or fn:startsWith(editBean.saveType, 'attach')) and nameHelperBean.submittedContent != null) or (editBean.saveType ne null and editBean.saveType ne 'preview' and not(fn:startsWith(editBean.saveType, 'attach')))}">
 		    <input type="submit" name="save" value="Overwrite"/><c:out value=" "/>

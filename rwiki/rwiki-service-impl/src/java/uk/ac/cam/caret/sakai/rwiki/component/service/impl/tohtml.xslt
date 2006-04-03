@@ -16,6 +16,7 @@
                 <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"/>
             </head>
             <body>
+              <div class="publicview" >
                 <div id="rwiki_container">
                     <div class="portletBody">
                         <div id="rwiki_content_nosidebar">
@@ -27,6 +28,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
             </body>
         </html>

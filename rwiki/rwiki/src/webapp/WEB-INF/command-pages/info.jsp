@@ -176,6 +176,15 @@ Each page has an owner; this is normally the user who create the page.
 Each page has a SHA1 digest. If the digests of 2 pages are the same, the content of
 both pages are identical. Any change in the page, will change the digest on the page.    		
     	</div>
+        	<div id="preferenceshelp" style=" position: absolute; top: -1000px; left: -1000px; visibility: hidden; " 
+    		class="rwiki_help_popup" >
+    		<h3>Notification Preferences</h3>
+    		When a page is changed you will recieve an email notifying you of the change. If you want to 
+    		change the volume or nature of the emails you are recieving, you can do this with Notification
+    		Preferences. The preferences are controlled on a Site by Site basis so you can elect to be notified
+    		of changes to some sited, whilst watching a digest in annother site and ignoring all notifications
+    		in annother site.
+    	</div>
       <div id="rwiki_container">
 	<div class="portletBody">
 	  <div class="navIntraTool">
@@ -219,6 +228,8 @@ both pages are identical. Any change in the page, will change the digest on the 
 	      </p>
 	    </c:if>
 	    <form action="?#" method="post">
+	    	  <input type="hidden" name="smallchange" value="smallchange" />
+	    
 	      <div class="rwikirenderedContent">
 		<script type="text/javascript" >
 		  <![CDATA[
@@ -667,10 +678,10 @@ both pages are identical. Any change in the page, will change the digest on the 
 			</c:if>
 		      </td>
 		    </tr>
-		    <!-- EXPERIMENTAL -->
-			<c:if test="${requestScope.rsacMap.experimental}" >
+		    <!-- NOTIFICATION SUPPORT, wiki.notifications to enable -->
+			<c:if test="${requestScope.rsacMap.withnotification}" >
 		    <tr>
-		      <th>(Experimental) Notification Preferences<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'preferenceshelp'); return false;"
+		      <th>Notification Preferences<a href="#" class="rwiki_help_popup_link" onClick="showPopupHere(this,'preferenceshelp'); return false;"
 		    		onMouseOut="hidePopup('preferenceshelp');" >?</a></th>
 		      <td colspan="7">
 			<a href="${realmBean.preferencesUrl}">Edit Notification Preferences for <c:out value="${realmBean.pageSpace}"/></a>

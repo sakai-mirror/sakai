@@ -135,7 +135,7 @@ $Id$
   <h:column>
   <h:panelGroup rendered="#{questionScores.typeId == '7'}">
     <f:subview id="displayAudioRecording">
-      <%@ include file="/jsf/evaluation/item/displayAudioRecording.jsp" %>
+      <%@ include file="/jsf/evaluation/item/displayAudioRecordingQuestion.jsp" %>
     </f:subview>
   </h:panelGroup>
   <h:panelGroup rendered="#{questionScores.typeId == '6'}">
@@ -456,10 +456,14 @@ END OF TEMPORARY OUT FOR THIS RELEASE --%>
         </h:panelGroup>
       </f:facet>
       <!-- display of answer to file upload question is diffenent from other types - daisyf -->
-      <h:outputText value="#{description.answer}" escape="false" rendered="#{questionScores.typeId != '6'}" />
+      <h:outputText value="#{description.answer}" escape="false" rendered="#{questionScores.typeId != '6' and questionScores.typeId != '7'}" />
      <f:verbatim><br/></f:verbatim>
    <!--h:outputLink rendered="#{questionScores.typeId == '5'}" value="#" onclick="javascript:window.alert('#{description.fullAnswer}');"-->
-<h:outputLink rendered="#{questionScores.typeId == '5'}" value="#" onclick="javascript:window.open('fullShortAnswer.faces?answerText=#{description.fullAnswer}','fullShortAnswer','width=600,height=600,scrollbars=yes, resizable=yes');">
+
+
+<h:outputLink rendered="#{questionScores.typeId == '5'}" value="#" onclick="javascript:window.open('fullShortAnswer.faces?idString=#{description.assessmentGradingId}','fullShortAnswer','width=600,height=600,scrollbars=yes, resizable=yes');">
+
+
     <h:outputText  value="(#{msg.click_shortAnswer})" />
     </h:outputLink>
     <h:outputLink 
@@ -471,6 +475,12 @@ END OF TEMPORARY OUT FOR THIS RELEASE --%>
       <h:panelGroup rendered="#{questionScores.typeId == '6'}">
         <f:subview id="displayFileUpload2">
           <%@ include file="/jsf/evaluation/item/displayFileUploadAnswer.jsp" %>
+        </f:subview>
+      </h:panelGroup>
+
+      <h:panelGroup rendered="#{questionScores.typeId == '7'}">
+        <f:subview id="displayAudioRecording2">
+          <%@ include file="/jsf/evaluation/item/displayAudioRecordingAnswer.jsp" %>
         </f:subview>
       </h:panelGroup>
     </h:column>

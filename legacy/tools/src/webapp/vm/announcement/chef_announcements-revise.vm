@@ -71,11 +71,18 @@
 				</p>	
 			#end
 			*#
+		#if ($!groups || ($!groups.size()>1)) #set ($show_group = "true") #else #set ($show_group = "false") #end
+		#if ($!publicDisable && ($show_group =="false"))
+			## no show this selection, but set default to site
+			<input type="hidden" name="announceTo" id="site" value="site" checked="checked" />
+		#else
 			#if ($allowAddChannelMessage)
+				#if (!$!publicDisable)
 				<p class="checkbox">
 					<input type="radio" name="announceTo" id="pubview" value="pubview" #if($!announceTo == "pubview" || $!pubview)checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'none';" onkeypress="document.getElementById('groupTable').style.display = 'none';" />
 					<label for="pubview">$tlang.getString("displayto.public")</label>
 				</p>
+				#end
 				<p class="checkbox">
 					<input type="radio" name="announceTo" id="site" value="site" #if(!$!pubview && ($!announceTo == "site" || $!message.AnnouncementHeader.Access == $channelAccess))checked="checked"#end onclick="document.getElementById('groupTable').style.display = 'none';" onkeypress="document.getElementById('groupTable').style.display = 'none';"/>
 					<label for="site">$tlang.getString("displayto.site")</label>
@@ -153,6 +160,7 @@
 						#end
 					</table>
 			#end
+		#end
 			<p class="shorttext">
 				<h4>
    				$tlang.getString("revise.attachments")

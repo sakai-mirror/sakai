@@ -24,6 +24,9 @@ package uk.ac.cam.caret.sakai.rwiki.tool.bean.helper;
 
 import javax.servlet.ServletRequest;
 
+import org.sakaiproject.service.framework.current.cover.CurrentService;
+
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.EditBean;
 import uk.ac.cam.caret.sakai.rwiki.tool.bean.SearchBean;
@@ -39,7 +42,11 @@ import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 public class ViewParamsHelperBean {
 
-    /**
+    private static final String SMALL_CHANGE_PARAM = "smallchange";
+
+	private static final Object SMALL_CHANGE = "smallchange";
+
+	/**
      * the requested global page name
      */
     private String globalName;
@@ -127,11 +134,18 @@ public class ViewParamsHelperBean {
         
         saveType = request.getParameter(EditBean.SAVE_PARAM);
         
+        String smallChange = request.getParameter(SMALL_CHANGE_PARAM);
+        if ( smallChange != null && smallChange.equals(SMALL_CHANGE) ) {
+        		CurrentService.setInThread(RWikiObjectService.SMALL_CHANGE_IN_THREAD,RWikiObjectService.SMALL_CHANGE_IN_THREAD);
+        }
+
         if (saveType != null) {
             saveType = saveType.toLowerCase();
         }
         
         withBreadcrumbs = request.getParameter(ViewBean.PARAM_BREADCRUMB_NAME);
+        
+        
     }
 
     /**
@@ -342,6 +356,7 @@ public class ViewParamsHelperBean {
 	public void setSearchPage(String searchPage) {
 		this.searchPage = searchPage;
 	}
+
 
     
 }

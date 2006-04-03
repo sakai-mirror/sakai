@@ -349,7 +349,7 @@ public class AccessServlet extends VmServlet
 			{
 				// TODO: send back using a form of the request URL, encoding the real reference, and the requested reference
 				// Note: refs / requests with servlet parameters (?x=y...) are NOT supported -ggolden
-				String redirPath = COPYRIGHT_REQUIRE + "?" + COPYRIGHT_ACCEPT_REF + "=" + ref.getEntity().getReference()
+				String redirPath = COPYRIGHT_REQUIRE + "?" + COPYRIGHT_ACCEPT_REF + "=" + e.getReference()
 								+ "&" + COPYRIGHT_ACCEPT_URL + "=" + req.getPathInfo();
 				res.sendRedirect(Web.returnUrl(req, redirPath));
 			}

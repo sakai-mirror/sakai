@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL: https://source.sakaiproject.org/svn/trunk/sakai/util/java/src/java/org/sakaiproject/util/java/StringUtil.java $
- * $Id: StringUtil.java 2076 2005-09-27 01:22:00Z ggolden@umich.edu $
+ * $URL:  $
+ * $Id:  $
  **********************************************************************************
  *
  * Copyright (c) 2003, 2004, 2005 The Regents of the University of Michigan, Trustees of Indiana University,
@@ -334,4 +334,5 @@ abstract class DummyMap implements Map
     {
         throw new UnsupportedOperationException();
     }
+    
 }

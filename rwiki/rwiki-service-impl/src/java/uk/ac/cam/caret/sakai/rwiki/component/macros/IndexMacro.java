@@ -26,7 +26,9 @@ public class IndexMacro extends BaseMacro {
 
     private static final String description = "";
 
-    private static final String[] paramDescription = { "1: The space which to index, defaults to the space of the current page." };
+    private static final String[] paramDescription = { 
+    		"1:space, The space which to index, defaults to the space of the current page.",
+    		"2:nohead, if nohead, the header line will not be produced" };
 
     public String getDescription() {
         return description;
@@ -62,10 +64,11 @@ public class IndexMacro extends BaseMacro {
         
         plr.setCachable(false);
         
-        String space = params.get(0);
-        if (space == null || "".equals(space)) {
+        String space = params.get("space",0);
+        if (space == null || "".equals(space.trim())) {
             space = spRe.getSpace();
         }
+        boolean nohead = "nohead".equals(params.get("nohead",1));
 
         RWikiObjectService objectService = context.getObjectService();
 
@@ -75,9 +78,11 @@ public class IndexMacro extends BaseMacro {
         Iterator it = subpages.iterator();
 
         writer.write("<div class=\"index-list\">\n");
-        writer.write("  <p>Index of ");
-        writer.write(space);
-        writer.write("</p>\n");
+        if ( !nohead ) {
+        		writer.write("  <p>Index of ");
+        		writer.write(space);
+             writer.write("</p>\n");
+        }
         {
             
             String currentSpace = space;

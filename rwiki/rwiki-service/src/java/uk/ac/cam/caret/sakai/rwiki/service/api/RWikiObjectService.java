@@ -64,6 +64,8 @@ public interface RWikiObjectService extends EntityProducer {
 	/** Name of the event when removing a resource. */
 	public static final String EVENT_RESOURCE_REMOVE = "wiki.delete";
 
+	public static final String SMALL_CHANGE_IN_THREAD = "wiki.smallchange.request";
+
 	
 	/**
 	 * Gets the current object

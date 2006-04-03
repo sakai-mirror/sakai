@@ -60,7 +60,7 @@ public class MessageServiceImpl implements MessageService {
             pp = pagePresenceDao.createPagePresence(page, space, session,user);
             pagePresenceDao.update(pp);
         }
-        log.info("Page Presence "+space+":"+page+":"+user+":"+session);
+        log.debug("Page Presence "+space+":"+page+":"+user+":"+session);
 
     }
 
