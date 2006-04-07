@@ -15,3 +15,5 @@ email			https://source.sakaiproject.org/svn/email/trunk
 alias			https://source.sakaiproject.org/svn/alias/trunk
 content			https://source.sakaiproject.org/svn/content/trunk
 metaobj			https://source.sakaiproject.org/svn/metaobj/trunk
+calendar		https://source.sakaiproject.org/svn/calendar/trunk
+portal			https://source.sakaiproject.org/svn/portal/trunk
