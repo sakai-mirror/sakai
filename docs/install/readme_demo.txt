@@ -49,7 +49,7 @@ Finally, you need to set a variable to tune your Java environment.  The default 
 
 JAVA_OPTS="-server -Xmx512m -Xms512m -XX:PermSize=128m -XX:MaxPermSize=128m"
 
-See the "JVM Tuning" section of the online installation guide (http://cvs.sakaiproject.org/release/2.1.1/postconfig.html#jvm) for a fuller discussion of the details and ways to improve performance.
+See the "JVM Tuning" section of the online installation guide (http://cvs.sakaiproject.org/release/2.1.2/postconfig.html#jvm) for a fuller discussion of the details and ways to improve performance.
 
 You should test that these variables are set correctly.  In both Windows XP and *nix operating systems you can simply start a new shell and type the 'set' command to see your environment variables. You may run the java -version command once more (see above) as a final check.
 
@@ -59,9 +59,9 @@ You can also look for the Sun Java Installation Instructions page at the Java we
 3. DOWNLOAD AND UNPACK THE DEMO ARCHIVE
 
 * Windows version: 
-http://cvs.sakaiproject.org/release/2.1.1/sakai_2-1-1/sakai-demo_2-1-1.zip
+http://cvs.sakaiproject.org/release/2.1.2/sakai_2-1-2/sakai-demo_2-1-2.zip
 * Mac/*nix version:
-http://cvs.sakaiproject.org/release/2.1.1/sakai_2-1-1/sakai-demo_2-1-1.tar.gz
+http://cvs.sakaiproject.org/release/2.1.2/sakai_2-1-2/sakai-demo_2-1-2.tar.gz
 
 
 4. START TOMCAT (from the root Tomcat directory):

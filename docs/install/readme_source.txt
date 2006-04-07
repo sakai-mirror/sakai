@@ -50,15 +50,7 @@ The Demo and Binary installs described above offer much-abbreviated processes, b
    
 * Migrating from a previous release:
 
-There are database schema changes between 2.1.0 and 2.1.1, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the docs/updating folder of the release or on subversion:
-
-MySQL: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql
-Oracle: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql
-
-In the same directory you'll also find conversion scripts for earlier Sakai versions. Migration from an earlier version will require the successive application of all intermediate update scripts. You cannot, for example, move from 2.0.1 to 2.1.1 by applying a single DB script. You will need to move first from 2.0.1 to 2.1.0, and then to 2.1.1.
-
-	* Examine Before Using
-As a general rule, be sure to read through these conversion scripts before applying them. The 2.0-2.1 script, in particular, includes notes about roles that may spare you a potential headache if you've been running 2.0 in production.
+2.1.2 includes changes to CSS (which may affect some skins), some APIs, and the database schema.  Be sure to examine the release notes (release_2.1.2.txt) carefully for the details.
 
 
 2. SET UP BUILD ENVIRONMENT
@@ -94,13 +86,9 @@ And then set them as described below:
 
 Windows: 	Set the environment variable JAVA_HOME to "C:\j2sdk1.4.2_04" (do not include the quotes)
 
-Mac: 	
+Mac: 	export JAVA_HOME=/Library/Java/Home
 
-export JAVA_HOME=/Library/Java/Home
-
-Linux: 	
-
-export JAVA_HOME=/usr/local/java-current
+Linux: 	export JAVA_HOME=/usr/local/java-current
 
 Next you'll want to extend the PATH variable so as to include the Java commands.
 
@@ -180,7 +168,7 @@ Mac/*nix: install_repo.sh $HOME/.maven/repository
 
 Finally, you'll need to create a build properties file in your home directory which will configure Maven for your Sakai build. Simply create a new text file with the filename build.properties in your home directory, and paste in the following contents:
 
-maven.repo.remote=http://cvs.sakaiproject.org/maven/,http://www.ibiblio.org/maven/,https://source.sakaiproject.org/mirrors/ibiblio/maven/,http://horde.planetmirror.com/pub/maven/
+maven.repo.remote=http://cvs.sakaiproject.org/maven/,http://source.sakaiproject.org/mirrors/ibiblio/maven/
 maven.tomcat.home=/usr/local/tomcat/
 
 **build.properties syntax**
@@ -204,6 +192,13 @@ At this point your environment is prepared to build and deploy the Sakai source 
 
 3. BUILD AND DEPLOY SAKAI
 
+** Where to Find More Information **
+
+The steps below are limited to what you need to get started, but you may feel the need for more in-depth explanations of certain topics.
+
+How Sakai Uses Maven: to find the most detailed documentation on how Sakai uses Maven, look for sakai_maven.doc in docs/architecture of the source archive. This includes directions for installing the Sakai plugin into your maven environment, so that you can run maven commands from the modules and projects within Sakai, instead of always building the entire code base. A direct link to the documentation file in subversion is below:
+https://source.sakaiproject.org/svn/tags/sakai_2-1-2/docs/architecture/sakai_maven.doc
+
 
 3.1 Download Source
 
@@ -212,9 +207,9 @@ Download the Sakai Source archive from: http://www.sakaiproject.org/release
 **Getting the Code from Subversion**
 Alternatively, you may check out the source code from subversion with the command:
 
-svn co https://source/sakaiproject.org/svn/tags/sakai_2-1-1
+svn co https://source/sakaiproject.org/svn/tags/sakai_2-1-2
 
-In which case you could skip the unpacking step below, and your root directory would be sakai_2-1-1 instead of sakai-src.
+In which case you could skip the unpacking step below, and your root directory would be sakai_2-1-2 instead of sakai-src.
 
 
 3.2 Unpack Source
@@ -229,6 +224,15 @@ From within sakai-src, run the command:
 maven sakai
 
 This will run for quite some time with fairly verbose output, particularly if it's your first build. Do not be alarmed by reports of sakai jar download failures during an initial clean phase: most of the sakai jars will be compiled during the build phase, yet maven will still try to look for them ahead of time. A full clean, build, and deploy cycle may take quite some time, depending on the responsiveness of remote repositories, but a normal maven build of all the Sakai source should take roughly 15-20 minutes. Maven will download any dependencies into the local repository, compile the Sakai code, and deploy Sakai to Tomcat in the form of .war files in the $CATALINA_HOME/webapps directory.
+
+**.jar Download Failures **
+
+A first build of Maven on a fresh installation will warn of numerous jar download failures for sakai jars during the clean phase. This is not generally a problem. Even when doing a mere "clean", maven tries to download dependencies. Typically these jars are named according to the build release e.g. for Sakai 2.1 you will see:
+
+WARNING: Failed to download sakai-authentication-sakai_2-1.jar
+
+Once these jars are built the errors will not reappear for subsequent builds.
+
 
 If Maven completes with the message BUILD SUCCESSFUL, you should be able to move on to the next step. If you are greeted with the report BUILD FAILED read the accompanying error message carefully to troubleshoot (see the Troubleshooting section).
 
@@ -270,6 +274,11 @@ The second type of sakai.properties setting overrides the configuration defaults
 name@component-name=value
 
 New value settings can be freely added to the sakai.properties file, since any component property can in principle be overridden here, and so any sample sakai.properties will show only a small fraction of all the possible settings.
+
+**Where to Find More Information**
+
+sakai.properties documentation: to find the most detailed documentation on the full variety of possible sakai.properties settings, look for sakai_properties.doc in docs/architecture of the source archive. A direct link to the documentation file in the 2-1-2 tag of subversion is below:
+https://source.sakaiproject.org/svn/tags/sakai_2-1-2/docs/architecture/sakai_properties.doc
 
 
 4.3 Personalizing Sakai
@@ -388,14 +397,14 @@ Mac/*nix: bin/catalina.sh stop
 
 5.1 Migrating from a Previous Version (redux)
 
-There are database schema changes between 2.1.0 and 2.1.1, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the docs/updating folder of the release or on subversion:
+There are database schema changes between 2.1.1 and 2.1.2, and the update scripts to be applied - in distinct versions for mysql and Oracle, respectively - are found in the docs/updating folder of the release or on subversion:
 
-MySQL: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql
-Oracle: https://source.sakaiproject.org/svn/tags/sakai_2-1-1/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql
+MySQL: https://source.sakaiproject.org/svn/tags/sakai_2-1-2/docs/updating/sakai_2_1_0-2_1_1_mysql_conversion.sql
+Oracle: https://source.sakaiproject.org/svn/tags/sakai_2-1-2/docs/updating/sakai_2_1_0-2_1_1_oracle_conversion.sql
 
 In the same directory you'll also find conversion scripts for earlier Sakai versions. Migration from an earlier version will require the successive application of all intermediate update scripts. You cannot, for example, move from 2.0.1 to 2.1.1 by applying a single DB script. You will need to move first from 2.0.1 to 2.1.0, and then to 2.1.1.
 
-* Examine Before Using
+** Examine Before Using **
 As a general rule, be sure to read through these conversion scripts before applying them. The 2.0-2.1 script, in particular, includes notes about roles that may spare you a potential headache if you've been running 2.0 in production.
 
 
