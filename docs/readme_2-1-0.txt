@@ -33,8 +33,8 @@ A demo installatation is fairly brief and straightforward. The steps are as foll
    2. Download and unpack the Demo Archive (see http://cvs.sakaiproject.org/release/2.1.0 for a link to the download)
    3. Start Tomcat with the following commands from the root Tomcat directory:
    
-      Windows: 	bin\catalina.bat start
-      Mac/*nix: 	bin/catalina.sh start
+      Windows: start-sakai.bat
+      Mac/*nix: start-sakai.sh
       
       Once Tomcat is started up, you can point your browser to
 
@@ -44,8 +44,8 @@ A demo installatation is fairly brief and straightforward. The steps are as foll
 
       To stop the demo:
 
-      Windows: 	bin\catalina.bat stop
-      Mac/*nix: 	bin/catalina.sh stop
+      Windows: stop-sakai.bat
+      Mac/*nix: stop-sakai.sh
 
 **Demo Data Storage: The data for a Demo installation is stored in a HypersonicSql database (HSQLDB) which is stored in memory and then written out to files when Tomcat is shut down. These files are located at:
 
