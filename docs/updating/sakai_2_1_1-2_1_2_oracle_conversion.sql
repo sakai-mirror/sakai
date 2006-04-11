@@ -11,10 +11,10 @@
 alter table rwikipreference add column prefcontext varchar(255), add column preftype varchar(64);
 
 -- SAM
-alter table SAM_PUBLISHEDASSESSMENT_T modify column ASSESSMENTID integer;
-alter table SAM_ITEMGRADING_T modify column PUBLISHEDITEMID integer not null;
-alter table SAM_ITEMGRADING_T modify column PUBLISHEDITEMTEXTID integer not null;
-alter table SAM_ITEMGRADING_T modify column PUBLISHEDANSWERID integer;
+alter table SAM_PUBLISHEDASSESSMENT_T modify ASSESSMENTID integer;
+alter table SAM_ITEMGRADING_T modify PUBLISHEDITEMID integer not null;
+alter table SAM_ITEMGRADING_T modify PUBLISHEDITEMTEXTID integer not null;
+alter table SAM_ITEMGRADING_T modify PUBLISHEDANSWERID integer;
 alter table SAM_ASSESSMENTGRADING_T modify (SUBMITTEDDATE date null);
 
 -- Grading.hbm.xml
