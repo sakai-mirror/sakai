@@ -66,8 +66,8 @@ http://cvs.sakaiproject.org/release/2.1.2/sakai_2-1-2/sakai-demo_2-1-2.tar.gz
 
 4. START TOMCAT (from the root Tomcat directory):
 
-Windows: 	bin\catalina.bat start
-Mac/*nix: 	bin/catalina.sh start
+Windows: 	start-sakai.bat
+Mac/*nix: 	start-sakai.sh
 
 Once Tomcat is started up, you can point your browser to
 
@@ -76,8 +76,8 @@ http://localhost:8080/portal
 This will bring you to the Sakai gateway site where you can log in using the default administrator's account (user id "admin" and password "admin"). New user accounts can be created from the admin "User" tool, or by using the "New Account" link on the Sakai gateway site. New sites can be created using the admin "Worksite Setup" tool.
 
 To stop the demo:
-Windows: 	bin\catalina.bat stop
-Mac/*nix :	bin/catalina.sh stop
+Windows: 	stop-sakai.bat
+Mac/*nix :	stop-sakai.sh
 
 
 NOTES

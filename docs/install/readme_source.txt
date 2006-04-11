@@ -378,8 +378,8 @@ At this stage your installation of Sakai has not yet been configured to use your
 
 From $CATALINA_HOME you can start up Tomcat with the command:
 
-Windows: bin\catalina.bat start
-Mac/*nix: bin/catalina.sh start
+Windows: start-sakai.bat
+Mac/*nix: start-sakai.sh
 
 Once Tomcat has loaded the Sakai application (again, this can take a minute or so) point your browser to
 
@@ -389,8 +389,8 @@ If the gateway page does not come up, check the Tomcat logs (see Troubleshooting
 
 If you can log in without errors you should be able to stop Tomcat and proceed with Database configuration, if needed.
 
-Windows: bin\catalina.bat stop
-Mac/*nix: bin/catalina.sh stop
+Windows: stop-sakai.bat
+Mac/*nix: stop-sakai.sh
 
 
 5. DATABASE CONFIGURATION
@@ -486,6 +486,52 @@ auto.ddl=true
 validationQuery@javax.sql.BaseDataSource=select 1 from DUAL
 defaultTransactionIsolationString@javax.sql.BaseDataSource=TRANSACTION_READ_COMMITTED
 
+**Oracle Change for Tests&Quizzes**
+If you're running Oracle and using auto.ddl to create tables, you should check the data type of the "MEDIA" column in the SAM_MEDIA_T table. Hibernate tries to choose the right data type for this field, but has a habit of choosing the wrong one for Oracle.
+
+    * The correct types for each database are: HSQLDB --> varbinary
+    * Oracle --> blob
+    * MySQL --> longblob
+
+If you need to change this type for your database, this will also involve finding the primary key constraint, dropping it and then recreating it. Contact your local DBA for further information on making this change.
+
+Below is some sample Oracle SQLplus output to better illustrate (SYS_C0064435 is the example constraint; replace it with yours):
+______________________________
+
+SQL> alter table SAM_MEDIA_T modify MEDIA BLOB;
+
+Table altered.
+
+SQL> select constraint_name from user_constraints where table_name='SAM_MEDIA_T'
+and CONSTRAINT_TYPE='P';
+
+CONSTRAINT_NAME
+------------------------------
+SYS_C0064435
+
+SQL> alter table sam_media_t drop constraint SYS_C0064435;
+
+Table altered.
+
+SQL> alter table SAM_MEDIA_T add constraint SYS_C0064435 primary key (MEDIAID);
+
+Table altered.
+
+SQL> desc SAM_MEDIA_T;
+
+[table with BLOB type]
+
+SQL> select constraint_name from user_constraints where table_name='SAM_MEDIA_T'
+and CONSTRAINT_TYPE='P';
+
+CONSTRAINT_NAME
+------------------------------
+SYS_C0064435
+
+SQL> commit;
+
+Commit complete.
+_______________________________
 
 
 6. TROUBLESHOOTING
