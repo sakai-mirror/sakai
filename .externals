@@ -18,7 +18,8 @@ login			https://source.sakaiproject.org/svn/login/trunk
 access			https://source.sakaiproject.org/svn/access/trunk
 content			https://source.sakaiproject.org/svn/content/trunk
 metaobj			https://source.sakaiproject.org/svn/metaobj/trunk
-portal			https://source.sakaiproject.org/svn/portal/trunk
+portal/portal-mercury	https://source.sakaiproject.org/svn/portal/trunk/portal-mercury
+portal/portal-util		https://source.sakaiproject.org/svn/portal/trunk/portal-util
 jsf				https://source.sakaiproject.org/svn/jsf/trunk
 course-management	https://source.sakaiproject.org/svn/course-management/trunk
 
