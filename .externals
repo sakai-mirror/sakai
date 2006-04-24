@@ -2,7 +2,9 @@ component		https://source.sakaiproject.org/svn/component/trunk
 util			https://source.sakaiproject.org/svn/util/trunk
 tool			https://source.sakaiproject.org/svn/tool/trunk
 authz			https://source.sakaiproject.org/svn/authz/trunk
-courier			https://source.sakaiproject.org/svn/courier/trunk
+courier/courier-api		https://source.sakaiproject.org/svn/courier/trunk/courier-api
+courier/courier-impl	https://source.sakaiproject.org/svn/courier/trunk/courier-impl
+courier/courier-util	https://source.sakaiproject.org/svn/courier/trunk/courier-util
 event			https://source.sakaiproject.org/svn/event/trunk
 entity			https://source.sakaiproject.org/svn/entity/trunk
 velocity		https://source.sakaiproject.org/svn/velocity/trunk
