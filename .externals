@@ -8,7 +8,9 @@ courier/courier-util	https://source.sakaiproject.org/svn/courier/trunk/courier-u
 event			https://source.sakaiproject.org/svn/event/trunk
 entity			https://source.sakaiproject.org/svn/entity/trunk
 velocity		https://source.sakaiproject.org/svn/velocity/trunk
-user			https://source.sakaiproject.org/svn/user/trunk
+user/user-api			https://source.sakaiproject.org/svn/user/trunk/user-api
+user/user-impl			https://source.sakaiproject.org/svn/user/trunk/user-impl
+user/user-tool			https://source.sakaiproject.org/svn/user/trunk/user-tool
 memory			https://source.sakaiproject.org/svn/memory/trunk
 db				https://source.sakaiproject.org/svn/db/trunk
 email			https://source.sakaiproject.org/svn/email/trunk
@@ -24,4 +26,3 @@ portal/portal-mercury	https://source.sakaiproject.org/svn/portal/trunk/portal-me
 portal/portal-util		https://source.sakaiproject.org/svn/portal/trunk/portal-util
 jsf				https://source.sakaiproject.org/svn/jsf/trunk
 course-management	https://source.sakaiproject.org/svn/course-management/trunk
-
