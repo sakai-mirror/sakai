@@ -11,6 +11,7 @@ velocity		https://source.sakaiproject.org/svn/velocity/trunk
 user/user-api			https://source.sakaiproject.org/svn/user/trunk/user-api
 user/user-impl			https://source.sakaiproject.org/svn/user/trunk/user-impl
 user/user-tool			https://source.sakaiproject.org/svn/user/trunk/user-tool
+user/user-util			https://source.sakaiproject.org/svn/user/trunk/user-util
 memory			https://source.sakaiproject.org/svn/memory/trunk
 db				https://source.sakaiproject.org/svn/db/trunk
 email			https://source.sakaiproject.org/svn/email/trunk
