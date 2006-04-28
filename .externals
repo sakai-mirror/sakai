@@ -18,7 +18,7 @@ email			https://source.sakaiproject.org/svn/email/trunk
 alias			https://source.sakaiproject.org/svn/alias/trunk
 site			https://source.sakaiproject.org/svn/site/trunk
 master			https://source.sakaiproject.org/svn/master/trunk
-reference		https://source.sakaiproject.org/svn/reference/trunk
+reference/library		https://source.sakaiproject.org/svn/reference/trunk/library
 login			https://source.sakaiproject.org/svn/login/trunk
 access			https://source.sakaiproject.org/svn/access/trunk
 content			https://source.sakaiproject.org/svn/content/trunk
