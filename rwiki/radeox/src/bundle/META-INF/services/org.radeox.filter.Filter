@@ -22,3 +22,5 @@ org.radeox.filter.LinkTestFilter
 #Should be called first, done with before()
 org.radeox.filter.EscapeFilter
 uk.ac.cam.caret.sakai.rwiki.component.filter.PreEscapeMathFilter
+# Must be called last to correct any XHTML errors
+org.radeox.filter.XHTMLFilter

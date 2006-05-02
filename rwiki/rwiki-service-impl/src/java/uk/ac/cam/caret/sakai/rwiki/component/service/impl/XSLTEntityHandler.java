@@ -483,7 +483,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 				+ "</rendered><contentdigest>" + contentDigest
 				+ "</contentdigest></content>";
 		InputSource ins = new InputSource(new StringReader(renderedPage));
-		XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+		XMLReader xmlReader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
 		xmlReader.setContentHandler(proxy);
 		try {
 			xmlReader.parse(ins);

@@ -23,24 +23,170 @@
 
 package org.radeox.filter;
 
-import org.radeox.filter.regex.LocaleRegexReplaceFilter;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.radeox.api.engine.context.InitialRenderContext;
+import org.radeox.api.engine.context.RenderContext;
+import org.radeox.filter.context.FilterContext;
 
 /*
- * The paragraph filter finds any text between two empty lines and
- * inserts a <p/>
- *
- * @author stephan
- * @team sonicteam
- * @version $Id$
+ * The paragraph filter finds any text between two empty lines and inserts a
+ * <p/> @author stephan @team sonicteam
+ * 
+ * @version $Id: ParagraphFilter.java 4158 2005-11-25 23:25:19Z
+ *          ian@caret.cam.ac.uk $
  */
 
-public class ParagraphFilter extends LocaleRegexReplaceFilter implements CacheFilter {
+public class ParagraphFilter implements Filter, CacheFilter
+{
 
-  protected String getLocaleKey() {
-    return "filter.paragraph";
-  }
+	private static Log log = LogFactory.getLog(ParagraphFilter.class);
 
-  protected boolean isSingleLine() {
-    return true;
-  }
+	private InitialRenderContext initialContext;
+
+	private String breaksRE;
+
+	private String replaceFirst;
+
+	private String replaceLast;
+
+	private String patternFristRE;
+
+	private String patternLastRE;
+
+	private String replaceAll;
+
+	public String filter(String input, FilterContext context)
+	{
+
+		log.debug("Paragraph Filter Input " + input);
+		// Pattern patternFirst = Pattern.compile(patternFristRE);
+		// Pattern patternLast = Pattern.compile(patternLastRE);
+		Pattern patternBreaks = Pattern.compile(breaksRE);
+
+		String[] p = patternBreaks.split(input);
+		if (p.length == 1)
+		{
+			return input;
+		}
+		// Matcher m = patternFirst.matcher(p[0]);
+		StringBuffer sb = new StringBuffer();
+		int ins = p[0].lastIndexOf(">") + 1;
+		sb.append(p[0].substring(0, ins));
+		sb.append(replaceFirst);
+		sb.append(p[0].substring(ins));
+		for (int i = 1; i < p.length - 1; i++)
+		{
+			sb.append(replaceAll);
+			sb.append(p[i]);
+		}
+		ins = p[p.length - 1].indexOf("<") - 1;
+		if (ins > 0)
+		{
+			sb.append(replaceAll);
+			sb.append(p[p.length - 1].substring(0, ins));
+			sb.append(replaceLast);
+			sb.append(p[p.length - 1].substring(ins));
+		}
+		else if (ins == 0)
+		{
+			sb.append(replaceLast);
+			sb.append(p[p.length - 1]);
+		}
+		else
+		{
+			if (p.length == 2)
+			{
+				sb.append(replaceAll);
+			}
+			sb.append(p[p.length - 1]);
+			sb.append(replaceLast);
+		}
+		String output = sb.toString();
+		log.debug("Paragraph Filter Input " + output);
+
+		return output;
+	}
+
+	public String[] replaces()
+	{
+		return FilterPipe.NO_REPLACES;
+	}
+
+	public String[] before()
+	{
+		return FilterPipe.EMPTY_BEFORE;
+	}
+
+	public void setInitialContext(InitialRenderContext context)
+	{
+		initialContext = context;
+		ResourceBundle outputMessages = getOutputBundle();
+		ResourceBundle inputMessages = getInputBundle();
+
+		breaksRE = inputMessages.getString("filter.paragraph.breaks.match");
+		replaceAll = outputMessages.getString("filter.paragraph.breaks.print");
+		replaceFirst = outputMessages.getString("filter.paragraph.first.print");
+		replaceLast = outputMessages.getString("filter.paragraph.last.print");
+		patternFristRE = inputMessages
+				.getString("filter.paragraph.first.match");
+		patternLastRE = inputMessages.getString("filter.paragraph.last.match");
+	}
+
+	public String getDescription()
+	{
+		return "Hand Coded paragraph filter";
+	}
+
+	protected ResourceBundle getInputBundle()
+	{
+		Locale inputLocale = (Locale) initialContext
+				.get(RenderContext.INPUT_LOCALE);
+		String inputName = (String) initialContext
+				.get(RenderContext.INPUT_BUNDLE_NAME);
+		return ResourceBundle.getBundle(inputName, inputLocale);
+	}
+
+	protected ResourceBundle getOutputBundle()
+	{
+		String outputName = (String) initialContext
+				.get(RenderContext.OUTPUT_BUNDLE_NAME);
+		Locale outputLocale = (Locale) initialContext
+				.get(RenderContext.OUTPUT_LOCALE);
+		return ResourceBundle.getBundle(outputName, outputLocale);
+	}
+
 }
+/*
+ * private static Log log = LogFactory.getLog(ParagraphFilter.class); private
+ * String printFirst; private String printNext; private Pattern matchPattern;
+ * protected String getLocaleKey() { return "filter.paragraph"; } protected
+ * boolean isSingleLine() { return false; } public String filter(String input,
+ * FilterContext context) { String result = input; System.err.println("Using
+ * "+matchPattern.getRegex()+" replacing with "+printFirst+" then "+printNext);
+ * try { Matcher matcher = Matcher.create(result, matchPattern); Substitution s =
+ * new Substitution() { boolean firstMatch = true; public void
+ * handleMatch(StringBuffer buffer, MatchResult result) { if ( firstMatch ) {
+ * buffer.append(printFirst); firstMatch = false; } else {
+ * buffer.append(printNext); } } }; result = matcher.substitute(s); //
+ * Util.substitute(matcher, p, new Perl5Substitution(s, interps), result,
+ * limit); } catch (Exception e) { //log.warn("<span class=\"error\">Exception</span>: " +
+ * this + ": " + e); log.warn("Exception for: " + this+" "+e); } catch (Error
+ * err) { //log.warn("<span class=\"error\">Error</span>: " + this + ": " +
+ * err); log.warn("Error for: " + this); err.printStackTrace(); } return result; }
+ * public void setInitialContext(InitialRenderContext context) {
+ * super.setInitialContext(context); clearRegex(); ResourceBundle outputMessages =
+ * getOutputBundle(); ResourceBundle inputMessages = getInputBundle(); String
+ * match = inputMessages.getString(getLocaleKey()+".match"); printFirst =
+ * outputMessages.getString(getLocaleKey()+".print.1"); printNext =
+ * outputMessages.getString(getLocaleKey()+".print.2"); try {
+ * org.radeox.regex.Compiler compiler = org.radeox.regex.Compiler.create();
+ * compiler.setMultiline(isSingleLine() ? RegexReplaceFilter.SINGLELINE :
+ * RegexReplaceFilter.MULTILINE); matchPattern = compiler.compile(match); }
+ * catch (Exception e) { log.warn("bad pattern: " + match + " -> " +
+ * printFirst+" "+e); } } }
+ */

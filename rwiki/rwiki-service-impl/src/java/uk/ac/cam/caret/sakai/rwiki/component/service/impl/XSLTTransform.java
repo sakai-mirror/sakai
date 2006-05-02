@@ -71,7 +71,7 @@ public class XSLTTransform {
 		TemplatesHandler th = factory.newTemplatesHandler();
 		String systemId = xsltresource.getSystemId();
 		th.setSystemId(systemId);
-		XMLReader xr = XMLReaderFactory.createXMLReader();
+		XMLReader xr = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
 		xr.setContentHandler(th);
 		xr.parse(xsltresource);
 		templates = th.getTemplates();

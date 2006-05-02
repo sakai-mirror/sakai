@@ -4,9 +4,7 @@
  *
  ***********************************************************************************
  *
- * Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
- *                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
- * Copyright (c) 2005 University of Cambridge
+ * Copyright (c) 2006 University of Cambridge
  * 
  * Licensed under the Educational Community License Version 1.0 (the "License");
  * By obtaining, using and/or copying this Original Work, you agree that you have read,
@@ -23,33 +21,38 @@
  *
  **********************************************************************************/
 
-package uk.ac.cam.caret.sakai.rwiki.utils;
+package org.radeox.test.filter;
 
-import java.io.StringReader;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
+import org.radeox.filter.ParagraphFilter;
 
 /**
- * Digests XHTML into a string representation
- * 
  * @author ieb
- * 
+ *
  */
-public class DigestHtml {
+public class ParagraphFilterTest extends FilterTestSupport {
 
-	public static String digest(String todigest) {
-		Digester d = new Digester();
-		try {
-			XMLReader reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
-			reader.setContentHandler(d);
-			reader.parse(new InputSource(new StringReader("<content>"
-					+ todigest + "</content>")));
-			return d.toString();
-		} catch (Exception ex) {
-			return d.toString() + "\n Failed at " + ex.getMessage();
-		}
+
+	public ParagraphFilterTest(String s) {
+		super(s);
+		// TODO Auto-generated constructor stub
 	}
+	
+	protected void setUp() throws Exception {
+	    filter = new ParagraphFilter();
+	    super.setUp();
+	  }
 
+	  public static Test suite() {
+	    return new TestSuite(ParagraphFilterTest.class);
+	  }
+
+	  public void testParagraph() {
+		 
+		 String result =  filter.filter("<h1>test</h1>Text \n\n Text\n <h2>Head2</h2>", context);
+		 System.err.println(":"+result+":");
+	    assertEquals("Text<p class=\"paragraph\">Text</p>", result );
+	  }
 }
