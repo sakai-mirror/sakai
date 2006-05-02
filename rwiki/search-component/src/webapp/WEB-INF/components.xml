@@ -85,7 +85,18 @@
     </property>
     <property name="log"><ref bean="search-logger"/></property>
   </bean>
+
+  <bean id="wikiAdapter" 
+    class="org.sakaiproject.search.component.adapter.RWikiEntityContentProducer"
+    singleton="true"
+    init-method="init" >
+    <property name="objectService" ><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService"/></property>
+    <property name="renderService" ><ref bean="uk.ac.cam.caret.sakai.rwiki.service.api.RenderService"/></property>
+    <property name="searchService" ><ref bean="org.sakaiproject.search.SearchService" /></property>
+    <property name="searchIndexBuilder" ><ref bean="org.sakaiproject.search.SearchIndexBuilder" /></property>
+  </bean>
   
+
   <bean id="emailMessageAdapter" 
     class="org.sakaiproject.search.component.adapter.MessageContentProducer"
     singleton="true"
@@ -108,6 +119,7 @@
     <property name="searchService" ><ref bean="org.sakaiproject.search.SearchService" /></property>
     <property name="searchIndexBuilder" ><ref bean="org.sakaiproject.search.SearchIndexBuilder" /></property>
   </bean>
+  
   <bean id="discussionMessageAdapter" 
     class="org.sakaiproject.search.component.adapter.MessageContentProducer"
     singleton="true"

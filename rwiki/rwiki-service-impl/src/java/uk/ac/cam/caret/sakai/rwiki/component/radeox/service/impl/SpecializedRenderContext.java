@@ -23,6 +23,9 @@
 package uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl;
 
 import org.radeox.engine.context.BaseRenderContext;
+import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiObjectService;
 import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
@@ -97,6 +100,45 @@ public class SpecializedRenderContext extends BaseRenderContext implements Cacha
     public boolean isCachable() {
     		return cachable;
     }
+
+	public Site getSite() {
+
+			RWikiObjectService rwobjService = getObjectService();
+			RWikiObject rwobj = getRWikiObject();
+			Reference ref = rwobjService.getReference(rwobj);
+			
+			
+			
+			Site s = null;
+			String siteId = getSiteId();
+			if (siteId != null) {
+				try {
+					s = SiteService.getSite(siteId);
+				} catch (Exception ex) {
+				}
+			}
+			return s;
+
+	}
+
+	public String getSiteId() {
+		RWikiObjectService rwobjService = getObjectService();
+		RWikiObject rwobj = getRWikiObject();
+		Reference ref = rwobjService.getReference(rwobj);
+		
+		
+		String siteContext = ref.getContext();
+		if (siteContext.startsWith("/site/")) {
+			String siteId = siteContext.substring(6);
+
+			int slash = siteId.indexOf("/");
+			if (slash != -1) {
+				siteId = siteId.substring(0,slash-1);
+			}
+			return siteId;
+		}
+		return null;
+	}
 
     
 }

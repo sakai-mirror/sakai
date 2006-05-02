@@ -25,22 +25,13 @@ package uk.ac.cam.caret.sakai.rwiki.component.macros;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
-import java.util.List;
 
-import org.radeox.api.engine.RenderEngine;
 import org.radeox.macro.BaseMacro;
 import org.radeox.macro.parameter.MacroParameter;
-import org.sakaiproject.api.section.coursemanagement.CourseSection;
-import org.sakaiproject.component.section.cover.SectionAwareness;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
 
 import uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.SpecializedRenderContext;
 import uk.ac.cam.caret.sakai.rwiki.component.radeox.service.impl.SpecializedRenderEngine;
-import uk.ac.cam.caret.sakai.rwiki.service.api.model.RWikiObject;
-import uk.ac.cam.caret.sakai.rwiki.utils.NameHelper;
 
 /**
  * Provides access to worksite information
@@ -56,10 +47,10 @@ public class WorksiteInfoMacro extends BaseMacro {
 	private static final String WIKISPACE = "wikispace";
 
 	private static String[] paramDescription = {
-			"1,info: The type of info to provide, worksiteinfo:title gives Title (default), " +
-			" worksiteinfo:description, " +
-			" worksiteinfo:shortdescription, " +
-			" worksiteinfo:wikispace ",
+			"1,info: The type of info to provide, worksiteinfo:title gives Title (default), "
+					+ " worksiteinfo:description, "
+					+ " worksiteinfo:shortdescription, "
+					+ " worksiteinfo:wikispace ",
 			"Remember if using positional parameters, you must include dummies for the optional parameters" };
 
 	private static String description = "Generates worksite information";
@@ -76,37 +67,34 @@ public class WorksiteInfoMacro extends BaseMacro {
 	public String getDescription() {
 		return description;
 	}
-	 public String getName() {
-	        return "worksiteinfo";
-	 }
+
+	public String getName() {
+		return "worksiteinfo";
+	}
+
 
 	public void execute(Writer writer, MacroParameter params)
 			throws IllegalArgumentException, IOException {
 
 		SpecializedRenderContext context = (SpecializedRenderContext) params
 				.getContext();
-	    SpecializedRenderEngine spRe = (SpecializedRenderEngine)context.getRenderEngine();
-	    
+		SpecializedRenderEngine spRe = (SpecializedRenderEngine) context
+				.getRenderEngine();
 		
-
 		String infotype = params.get("info", 0);
-
-		String siteId = PortalService.getCurrentSiteId();
-		Site s = null;
-		try {
-			s = SiteService.getSite(siteId);
-		} catch (Exception ex) {
-
-		}
-		if ( DESCRIPTION.equals(infotype) ) {
-			writer.write(s.getDescription());
-		} else if ( SHORTDESCRIPTION.equals(infotype) ) {
-			writer.write(s.getShortDescription());
-		} else if ( WIKISPACE.equals(infotype) ) {
-			writer.write(spRe.getSpace());
+		Site s = context.getSite();
+		if ( s != null ) {
+			if (DESCRIPTION.equals(infotype)) {
+				writer.write(s.getDescription());
+			} else if (SHORTDESCRIPTION.equals(infotype)) {
+				writer.write(s.getShortDescription());
+			} else if (WIKISPACE.equals(infotype)) {
+				writer.write(spRe.getSpace());
+			} else {
+				writer.write(s.getTitle());
+			}
 		} else {
-			writer.write(s.getTitle());
+			writer.write("No Site Found for page");
 		}
-		return;
 	}
 }

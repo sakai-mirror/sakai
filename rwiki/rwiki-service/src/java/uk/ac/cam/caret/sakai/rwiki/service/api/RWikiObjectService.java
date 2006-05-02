@@ -308,5 +308,17 @@ public interface RWikiObjectService extends EntityProducer {
 	 * @return
 	 */
 	List findAllPageNames();
+	/**
+	 * generates a valid entity reference from the page name
+	 * @param pageName
+	 * @return
+	 */
+	String createReference(String pageName);
+	/**
+	 * gets a component page link renderer
+	 * @param pageSpace
+	 * @return
+	 */
+	PageLinkRenderer getComponentPageLinkRender(String pageSpace);
     
 }

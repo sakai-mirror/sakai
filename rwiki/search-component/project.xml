@@ -58,6 +58,15 @@
     -->
     <dependency>
       <groupId>sakaiproject</groupId>
+      <artifactId>sakai-rwiki-utils</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
       <artifactId>sakai-search-service-impl</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>

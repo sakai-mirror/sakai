@@ -485,6 +485,8 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 
 	protected String m_source = null;
 
+	private String testContent;
+
 	/**
 	 * The name of the source used for loading the object content when injected
 	 * 
@@ -634,10 +636,14 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		lazyLoadContentObject();
 		if (content == null)
 			content = "";
-		if (co != null) // could be null if triggered during a hibernate
+		if (co != null) { // could be null if triggered during a hibernate
 			// template load
 			co.setContent(content);
 		// recompute the Sha1
+		} else {
+			// only for testing content
+			testContent = content;
+		}
 		sha1 = computeSha1(content);
 	}
 
@@ -645,8 +651,12 @@ public abstract class RWikiObjectImpl implements RWikiObject {
 		lazyLoadContentObject();
 
 		String content = null;
-		if (co != null)
+		if (co != null) {
 			content = co.getContent(); // could be null if triggerd during a
+		} else {
+			// only for testing
+			content = testContent;
+		}
 		// template load
 		if (content == null)
 			content = "";

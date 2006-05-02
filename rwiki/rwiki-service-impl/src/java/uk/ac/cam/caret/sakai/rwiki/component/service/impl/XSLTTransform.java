@@ -111,7 +111,9 @@ public class XSLTTransform {
 		TransformerHandler saxTH = factory.newTransformerHandler(templates);
 		Properties p = OutputPropertiesFactory
 				.getDefaultMethodProperties("xml");
-		p.putAll(outputProperties);
+		if ( outputProperties != null && outputProperties.size() > 0  ) { 
+			p.putAll(outputProperties);
+		}
 
 		Serializer serializer = null;
 

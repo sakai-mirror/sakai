@@ -82,6 +82,19 @@
     </dependency>
     <dependency>
       <groupId>sakaiproject</groupId>
+      <artifactId>sakai-rwiki-service</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-rwiki-utils</artifactId>
+      <version>${sakai.version}</version>
+      <type>jar</type>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
       <artifactId>sakai-session</artifactId>
       <version>${sakai.version}</version>
       <type>jar</type>

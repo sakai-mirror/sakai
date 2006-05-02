@@ -66,6 +66,9 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 	 */
 	public void outputContent(Entity entity, HttpServletRequest request,
 			HttpServletResponse res) {
+		if ( !isAvailable() ) 
+			return;
+
 		if (!(entity instanceof RWikiEntity))
 			return;
 
@@ -256,6 +259,7 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 	}
 
 	public void changeHistoryToXML(RWikiObject rwo, ContentHandler ch) throws Exception {
+		if ( !isAvailable() ) return;
 
 		List changes = rwikObjectService.findRWikiHistoryObjectsInReverse(rwo);
 		if ( changes == null ) return;
@@ -294,6 +298,8 @@ public class XLSTChangesHandler extends XSLTEntityHandler {
 	}
 
 	public void recentChangesToXML(RWikiEntity rwe, ContentHandler ch) throws Exception {
+		if ( !isAvailable() ) return;
+
 		GregorianCalendar g = new GregorianCalendar();
 		g.setTime(new Date());
 		g.add(GregorianCalendar.YEAR, -1);

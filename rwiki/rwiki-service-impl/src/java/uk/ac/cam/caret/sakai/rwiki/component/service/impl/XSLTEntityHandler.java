@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.api.section.coursemanagement.CourseSection;
 import org.sakaiproject.component.section.cover.SectionAwareness;
+import org.sakaiproject.service.framework.current.cover.CurrentService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
@@ -73,6 +74,9 @@ import uk.ac.cam.caret.sakai.rwiki.utils.SimpleCoverage;
  * 
  */
 public class XSLTEntityHandler extends BaseEntityHandlerImpl {
+
+	private static ThreadLocal currentRequest = new ThreadLocal();
+
 	/**
 	 * dependency
 	 */
@@ -146,6 +150,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * 
 	 */
 	public String getDescription(Entity entity) {
+		if (!isAvailable())
+			return null;
 		if (!(entity instanceof RWikiEntity))
 			return null;
 		return entity.getId();
@@ -157,9 +163,25 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * 
 	 */
 	public String getUrl(Entity entity) {
+		if (!isAvailable())
+			return null;
 		if (!(entity instanceof RWikiEntity))
 			return null;
 		return entity.getUrl() + getMinorType();
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public static HttpServletRequest getCurrentRequest() {
+		return (HttpServletRequest) currentRequest.get();
+	}
+	/**
+	 * 
+	 * @param request
+	 */
+	public static void setCurrentRequest( HttpServletRequest request) {
+		currentRequest.set(request);
 	}
 
 	/**
@@ -167,12 +189,16 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * 
 	 * 
 	 */
-	public void outputContent(final Entity entity, final HttpServletRequest request,
-			final HttpServletResponse res) {
+	public void outputContent(final Entity entity,
+			final HttpServletRequest request, final HttpServletResponse res) {
+		if (!isAvailable())
+			return;
 		if (!(entity instanceof RWikiEntity))
 			return;
+		
 
-		try {		
+		try {
+			setCurrentRequest(request);
 
 			if (responseHeaders != null) {
 				for (Iterator i = responseHeaders.keySet().iterator(); i
@@ -194,7 +220,7 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			} else {
 				ch = opch;
 			}
-			
+
 			Attributes dummyAttributes = new AttributesImpl();
 
 			ch.startDocument();
@@ -308,10 +334,13 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 			ch.endDocument();
 
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
+			logger.info("Failed to serialize " + ex.getMessage());
 			ex.printStackTrace();
 			throw new RuntimeException("Failed to serialise "
 					+ ex.getLocalizedMessage(), ex);
+		} finally {
+			setCurrentRequest(null);
 		}
 	}
 
@@ -363,7 +392,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * @param rwo
 	 * @param ch
 	 */
-	public void renderToXML(RWikiObject rwo, final ContentHandler ch) throws SAXException, IOException {
+	public void renderToXML(RWikiObject rwo, final ContentHandler ch)
+			throws SAXException, IOException {
 
 		/**
 		 * create a proxy for the stream, filtering out the start element and
@@ -431,55 +461,56 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		plr.setStandardURLFormat(standardLinkFormat);
 		plr.setUrlFormat(hrefTagFormat);
 
+		String renderedPage = null;
 		if (renderService == null) {
 			// only for testing
-			char[] c = rwo.getContent().toCharArray();
-			ch.characters(c, 0, c.length);
+			renderedPage = rwo.getContent();
 		} else {
-			String renderedPage = renderService.renderPage(rwo, 
-					localSpace, plr);
-			String contentDigest = DigestHtml.digest(renderedPage);
-			if ( contentDigest.length() > 500 ) {
-				contentDigest = contentDigest.substring(0,500);
-			}
-
-			renderedPage = "<content><rendered>" 
-				+ renderedPage 
-				+ "</rendered><contentdigest>"
-				+ contentDigest 
-				+ "</contentdigest></content>";
-			InputSource ins = new InputSource(new StringReader(renderedPage));
-			XMLReader xmlReader = XMLReaderFactory.createXMLReader();
-			xmlReader.setContentHandler(proxy);
-			try {
-				xmlReader.parse(ins);
-			} catch (Throwable ex) {
-
-				SimpleCoverage.cover("Failed to parse ::\n" + renderedPage
-						+ "\n:: from ::\n" + rwo.getContent());
-				Attributes dummyAttributes = new AttributesImpl();
-				ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERROR,
-						SchemaNames.EL_NSERROR, dummyAttributes);
-				ch.startElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_ERRORDESC, SchemaNames.EL_NSERRORDESC,
-						dummyAttributes);
-				String s = "The Rendered Content did not parse correctly "
-						+ ex.getMessage();
-				ch.characters(s.toCharArray(), 0, s.length());
-				ch.endElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_ERRORDESC, SchemaNames.EL_NSERRORDESC);
-				ch.startElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_RAWCONTENT, SchemaNames.EL_NSRAWCONTENT,
-						dummyAttributes);
-				ch.characters(renderedPage.toCharArray(), 0, renderedPage
-						.length());
-				ch.endElement(SchemaNames.NS_CONTAINER,
-						SchemaNames.EL_RAWCONTENT, SchemaNames.EL_NSRAWCONTENT);
-				ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERROR,
-						SchemaNames.EL_NSERROR);
-			}
-
+			renderedPage = renderService.renderPage(rwo, localSpace, plr);
 		}
+		String contentDigest = DigestHtml.digest(renderedPage);
+		if (contentDigest.length() > 500) {
+			contentDigest = contentDigest.substring(0, 500);
+		}
+		if ( renderedPage == null || renderedPage.trim().length() == 0 ) {
+			renderedPage = "no content on page";
+		}
+		if ( contentDigest == null || contentDigest.trim().length() == 0 ) {
+			contentDigest = "no content on page";
+		}
+
+		renderedPage = "<content><rendered>" + renderedPage
+				+ "</rendered><contentdigest>" + contentDigest
+				+ "</contentdigest></content>";
+		InputSource ins = new InputSource(new StringReader(renderedPage));
+		XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+		xmlReader.setContentHandler(proxy);
+		try {
+			xmlReader.parse(ins);
+		} catch (Throwable ex) {
+
+			SimpleCoverage.cover("Failed to parse ::\n" + renderedPage
+					+ "\n:: from ::\n" + rwo.getContent());
+			Attributes dummyAttributes = new AttributesImpl();
+			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERROR,
+					SchemaNames.EL_NSERROR, dummyAttributes);
+			ch.startElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERRORDESC,
+					SchemaNames.EL_NSERRORDESC, dummyAttributes);
+			String s = "The Rendered Content did not parse correctly "
+					+ ex.getMessage();
+			ch.characters(s.toCharArray(), 0, s.length());
+			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERRORDESC,
+					SchemaNames.EL_NSERRORDESC);
+			ch.startElement(SchemaNames.NS_CONTAINER,
+					SchemaNames.EL_RAWCONTENT, SchemaNames.EL_NSRAWCONTENT,
+					dummyAttributes);
+			ch.characters(renderedPage.toCharArray(), 0, renderedPage.length());
+			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_RAWCONTENT,
+					SchemaNames.EL_NSRAWCONTENT);
+			ch.endElement(SchemaNames.NS_CONTAINER, SchemaNames.EL_ERROR,
+					SchemaNames.EL_NSERROR);
+		}
+
 	}
 
 	/**
@@ -491,6 +522,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 		// use the resources realm, all container (folder) realms
 
 		Collection rv = new Vector();
+		if (!isAvailable())
+			return rv;
 
 		try {
 			// try the resource, all the folders above it (don't include /)
@@ -498,11 +531,9 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			boolean container = ref.getId().endsWith(Entity.SEPARATOR);
 			if (paths.length > 1) {
 
-				String root =  Entity.SEPARATOR + paths[1]
-						+ Entity.SEPARATOR;
-				//rv.add(root);
+				String root = Entity.SEPARATOR + paths[1] + Entity.SEPARATOR;
+				// rv.add(root);
 
-				
 				List al = new ArrayList();
 				for (int next = 2; next < paths.length; next++) {
 					root = root + paths[next];
@@ -511,11 +542,11 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 					}
 					al.add(root);
 				}
-				for ( int i = al.size()-1; i >= 0; i-- ) {
+				for (int i = al.size() - 1; i >= 0; i--) {
 					// add in the sections authzgroup
-					rv.add(authZPrefix+al.get(i));
+					rv.add(authZPrefix + al.get(i));
 				}
-				
+
 			}
 
 			// special check for group-user : the grant's in the user's My
@@ -525,52 +556,51 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 				rv.add(SiteService.siteReference(SiteService
 						.getUserSiteId(parts[3])));
 			}
-			//. how do we get a section by ID, I assume that the
-			if ( paths.length > 4 && ("group".equals(paths[3]) || "section".equals(paths[3])) ) {
-				// paths 2 is the site id, which will be of the same form as a group id
+			// . how do we get a section by ID, I assume that the
+			if (paths.length > 4
+					&& ("group".equals(paths[3]) || "section".equals(paths[3]))) {
+				// paths 2 is the site id, which will be of the same form as a
+				// group id
 				String[] testuuid = paths[2].split("-");
 				String[] uuidparts = paths[4].split("-");
 				boolean isuuid = false;
-				String sectionID = Entity.SEPARATOR 
-						+ paths[1]
-						         + Entity.SEPARATOR 
-						         + paths[2] 
-						                 + Entity.SEPARATOR 
-						                 + paths[3] 
-						                         + Entity.SEPARATOR 
-						                         + paths[4];
-;
-				if ( testuuid.length > 0 && testuuid.length == uuidparts.length ) {
+				String sectionID = Entity.SEPARATOR + paths[1]
+						+ Entity.SEPARATOR + paths[2] + Entity.SEPARATOR
+						+ paths[3] + Entity.SEPARATOR + paths[4];
+				;
+				if (testuuid.length > 0 && testuuid.length == uuidparts.length) {
 					isuuid = true;
-					for ( int i = 0; i < testuuid.length; i++  ) {
-						if ( testuuid[i].length() != uuidparts[i].length() ) {
+					for (int i = 0; i < testuuid.length; i++) {
+						if (testuuid[i].length() != uuidparts[i].length()) {
 							isuuid = false;
 						}
 					}
-				
+
 				}
-				if ( !isuuid ) {
+				if (!isuuid) {
 					// could be a section name
-					Reference siteRef = EntityManager.newReference(ref.getContext());
+					Reference siteRef = EntityManager.newReference(ref
+							.getContext());
 					List l = SectionAwareness.getSections(siteRef.getId());
-					for ( Iterator is = l.iterator(); is.hasNext(); ) {
-						CourseSection cs = (CourseSection)is.next();
-						if ( paths[4].equalsIgnoreCase(cs.getTitle()) ) {
+					for (Iterator is = l.iterator(); is.hasNext();) {
+						CourseSection cs = (CourseSection) is.next();
+						if (paths[4].equalsIgnoreCase(cs.getTitle())) {
 							sectionID = cs.getUuid();
-							logger.debug("Found Match "+sectionID);
+							logger.debug("Found Match " + sectionID);
 							break;
 						}
 					}
-					logger.debug("Converted ID "+sectionID);
-					
+					logger.debug("Converted ID " + sectionID);
+
 				} else {
-					logger.debug("Raw ID "+sectionID);
+					logger.debug("Raw ID " + sectionID);
 				}
-				rv.add(sectionID );
-				
+				rv.add(sectionID);
+
 			}
 
-			// TODO: At the moment we cant use ref.addSiteContextAuthzGroup since ref context is
+			// TODO: At the moment we cant use ref.addSiteContextAuthzGroup
+			// since ref context is
 			// /site/siteid and should be siteid need to look into this
 			// 
 			// site
@@ -589,6 +619,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 * called by spring.
 	 */
 	public void init() {
+		if (!isAvailable())
+			return;
 		try {
 			XSLTTransform xsltTransform = new XSLTTransform();
 			xsltTransform.setXslt(new InputSource(this.getClass()
@@ -596,8 +628,12 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			xsltTransform.getContentHandler();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.err.println("Please check that the xslt is in the classpath "+xslt);
-			throw new RuntimeException("Failed to initialise XSLTTransformer context with xslt "+xslt, ex);
+			System.err
+					.println("Please check that the xslt is in the classpath "
+							+ xslt);
+			throw new RuntimeException(
+					"Failed to initialise XSLTTransformer context with xslt "
+							+ xslt, ex);
 		}
 	}
 
@@ -612,6 +648,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 	 */
 
 	public ContentHandler getOutputHandler(Writer out) throws IOException {
+		if (!isAvailable())
+			return null;
 		try {
 			XSLTTransform xsltTransform = (XSLTTransform) transformerHolder
 					.get();
@@ -637,8 +675,11 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			 */
 		}
 	}
-	
+
 	public ContentHandler getOutputHandler(OutputStream out) throws IOException {
+		if (!isAvailable())
+			return null;
+
 		try {
 			XSLTTransform xsltTransform = (XSLTTransform) transformerHolder
 					.get();
@@ -652,7 +693,8 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 					outputProperties);
 			return ch;
 		} catch (Exception ex) {
-			// XXX Hmm I don't like this but I'm not sure what the correct way to handle this is
+			// XXX Hmm I don't like this but I'm not sure what the correct way
+			// to handle this is
 			throw new RuntimeException("Failed to create Content Handler", ex);
 			/*
 			 * String stackTrace = null; try { StringWriter exw = new
@@ -665,7 +707,6 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 			 */
 		}
 	}
-	
 
 	// Need to configure components correctly.
 
@@ -836,6 +877,9 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 	public void addRequestAttributes(ContentHandler ch,
 			HttpServletRequest request) throws Exception {
+		if (!isAvailable())
+			return;
+
 		// add the attributes
 		AttributesImpl dummyAttributes = new AttributesImpl();
 		ch.startElement(SchemaNames.NS_CONTAINER,
@@ -879,6 +923,9 @@ public class XSLTEntityHandler extends BaseEntityHandlerImpl {
 
 	public void addRequestParameters(ContentHandler ch,
 			HttpServletRequest request) throws Exception {
+		if (!isAvailable())
+			return;
+
 		AttributesImpl dummyAttributes = new AttributesImpl();
 
 		// add the request parameters

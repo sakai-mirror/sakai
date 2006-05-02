@@ -37,12 +37,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.search.SearchIndexBuilder;
-import org.sakaiproject.search.SearchService;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.log.Logger;
 import org.sakaiproject.service.legacy.entity.Entity;
@@ -117,9 +114,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 
 	public String createTemplatePageName = "default_template";
 
-	private SearchService searchService;
-
-	private SearchIndexBuilder searchIndexBuilder;
 
 	/**
 	 * Register this as an EntityProducer
@@ -149,25 +143,6 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 					this.renderService, this.preferenceService));
 		}
 		
-		if (ServerConfigurationService
-				.getBoolean("wiki.experimental",false)) {
-
-			searchService = (SearchService) ComponentManager
-					.get(SearchService.class);
-			searchIndexBuilder = (SearchIndexBuilder) ComponentManager
-					.get(SearchIndexBuilder.class);
-			if (searchService != null) {
-				searchService
-						.registerFunction(RWikiObjectService.EVENT_RESOURCE_ADD);
-				searchService
-						.registerFunction(RWikiObjectService.EVENT_RESOURCE_WRITE);
-				if (searchIndexBuilder != null) {
-					searchIndexBuilder
-							.registerEntityContentProducer(new RWikiEntityContentProducer(
-									renderService, this));
-				}
-			}
-		}
 		dlog.debug("init end");
 
 	}
@@ -1328,41 +1303,27 @@ public class RWikiObjectServiceImpl implements RWikiObjectService {
 	}
 
 	/**
-	 * @return Returns the searchIndexBuilder.
+	 * 
+	 * {@inheritDoc}
 	 */
-	public SearchIndexBuilder getSearchIndexBuilder() {
-		return searchIndexBuilder;
-	}
-
-	/**
-	 * @param searchIndexBuilder
-	 *            The searchIndexBuilder to set.
-	 */
-	public void setSearchIndexBuilder(SearchIndexBuilder searchIndexBuilder) {
-		this.searchIndexBuilder = searchIndexBuilder;
-	}
-
-	/**
-	 * @return Returns the searchService.
-	 */
-	public SearchService getSearchService() {
-		return searchService;
-	}
-
-	/**
-	 * @param searchService
-	 *            The searchService to set.
-	 */
-	public void setSearchService(SearchService searchService) {
-		this.searchService = searchService;
+	public List findAllPageNames() {
+		return cdao.findAllPageNames();
 	}
 
 	/**
 	 * 
 	 * {@inheritDoc}
 	 */
-	public List findAllPageNames() {
-		return cdao.findAllPageNames();
+	public String createReference(String pageName) {
+		return RWikiObjectService.REFERENCE_ROOT+pageName+".";
+	}
+	
+	/**
+	 * 
+	 * {@inheritDoc}
+	 */
+	public PageLinkRenderer getComponentPageLinkRender(String pageSpace) {
+		return new ComponentPageLinkRenderImpl(pageSpace);
 	}
 
 }

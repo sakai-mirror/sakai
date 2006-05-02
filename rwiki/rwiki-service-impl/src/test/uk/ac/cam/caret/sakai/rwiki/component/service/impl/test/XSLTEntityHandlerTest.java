@@ -25,12 +25,32 @@
 
 package uk.ac.cam.caret.sakai.rwiki.component.service.impl.test;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.util.Date;
+import java.util.HashMap;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FormattingResults;
+import org.apache.fop.apps.MimeConstants;
+import org.apache.fop.apps.PageSequenceResults;
 import org.sakaiproject.component.framework.log.CommonsLogger;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -50,13 +70,16 @@ public class XSLTEntityHandlerTest extends TestCase {
 
 	private XSLTEntityHandler eh = null;
 
+	private static final  String testinputhtml = "/uk/ac/cam/caret/sakai/rwiki/component/service/impl/test/testpattern.xhtml";
+	private static final  String testinputfop = "/uk/ac/cam/caret/sakai/rwiki/component/service/impl/test/testinput.xml";
+
 	public void setUp() {
 
 		eh = new XSLTEntityHandler();
 
 	}
 
-	public void testDecode() {
+	public void xtestDecode() {
 
 		XSLTEntityHandler eh = new XSLTEntityHandler();
 		eh.setAccessURLStart("/wiki/");
@@ -402,10 +425,19 @@ public class XSLTEntityHandlerTest extends TestCase {
 
 	}
 
-	public void testXSLT() throws Exception {
-		String[] test = { "/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt"
+	public void xtestXSLT() throws Exception {
+		String[] test = { 
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt",
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/toatom03.xslt",
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/tohtml.xslt",
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/torss091.xslt",
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/torss10.xslt",
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/torss20.xslt",
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/xhtml2fo.xslt"
 
 		};
+		
+		
 
 		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
 		RWikiEntity rwe = new RWikiEntityImpl(rwco);
@@ -444,5 +476,325 @@ public class XSLTEntityHandlerTest extends TestCase {
 		logger.info("Transform and Serialize Call Cost = " + tper + " ms");
 
 	}
+	public void xtestRTF() throws Exception {
+		String transform =  
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/xhtml2fo.xslt";
+		StringBuffer sb = new StringBuffer();
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(testinputhtml)));
+		String line = reader.readLine();
+		while( line != null ) {
+			sb.append(line).append("\n");
+			line = reader.readLine();
+		}
+		
+
+		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
+		RWikiEntity rwe = new RWikiEntityImpl(rwco);
+		rwco.setContent(sb.toString());
+		rwco.setGroupAdmin(false);
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setOwner("The Owner");
+		rwco.setUser("The User");
+		rwco.setVersion(new Date());
+		rwco.setRevision(new Integer(5));
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		
+		XSLTEntityHandler xeh = new XSLTEntityHandler();
+		xeh.setLogger(new CommonsLogger());
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setXslt(transform);
+		xeh.setMinorType("rtf");
+		xeh.setDefaultStackTrace("Failed To generate Stack Trace : {0}");
+		xeh.setErrorFormat("Error encounvered performing transform : {0} \n {1}");
+		xeh.setAuthZPrefix("/wiki");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setStandardLinkFormat("/access/wiki{0}.html");
+		xeh.setHrefTagFormat("<a href=\"{0}\" >{1}</a>");
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setFeedFormat("<a href=\"{0}rtf\" target=\"feeds\"><img src=\"/library/image/sakai/rtf.gif\" border=\"0\"  alt=\"RTF\" /></a>");
+		HashMap responseHeaders = new HashMap();
+		responseHeaders.put("content-type","text/rtf");
+		xeh.setResponseHeaders(responseHeaders);
+		HashMap outputProperties = new HashMap();
+		outputProperties.put("{http://xml.apache.org/xalan}content-handler","uk.ac.cam.caret.sakai.rwiki.component.service.impl.FOP2RTFSerializer");
+		xeh.setOutputProperties(outputProperties);
+		
+		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		xeh.init();
+		xeh.outputContent(rwe,request,response);
+		File f = new File("testoutput.rtf");
+		FileOutputStream fo = new FileOutputStream(f);
+		fo.write(response.getContentAsByteArray());
+		fo.close();
+		
+		long start = System.currentTimeMillis();
+		int iters = 10;
+		for (int j = 0; j < iters; j++) {
+				response = new MockHttpServletResponse();
+				xeh.outputContent(rwe,request,response);
+		}
+		float timet = (float) 1.0 * (System.currentTimeMillis() - start);
+		float tper = (float) (timet / (1.0 * iters));
+		logger.info("Transform and Serialize Call Cost = " + tper + " ms");
+
+	}
+	
+	public void xtestPDF() throws Exception {
+		String transform =  
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/xhtml2fo.xslt";
+		StringBuffer sb = new StringBuffer();
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(testinputhtml)));
+		String line = reader.readLine();
+		while( line != null ) {
+			sb.append(line).append("\n");
+			line = reader.readLine();
+		}
+		
+
+		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
+		RWikiEntity rwe = new RWikiEntityImpl(rwco);
+		rwco.setContent(sb.toString());
+		rwco.setGroupAdmin(false);
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setOwner("The Owner");
+		rwco.setUser("The User");
+		rwco.setVersion(new Date());
+		rwco.setRevision(new Integer(5));
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		
+		XSLTEntityHandler xeh = new XSLTEntityHandler();
+		xeh.setLogger(new CommonsLogger());
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setXslt(transform);
+		xeh.setMinorType("pdf");
+		xeh.setDefaultStackTrace("Failed To generate Stack Trace : {0}");
+		xeh.setErrorFormat("Error encounvered performing transform : {0} \n {1}");
+		xeh.setAuthZPrefix("/wiki");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setStandardLinkFormat("/access/wiki{0}.html");
+		xeh.setHrefTagFormat("<a href=\"{0}\" >{1}</a>");
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setFeedFormat("<a href=\"{0}pdf\" target=\"feeds\"><img src=\"/library/image/sakai/pdf.gif\" border=\"0\"  alt=\"PDF\" /></a>");
+		HashMap responseHeaders = new HashMap();
+		responseHeaders.put("content-type","application/pdf");
+		xeh.setResponseHeaders(responseHeaders);
+		HashMap outputProperties = new HashMap();
+		outputProperties.put("{http://xml.apache.org/xalan}content-handler","uk.ac.cam.caret.sakai.rwiki.component.service.impl.FOP2PDFSerializer");
+		xeh.setOutputProperties(outputProperties);
+		
+		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		xeh.init();
+		xeh.outputContent(rwe,request,response);
+		File f = new File("testoutput.pdf");
+		FileOutputStream fo = new FileOutputStream(f);
+		fo.write(response.getContentAsByteArray());
+		fo.close();
+		
+		long start = System.currentTimeMillis();
+		int iters = 10;
+		for (int j = 0; j < iters; j++) {
+				response = new MockHttpServletResponse();
+				xeh.outputContent(rwe,request,response);
+		}
+		float timet = (float) 1.0 * (System.currentTimeMillis() - start);
+		float tper = (float) (timet / (1.0 * iters));
+		logger.info("Transform and Serialize Call Cost = " + tper + " ms");
+
+	}
+	
+	public void xtestFOP() throws Exception {
+		String transform =  
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/xhtml2fo.xslt";
+		StringBuffer sb = new StringBuffer();
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(testinputhtml)));
+		String line = reader.readLine();
+		while( line != null ) {
+			sb.append(line).append("\n");
+			line = reader.readLine();
+		}
+		
+
+		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
+		RWikiEntity rwe = new RWikiEntityImpl(rwco);
+		rwco.setContent(sb.toString());
+		rwco.setGroupAdmin(false);
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setOwner("The Owner");
+		rwco.setUser("The User");
+		rwco.setVersion(new Date());
+		rwco.setRevision(new Integer(5));
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		
+		XSLTEntityHandler xeh = new XSLTEntityHandler();
+		xeh.setLogger(new CommonsLogger());
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setXslt(transform);
+		xeh.setMinorType("pdf");
+		xeh.setDefaultStackTrace("Failed To generate Stack Trace : {0}");
+		xeh.setErrorFormat("Error encounvered performing transform : {0} \n {1}");
+		xeh.setAuthZPrefix("/wiki");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setStandardLinkFormat("/access/wiki{0}.html");
+		xeh.setHrefTagFormat("<a href=\"{0}\" >{1}</a>");
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setFeedFormat("<a href=\"{0}pdf\" target=\"feeds\"><img src=\"/library/image/sakai/pdf.gif\" border=\"0\"  alt=\"PDF\" /></a>");
+		HashMap responseHeaders = new HashMap();
+		responseHeaders.put("content-type","application/pdf");
+		xeh.setResponseHeaders(responseHeaders);
+		HashMap outputProperties = new HashMap();
+//		outputProperties.put("{http://xml.apache.org/xalan}content-handler","uk.ac.cam.caret.sakai.rwiki.component.service.impl.FOP2PDFSerializer");
+		xeh.setOutputProperties(outputProperties);
+		
+		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		xeh.init();
+		xeh.outputContent(rwe,request,response);
+		File f = new File("testoutputfop.xml");
+		FileOutputStream fo = new FileOutputStream(f);
+		fo.write(response.getContentAsByteArray());
+		fo.close();
+		
+		long start = System.currentTimeMillis();
+		int iters = 10;
+		for (int j = 0; j < iters; j++) {
+				response = new MockHttpServletResponse();
+				xeh.outputContent(rwe,request,response);
+		}
+		float timet = (float) 1.0 * (System.currentTimeMillis() - start);
+		float tper = (float) (timet / (1.0 * iters));
+		logger.info("Transform and Serialize Call Cost = " + tper + " ms");
+
+	}
+	
+	public void xtestNULL() throws Exception {
+		String transform =  
+				"/uk/ac/cam/caret/sakai/rwiki/component/service/impl/null.xslt";
+		StringBuffer sb = new StringBuffer();
+		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(testinputhtml )));
+		String line = reader.readLine();
+		while( line != null ) {
+			sb.append(line).append("\n");
+			line = reader.readLine();
+		}
+		
+
+		RWikiCurrentObjectImpl rwco = new RWikiCurrentObjectImpl();
+		RWikiEntity rwe = new RWikiEntityImpl(rwco);
+		rwco.setContent(sb.toString());
+		rwco.setGroupAdmin(false);
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setId("/site/sdf-sdf-sdf-sdf-sdf-sfd/SomePage/sdfgsfd/Home");
+		rwco.setOwner("The Owner");
+		rwco.setUser("The User");
+		rwco.setVersion(new Date());
+		rwco.setRevision(new Integer(5));
+
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		
+		XSLTEntityHandler xeh = new XSLTEntityHandler();
+		xeh.setLogger(new CommonsLogger());
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setXslt(transform);
+		xeh.setMinorType("pdf");
+		xeh.setDefaultStackTrace("Failed To generate Stack Trace : {0}");
+		xeh.setErrorFormat("Error encounvered performing transform : {0} \n {1}");
+		xeh.setAuthZPrefix("/wiki");
+		xeh.setAnchorLinkFormat("/access/wiki{0}.html#{1}");
+		xeh.setStandardLinkFormat("/access/wiki{0}.html");
+		xeh.setHrefTagFormat("<a href=\"{0}\" >{1}</a>");
+		xeh.setAccessURLStart("/wiki/");
+		xeh.setFeedFormat("<a href=\"{0}pdf\" target=\"feeds\"><img src=\"/library/image/sakai/pdf.gif\" border=\"0\"  alt=\"PDF\" /></a>");
+		HashMap responseHeaders = new HashMap();
+		responseHeaders.put("content-type","application/pdf");
+		xeh.setResponseHeaders(responseHeaders);
+		HashMap outputProperties = new HashMap();
+//		outputProperties.put("{http://xml.apache.org/xalan}content-handler","uk.ac.cam.caret.sakai.rwiki.component.service.impl.FOP2PDFSerializer");
+		xeh.setOutputProperties(outputProperties);
+		
+		
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		xeh.init();
+		xeh.outputContent(rwe,request,response);
+		File f = new File("testoutput.xml");
+		FileOutputStream fo = new FileOutputStream(f);
+		fo.write(response.getContentAsByteArray());
+		fo.close();
+		
+		long start = System.currentTimeMillis();
+		int iters = 10;
+		for (int j = 0; j < iters; j++) {
+				response = new MockHttpServletResponse();
+				xeh.outputContent(rwe,request,response);
+		}
+		float timet = (float) 1.0 * (System.currentTimeMillis() - start);
+		float tper = (float) (timet / (1.0 * iters));
+		logger.info("Transform and Serialize Call Cost = " + tper + " ms");
+
+	}
+	
+	public void testFOPNULL() throws Exception {
+		  OutputStream out = null;
+	        
+	        try {
+	            // Construct fop with desired output format
+	            Fop fop = new Fop(MimeConstants.MIME_RTF);
+	    
+	            // Setup output stream.  Note: Using BufferedOutputStream
+	            // for performance reasons (helpful with FileOutputStreams).
+	            out = new FileOutputStream("testfooutput.rtf");
+	            out = new BufferedOutputStream(out);
+	            fop.setOutputStream(out);
+
+	            // Setup JAXP using identity transformer
+	            TransformerFactory factory = TransformerFactory.newInstance();
+	            Transformer transformer = factory.newTransformer(); // identity transformer
+	            
+	            // Setup input stream
+	            Source src = new StreamSource(getClass().getResourceAsStream(testinputfop));
+
+	            // Resulting SAX events (the generated FO) must be piped through to FOP
+	            Result res = new SAXResult(fop.getDefaultHandler());
+	            
+	            // Start XSLT transformation and FOP processing
+	            transformer.transform(src, res);
+	            
+	            // Result processing
+	            /*
+	            FormattingResults foResults = fop.getResults();
+	            java.util.List pageSequences = foResults.getPageSequences();
+	            for (java.util.Iterator it = pageSequences.iterator(); it.hasNext();) {
+	                PageSequenceResults pageSequenceResults = (PageSequenceResults)it.next();
+	                System.out.println("PageSequence " 
+	                        + (String.valueOf(pageSequenceResults.getID()).length() > 0 
+	                                ? pageSequenceResults.getID() : "<no id>") 
+	                        + " generated " + pageSequenceResults.getPageCount() + " pages.");
+	            }
+	            
+	            System.out.println("Generated " + foResults.getPageCount() + " pages in total.");
+	            */
+
+	        } finally {
+	            out.close();
+	        }
+
+	}
+	
+
 
 }
