@@ -8278,7 +8278,7 @@ public class SiteAction extends PagedResourceActionII
 				{
 					if (params.getStrings("importSites") == null)
 					{
-						addAlert(state, rb.getString("java.atleast")+" ");
+						addAlert(state, rb.getString("java.toimport")+" ");
 					}
 					else
 					{
