@@ -5402,6 +5402,9 @@ extends PagedResourceActionII
 			state.removeAttribute(ALERT_GLOBAL_NAVIGATION);
 		}
 		
+		// remove the edit assignment id if any
+		state.removeAttribute(EDIT_ASSIGNMENT_ID);
+		
 	}	// resetNewAssignment
 	
 	/**
