@@ -3921,17 +3921,35 @@ public abstract class BaseContentService implements ContentHostingService, Cache
 		// we only access resources, not collections
 		if (ref.getId().endsWith(Entity.SEPARATOR)) throw new IdUnusedException(ref.getReference());
 
-		// need read permission
-		if (!allowGetResource(ref.getId())) throw new PermissionException(EVENT_RESOURCE_READ, ref.getReference());
-
 		BaseResourceEdit resource = null;
-		try
+
+		// need read permission
+		if (allowGetResource(ref.getId()))
 		{
-			resource = (BaseResourceEdit) getResource(ref.getId());
+			try 
+			{
+				resource = (BaseResourceEdit) findResource(ref.getId());
+			} 
+			catch (TypeException e) 
+			{
+				throw new IdUnusedException(ref.getReference());
+			}
 		}
-		catch (TypeException e)
+		else
 		{
-			throw new IdUnusedException(ref.getReference());
+			throw new PermissionException(EVENT_RESOURCE_READ, ref.getReference());
+		}
+
+		if(resource == null)
+		{
+			try
+			{
+				resource = (BaseResourceEdit) getResource(ref.getId());
+			}
+			catch (TypeException e)
+			{
+				throw new IdUnusedException(ref.getReference());
+			}
 		}
 
 		// if this entity requires a copyright agreement, and has not yet been set, get one

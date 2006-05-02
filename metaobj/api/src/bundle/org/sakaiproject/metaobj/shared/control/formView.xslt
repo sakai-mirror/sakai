@@ -58,7 +58,7 @@
    <xsl:template match="element">
       <xsl:param name="currentParent"/>
       <xsl:param name="rootNode"/>
-      <xsl:variable name="name" select="@name"/>
+       <xsl:variable name="name" select="@name"/>
       <xsl:variable name="currentNode" select="$currentParent/node()[$name=name()]"/>
       <xsl:choose>
          <xsl:when test="children">
@@ -94,7 +94,15 @@
                   </xsl:call-template>
                </td>
                <td>
-                  <xsl:value-of select="$currentNode"/>
+                   <xsl:choose>
+                       <xsl:when test="./xs:annotation/xs:documentation[@source='ospi.isRichText']">
+                           <xsl:value-of disable-output-escaping="yes" select="$currentNode"/>
+                       </xsl:when>
+                       <xsl:otherwise>
+                           <xsl:value-of select="$currentNode"/>
+                       </xsl:otherwise>
+                   </xsl:choose>
+
                </td>
             </tr>
          </xsl:otherwise>

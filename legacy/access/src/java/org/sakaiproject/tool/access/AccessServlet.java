@@ -49,14 +49,20 @@ import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.entity.HttpAccess;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.security.SecurityAdvisor;
+import org.sakaiproject.service.legacy.security.SecurityAdvisor.SecurityAdvice;
+import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.util.ParameterParser;
 import org.sakaiproject.util.Validator;
 import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.util.resource.BaseResourceProperties;
 import org.sakaiproject.util.web.Web;
 
 /**
@@ -242,16 +248,20 @@ public class AccessServlet extends VmServlet
 			String returnPath = req.getParameter(COPYRIGHT_ACCEPT_URL);
 
 			Reference aRef = EntityManager.newReference(acceptedRef);
+			
+			// add a simple security adviser to allow this user read access to the resource.
+			String userId = SessionManager.getCurrentSessionUserId();
+			SecurityService.pushAdvisor(new SimpleSecurityAdvisor(userId, ContentHostingService.EVENT_RESOURCE_READ, aRef.getId()));
 
 			// send the copyright agreement interface
-			Entity entity = aRef.getEntity();
-			if (entity == null)
+			ResourceProperties props = aRef.getProperties();
+			if (props == null)
 			{
 				sendError(res, HttpServletResponse.SC_NOT_FOUND);
 			}
 
 			setVmReference("validator", new Validator(), req);
-			setVmReference("resource", entity, req);
+			setVmReference("props", props, req);
 			setVmReference("tlang",rb,req);
 
 			String acceptPath = Web.returnUrl(req, COPYRIGHT_ACCEPT + "?" + COPYRIGHT_ACCEPT_REF + "=" + aRef.getReference()
@@ -396,7 +406,9 @@ public class AccessServlet extends VmServlet
 	protected void respondCopyrightAlertDemo(HttpServletRequest req, HttpServletResponse res) throws ServletException
 	{
 		// the context wraps our real vm attribute set
-		setVmReference("validator", new Validator(), req);
+		ResourceProperties props = new BaseResourceProperties();
+		setVmReference("props", props, req)
+;		setVmReference("validator", new Validator(), req);
 		setVmReference("sample", Boolean.TRUE.toString(), req);
 		setVmReference("tlang", rb, req);
 		res.setContentType("text/html; charset=UTF-8");
@@ -526,6 +538,34 @@ public class AccessServlet extends VmServlet
 			}
 
 			return buf.toString();
+		}
+	}
+	
+	/** 
+	 * A simple SecurityAdviser that can be used to override permissions on one reference string  
+	 * for one user for one function.
+	 */
+	public class SimpleSecurityAdvisor implements SecurityAdvisor
+	{
+		protected String m_userId; 
+		protected String m_function; 
+		protected String m_reference;
+		
+		public SimpleSecurityAdvisor(String userId, String function, String reference)
+		{
+			m_userId = userId;
+			m_function = function;
+			m_reference = reference;
+		}
+		
+		public SecurityAdvice isAllowed(String userId, String function, String reference)
+		{
+			SecurityAdvice rv = SecurityAdvice.PASS;
+			if(m_userId.equals(userId) && m_function.equals(function) && m_reference.equals(reference))
+			{
+				rv = SecurityAdvice.ALLOWED;
+			}
+			return rv;
 		}
 	}
 }
