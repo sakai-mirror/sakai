@@ -12,9 +12,9 @@
 
 <f:view>
 <sakai:view_container title="#{msgs.title}">
-  <h2>#{msgs.unauthorized}</h2>
-	<h:outputLink value="/portal">
-	  <f:verbatim>#{msgs.return_to_portal}</f:verbatim>
+  <h2><h:outputText value="#{msgs.unauthorized}" /></h2>
+	<h:outputLink value="#{SuTool.portalUrl}" target="_top">
+	  <h:outputText value="#{msgs.return_to_portal}" />
 	</h:outputLink>
 </sakai:view_container>
 </f:view>

@@ -30,6 +30,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.util.java.ResourceLoader;
 
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.authzGroup.GroupProvider;
 
@@ -69,7 +70,9 @@ public class SuTool
 	private SecurityService M_security = org.sakaiproject.service.legacy.security.cover.SecurityService.getInstance();
 
 	private SessionManager M_session = org.sakaiproject.api.kernel.session.cover.SessionManager.getInstance();
-
+	
+	private ServerConfigurationService M_config =  org.sakaiproject.service.framework.config.cover.ServerConfigurationService.getInstance();
+	
 	// getters for these vars
 	private String username;
 
@@ -192,6 +195,10 @@ public class SuTool
 	{
 		return username;
 	}
+	
+	public String getPortalUrl() {
+	    return M_config.getPortalUrl(); 
+	    }
 
 	public void setUsername(String username)
 	{
