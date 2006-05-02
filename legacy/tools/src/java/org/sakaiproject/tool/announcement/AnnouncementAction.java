@@ -163,7 +163,7 @@ extends PagedResourceActionII
 	
 	private static final String SC_TRUE = "true";
 	private static final String SC_FALSE = "false";
-	private static final String PUBLIC_DISPLAY_BOOLEAN = "publicDisplayBoolean";
+	private static final String PUBLIC_DISPLAY_DISABLE_BOOLEAN = "publicDisplayBoolean";
 	
 	/**
 	 * Used by callback to convert channel references to channels.
@@ -1712,7 +1712,7 @@ extends PagedResourceActionII
 		
 		context.put("announceToGroups", state.getTempAnnounceToGroups());
 		
-		context.put("publicDisable", sstate.getAttribute(PUBLIC_DISPLAY_BOOLEAN));
+		context.put("publicDisable", sstate.getAttribute(PUBLIC_DISPLAY_DISABLE_BOOLEAN));
 		
 		String template = (String) getContext(rundata).get("template");
 		return template + "-revise";
@@ -3702,12 +3702,26 @@ extends PagedResourceActionII
 			loadDisplayOptionsFromPortletConfig(portlet, annState);
 		}
 		
+
 		// default is to not disable the public selection - FALSE
-		String publicDisplayDisable = StringUtil.trimToZero(ServerConfigurationService.getString("announcements.disable.public", SC_FALSE));
-		if (publicDisplayDisable.equals(SC_TRUE))
-			state.setAttribute(PUBLIC_DISPLAY_BOOLEAN, Boolean.TRUE);
-		else
-			state.setAttribute(PUBLIC_DISPLAY_BOOLEAN, Boolean.FALSE);
+		state.setAttribute(PUBLIC_DISPLAY_DISABLE_BOOLEAN, Boolean.FALSE);
+		
+		Site site = null;
+		try
+		{
+			site = SiteService.getSite(PortalService.getCurrentSiteId());
+			String[] disableStrgs = ServerConfigurationService.getStrings("prevent.public.announcements");
+			if ( disableStrgs != null )
+			{
+				for ( int i = 0; i< disableStrgs.length; i++ )
+				{
+					if ((StringUtil.trimToZero(disableStrgs[i])).equals(site.getType()))
+						state.setAttribute(PUBLIC_DISPLAY_DISABLE_BOOLEAN, Boolean.TRUE);;
+				}
+			}
+		}
+		catch (IdUnusedException e){}
+		catch (NullPointerException e){}
 		
 	} // initState
 
