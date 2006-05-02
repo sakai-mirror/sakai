@@ -51,6 +51,7 @@ import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.SessionBindingEvent;
 import org.sakaiproject.api.kernel.session.SessionBindingListener;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.exception.EmptyException;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
@@ -89,6 +90,7 @@ import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.event.Event;
 import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
 import org.sakaiproject.service.legacy.id.cover.IdService;
+import org.sakaiproject.service.legacy.notification.NotificationService;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -3316,7 +3318,7 @@ public abstract class BaseAssignmentService
 							List nAttachments = m_entityManager.newReferenceList();
 							for (int n=0; n<oAttachments.size(); n++)
 							{
-								Reference oAttachment = (Reference) oAttachments.get(n);
+								Reference oAttachmentRef = (Reference) oAttachments.get(n);
 								String oAttachmentId = ((Reference) oAttachments.get(n)).getId();
 								if (oAttachmentId.indexOf(fromContext) !=-1)
 								{
@@ -3327,15 +3329,59 @@ public abstract class BaseAssignmentService
 										ContentResource attachment = ContentHostingService.getResource(nAttachmentId);
 										nAttachments.add(m_entityManager.newReference(attachment.getReference()));
 									}
+									catch (IdUnusedException e)
+									{
+										try
+										{
+											ContentResource oAttachment = ContentHostingService.getResource(oAttachmentId);
+											try
+											{
+												if (ContentHostingService.isAttachmentResource(nAttachmentId))
+												{
+													// add the new resource into attachment collection area
+													ContentResource attachment = ContentHostingService.addAttachmentResource(oAttachment.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME), 
+																								PortalService.getCurrentSiteId(),
+																								ToolManager.getTool("sakai.assignment.grades").getTitle(), 
+																								oAttachment.getContentType(),
+																								oAttachment.getContent(), 
+																								oAttachment.getProperties());
+													// add to attachment list
+													nAttachments.add(m_entityManager.newReference(attachment.getReference()));
+												}
+												else
+												{
+													// add the new resource into resource area
+													ContentResource attachment = ContentHostingService.addResource(oAttachment.getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME),
+																													PortalService.getCurrentSiteId(), 
+																													1, 
+																													oAttachment.getContentType(),
+																													oAttachment.getContent(),
+																													oAttachment.getProperties(),
+																													NotificationService.NOTI_NONE);
+													// add to attachment list
+													nAttachments.add(m_entityManager.newReference(attachment.getReference()));
+												}
+											}
+											catch (Exception eeAny) 
+											{
+												//  if the new resource cannot be added
+												m_logger.warn(this + " cannot add new attachment with id=" + nAttachmentId);
+											}
+										}
+										catch (Exception eAny)
+										{
+											// if cannot find the original attachment, do nothing.
+											m_logger.warn(this + " cannot find the original attachment with id=" + oAttachmentId);
+										}
+									}
 									catch (Exception any)
 									{
-										
+										m_logger.warn(this + any.getMessage());
 									}
-									
 								}
 								else
 								{
-									nAttachments.add(oAttachment);
+									nAttachments.add(oAttachmentRef);
 								}
 							}
 							nContent.replaceAttachments(nAttachments);
