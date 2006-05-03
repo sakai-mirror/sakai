@@ -3680,6 +3680,9 @@ extends PagedResourceActionII
 							{
 								// no assignment committed yet. Use user input data
 								integrateGradebook(state, aReference, addUpdateRemoveAssignment, title, Integer.parseInt (gradePoints), dueTime, null, null);
+
+                                                                // add all existing grades, if any, into Gradebook
+                                                                integrateGradebook(state, aReference, null, null, -1, null, null, "update");
 							}
 							catch (NumberFormatException nE)
 							{
