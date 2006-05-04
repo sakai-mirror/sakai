@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+   <bean id="temporary-placeholder" class="java.lang.Long">
+      <constructor-arg index="0" type="java.lang.String">
+         <value>20000000</value>
+      </constructor-arg>
+   </bean>
+
+   <bean id="org.sakaiproject.service.framework.log.Logger"
+      class="org.sakaiproject.component.framework.log.Jdk14Logger"
+      init-method="init"
+      destroy-method="destroy"
+      singleton="true">
+      <property name="filePath">
+         <value>/usr/local/sakai/logs/sakai%u.log</value>
+      </property>
+      <property name="level">
+         <value>info</value>
+      </property>
+   </bean>
+
+
+
+   <!--
+      <bean id="org.sakaiproject.service.legacy.resource.DuplicatableToolService.presentationTemplateManager"
+            class="org.sakaiproject.metaobj.worksite.mgt.impl.ResourceServiceTranslator"
+            init-method="init"
+            destroy-method="destroy"
+            singleton="true">
+          <property name="resourceServiceName"><value>presentationManager</value></property>
+         <property name="toolPermissionManagerName">
+            <value>org.sakaiproject.metaobj.security.mgt.ToolPermissionManager.presentationTemplate</value>
+         </property>
+      </bean>
+   -->
+</beans>
