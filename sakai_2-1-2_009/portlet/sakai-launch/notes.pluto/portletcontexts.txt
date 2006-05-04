@@ -1,3 +1,0 @@
-/testsuite
-/pluto
-/sakai-portlets
