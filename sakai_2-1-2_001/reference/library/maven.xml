@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+        xmlns:j="jelly:core"
+        xmlns:license="license"
+        xmlns:util="jelly:util"
+        xmlns:ant="jelly:ant"
+        xmlns:artifact="artifact"
+        xmlns:maven="jelly:maven"
+        default="sakai:build">
+
+<preGoal name="war:webapp">
+    
+  <!--  Copy Samigo to tomcat's webapps directory -->
+  <ant:copy todir="${maven.tomcat.home}/webapps/ROOT"
+        file="src/webapp/icon/favicon.ico" overwrite="true" verbose="true" />
+
+</preGoal>
+
+</project>

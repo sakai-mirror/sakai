@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="**/.DS_Store" kind="src" path="courier/src/java"/>
+	<classpathentry excluding="**/.DS_Store" kind="src" path="i18n/src/java"/>
+	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="src" path="/util"/>
+	<classpathentry kind="src" path="/kernel"/>
+	<classpathentry kind="src" path="/legacy-service"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
