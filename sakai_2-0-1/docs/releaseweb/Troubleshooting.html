@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>Troubleshooting Guide</title>
+</head>
+<body>
+<h3 style="text-align: center;">Troubleshooting
+Guide
+</h3>
+<p>
+This guide is still in its infancy, focusing on a handful of the most
+common issues that plague novice deployers of Sakai, and a couple of
+the basic methods used to diagnose problems and delve more deeply into
+understanding the software.</p>
+<p></p>
+<h3>Table of Contents</h3>
+<ol>
+  <a href="#maven">Maven
+errors</a> <li>jar download failures</li>
+  <li>Tomcat write permissions</li>
+  <li>Beta versions of Maven</li>
+</ol>
+<ol>
+  <a href="#logs">Tomcat
+Logs</a> <li>Log
+overview</li>
+  <li>Finding the logs</li>
+  <li>Watching &nbsp;logs at
+startup</li>
+  <li>Log configuration</li>
+  <li>Other Logs</li>
+</ol>
+<ol>
+  <a href="#debugging">Remote
+Debugging
+with Eclipse</a>
+</ol>
+<!-- Guide Contents -->
+<h3><a name="maven"></a>Maven
+Errors</h3>
+<p>*NOTE: See the maven.pdf resource posted to the Resources area of
+the sakai-dev site on <a href="http://collab.sakaiproject.org">http://collab.sakaiproject.org</a>
+for a more thorough examination of how maven is used with Sakai</p>
+<ol>
+  <li>
+    <p style="font-weight: bold;">jar
+download failures</p>
+    <p>A first build of Maven on a fresh installation will warn of
+numerous jar download failures during the clean phase. This is not a
+problem. Even when doing a clean, maven tries to download dependencies.
+When the repository is initially empty maven can freak out during the
+clean phase while looking for jars that the impending build phase has
+yet to build. Once they are built, maven clean is perfectly happy next
+"clean build" cycle.</p>
+  </li>
+  <li>
+    <p style="font-weight: bold;">Tomcat
+write permissions</p>
+    <p>The most common maven build failures stem from the user running
+maven not having write access to the Tomcat directories being deployed
+to. Maven's error messages should make this fairly plain when it
+happens, and will even specify which copy or delete operation failed.</p>
+  </li>
+  <li>
+    <p style="font-weight: bold;">Beta
+versions of Maven</p>
+    <p>Problems have been reported using some of the latest beta
+versions of maven (currently 1-1-beta). Maven 1.0.2 has been working
+reliably with Sakai for over a year, and we recommend it over any new,
+non-stable versions.</p>
+  </li>
+</ol>
+<h3><a name="logs"></a>Tomcat
+Logs</h3>
+<ol>
+  <li>
+    <p style="font-weight: bold;">Log
+overview</p>
+    <p>Once you have Sakai
+installed, configured and started, you can monitor Sakai by watching
+the logs. The log level for the standard Sakai source code and the demo
+is set to show info and warnings only. If you need to see more
+information, you can change
+the logging level to enable debug messages as well for all of Sakai or
+merely specific components. Sakai uses log4j for logging: see the log4j
+documentation for more information about how to configure it. Watch for
+the WARN: messages. There are going to be some "normal" ones
+at startup, and some will likely slip by at runtime, but any warning is
+potentially something you might want to check out. </p>
+  </li>
+  <li><span style="font-weight: bold;">Finding the Logs</span>
+    <p>On Mac and *nix systems the
+most important log is catalina.out in $CATALINA_HOME/logs.</p>
+    <p>On Windows systems the
+situation is a little more complicated.
+The logs are also stored in $CATALINA_HOME\logs, but there are more of
+them:</p>
+jakarta_service_%date%.log<br>
+admin.%date%.log<br>
+catalina.%date%.log<br>
+host-manager.%date%.log<br>
+localhost.%date%.log<br>
+manager.%date%.log<br>
+    <p>The&nbsp;Windows
+equivalent of catalina.out is the
+catalina.%date%.log, so focus on that one.</p>
+  </li>
+  <li> <span style="font-weight: bold;">Watching logs at startup</span>
+    <p>Tomcat can take a long time
+to load the Sakai application, and
+it's often a good idea to watch the log in real-time as Tomcat comes
+up. You can watch for errors, and it will also allow you to be sure
+when Tomcat
+is done starting up. To do so on Mac or *nix systems you can run the
+command:</p>
+    <pre>tail -f $CATALINA_HOME/logs/catalina.out</pre>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Log Configuration</span></p>
+    <p>To change the logging for
+Sakai, you need to change Sakai source code and re-deploy sakai. The
+file you need to change is:</p>
+    <pre> sakai-src/kernel/log-configure/src/conf/log4j.properties</pre>
+    <p>The section that pertains
+to Sakai as distributed is:</p>
+    <pre> log4j.logger.org.sakaiproject=INFO</pre>
+    <p>To turn on debug logging
+for all of Sakai, change that to:</p>
+    <pre> log4j.logger.org.sakaiproject=DEBUG</pre>
+    <p>To turn on debugging only
+for one part of Sakai, add a line like the one below:</p>
+    <pre>log4j.logger.org.sakaiproject=INFO<br>log4j.logger.org.sakaiproject.component.framework.sql.BasicSqlService=DEBUG</pre>
+    <p>This, for example, will
+leave most of Sakai at INFO, but the legacy SQL service will generate
+DEBUG level messages. </p>
+  </li>
+  <li> <span style="font-weight: bold;">Other logs</span>
+    <p>The SMTP server logs from
+Sakai will be written to the $CATALINA_HOME/sakai/logs directory. </p>
+  </li>
+</ol>
+<br>
+<h3><a name="debugging"></a>Remote
+Debugging with Eclipse</h3>
+<p>Here is a very brute force and
+time consuming method which has the benefit of being very
+"instructional." In a slow way.</p>
+<p>Load Sakai into your Eclipse
+environment (get an Eclipse book if you need to), then start your
+Tomcat this way:</p>
+<pre>catalina.sh jpda start</pre>
+<p>This configures the JVM to open
+a debugging port (8000)
+[Security warning: anyone can now access this Sakai instance using the
+following technique, so it's strongly suggested that you consider
+changing ports. Take a look at the
+catalina.sh
+script for more details.]</p>
+<p>Then in Eclipse choose:
+</p>
+<ol>
+  <li>Debug -&gt; Remote java
+application -&gt; New</li>
+  <li>Give it a name</li>
+  <li> In the Source tab select Add</li>
+  <li> Select Java Project from
+the Add Source popup</li>
+  <li> In the Project Selection
+popup select all the Sakai2 projects you created above</li>
+  <li> Close all that, getting
+back to the Debug setup window</li>
+  <li> Double-check that the
+connection type is appropriate. Socket attach should work.</li>
+  <li> Double-check the host name
+and port.</li>
+  <li> Then click the debug
+button...</li>
+</ol>
+<p>Nothing immediately happens,
+but this is OK. Root around the code in Eclipse to find the
+RequestFilter over in the
+kernel project.
+Set a break point in the doFilter. Near the top will do.</p>
+<p>Now access your site via a web
+browser. At this point you can have the pleasure of walking through the
+Sakai request using
+the Eclipse debugging tools.</p>
+<p>Eclipse may well shudder a
+bit and ask if you would like to continue in the debugging perspective.
+You do. In this perspective you will see some arrows that point down
+(enter fcn call) and sort of loop over (skip entry, go to next
+stmt).&nbsp;Check that Eclipse book again if you've not used this
+part
+of
+Eclipse.
+</p>
+<p>In practice you'll more often
+set these break points far far far further down
+the call stack; you'll see why after you grovel through this a few
+times.
+</p>
+</body>
+</html>

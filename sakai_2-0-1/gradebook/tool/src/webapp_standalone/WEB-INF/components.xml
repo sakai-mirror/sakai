@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- Gradebook Service -->
+
+	<bean id="org_sakaiproject_service_gradebook_GradebookService"
+		class="org.sakaiproject.component.gradebook.GradebookServiceHibernateImpl">
+		<property name="sessionFactory"><ref bean="gradebookSessionFactory"/></property>
+		<property name="gradebookManager">
+			<ref bean="org_sakaiproject_tool_gradebook_business_GradebookManager" />
+		</property>
+		<property name="gradableObjectManager">
+			<ref bean="org_sakaiproject_tool_gradebook_business_GradableObjectManager" />
+		</property>
+		<property name="gradeManager">
+			<ref bean="org_sakaiproject_tool_gradebook_business_GradeManager" />
+		</property>
+		<property name="authn">
+			<ref bean="org_sakaiproject_tool_gradebook_facades_Authn" />
+		</property>
+		<property name="authz">
+			<ref bean="org_sakaiproject_tool_gradebook_facades_Authz" />
+		</property>
+	</bean>
+
+	<!-- Gradebook Manager -->
+
+	<bean id="org_sakaiproject_tool_gradebook_business_GradebookManager"
+		class="org.sakaiproject.tool.gradebook.business.impl.GradebookManagerHibernateImpl">
+		<property name="sessionFactory"><ref bean="gradebookSessionFactory"/></property>
+		<property name="courseManagement">
+			<ref bean="org_sakaiproject_tool_gradebook_facades_CourseManagement" />
+		</property>
+		<property name="gradableObjectManager">
+			<ref bean="org_sakaiproject_tool_gradebook_business_GradableObjectManager" />
+		</property>
+		<property name="gradeManager">
+			<ref bean="org_sakaiproject_tool_gradebook_business_GradeManager" />
+		</property>
+	</bean>
+
+
+	<!-- Gradable Object Manager -->
+
+	<bean id="org_sakaiproject_tool_gradebook_business_GradableObjectManager"
+		class="org.sakaiproject.tool.gradebook.business.impl.GradableObjectManagerHibernateImpl">
+		<property name="sessionFactory"><ref bean="gradebookSessionFactory"/></property>
+		<property name="courseManagement">
+			<ref bean="org_sakaiproject_tool_gradebook_facades_CourseManagement" />
+		</property>
+	</bean>
+
+	<!-- Grade Manager -->
+
+	<bean id="org_sakaiproject_tool_gradebook_business_GradeManager"
+		class="org.sakaiproject.tool.gradebook.business.impl.GradeManagerHibernateImpl">
+		<property name="sessionFactory"><ref bean="gradebookSessionFactory"/></property>
+		<property name="gradableObjectManager">
+			<ref bean="org_sakaiproject_tool_gradebook_business_GradableObjectManager" />
+		</property>
+		<property name="authn">
+			<ref bean="org_sakaiproject_tool_gradebook_facades_Authn" />
+		</property>
+	</bean>
+
+	<!-- External Course Management Service -->
+
+	<bean id="org_sakaiproject_tool_gradebook_facades_CourseManagement"
+		class="org.sakaiproject.tool.gradebook.facades.standalone.CourseManagementStandaloneImpl">
+		<property name="sessionFactory"><ref bean="gradebookSessionFactory"/></property>
+	</bean>
+
+	<!-- External Authn Service -->
+
+	<bean id="org_sakaiproject_tool_gradebook_facades_Authn"
+		class="org.sakaiproject.tool.gradebook.facades.test.AuthnWebTestImpl">
+	</bean>
+
+	<!-- External Authz Service -->
+
+	<bean id="org_sakaiproject_tool_gradebook_facades_Authz"
+		class="org.sakaiproject.tool.gradebook.facades.standalone.AuthzHibernateImpl">
+
+		<!-- This makes the test user an instructor in the test implementation -->
+		<!-- The AuthzTest class depends on this value -->
+		<!-- Remove this property once a "real" implementation is available -->
+		<!-- property name="instructor"><value>true</value></property -->
+		<property name="sessionFactory"><ref bean="gradebookSessionFactory"/></property>
+	</bean>
+
+	<!-- External ContextManagement Service -->
+
+	<bean id="org_sakaiproject_tool_gradebook_facades_ContextManagement"
+		class="org.sakaiproject.tool.gradebook.facades.standalone.ContextManagementStandaloneImpl">
+	</bean>
+
+	<!-- Framework Manager when running standalone -->
+	<bean id="org_sakaiproject_tool_gradebook_standalone_FrameworkManager"
+		class="org.sakaiproject.tool.gradebook.standalone.impl.FrameworkManagerImpl">
+		<property name="sessionFactory"><ref bean="gradebookSessionFactory"/></property>
+	</bean>
+
+</beans>

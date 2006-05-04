@@ -1,0 +1,772 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <title>Source Install Guide</title>
+</head>
+<body>
+<h3 style="text-align: center;">Source
+Installation Guide
+</h3>
+<p>
+</p>
+<h3>Source Installation
+Introduction:</h3>
+The Sakai
+"Source" installation includes all the source code required for fully
+customizing, configuring, and building Sakai.&nbsp; This is the
+recommended installation type for any production installation.
+&nbsp;The prerequisites include Java, Tomcat, Maven, and almost
+certainly another database (like the demo, the source install uses
+HSQLDB
+out of the box, but this is not recommended for production.
+&nbsp;You may configure Sakai for either Oracle or MySQL - see
+below for details).
+<br>
+<p></p>
+<h3>Table of Contents</h3>
+<ol>
+  <a href="#Environment">Set
+Up Build Environment</a> <li>Verify
+Java installation
+(and install if necessary)</li>
+  <li>Set environment variables</li>
+  <li>Download
+and install Tomcat
+5.5</li>
+  <li>Tomcat configuration</li>
+  <li>Download and install Maven</li>
+  <li>Configure Maven</li>
+  <li>Test Maven</li>
+</ol>
+<ol>
+  <a href="#Deploy">Deploy
+Sakai Source</a> <li>Download
+source</li>
+  <li>Unpack source</li>
+  <li>Deploy Sakai</li>
+</ol>
+<ol>
+  <a href="#Configuration">Post-Installation
+Configuration</a> <li>Create
+sakai folder for properties files</li>
+  <li> The
+sakai.properties file</li>
+  <li>Personalizing Sakai</li>
+  <li>Email configuration</li>
+  <li>Test Sakai</li>
+  <li>JVM tuning (optional)</li>
+</ol>
+<ol>
+  <a href="#Database">Database
+Configuration</a> <li>Deploy
+drivers</li>
+  <li>Create
+Sakai database and
+user</li>
+  <li>The placeholder.properties
+file</li>
+  <li>sakai.properties database
+properties</li>
+  <li>Special database
+configuration (including upgrade issues)</li>
+</ol>
+<p>*NOTE:
+For&nbsp;configuration issues that are not part of a basic, initial
+installation, but likely concerns for any institution working toward
+production,
+see the <a href="ProdConfig.html">Production
+Configuration
+Guide</a>.</p>
+<!-- Guide Contents -->
+<a name="Environment"></a><br>
+<h3>Set
+up Build Environment</h3>
+<ol>
+  <li><span style="font-weight: bold;">Verify Java Installation
+(and install if needed)</span>
+    <p>Check to see if you have
+Java 1.4 installed on your system by running the
+following commands:</p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <th colspan="2">Sample
+Commands</th>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Windows:</span></td>
+          <td>
+          <pre>C:\&gt; java -version<br>Java(TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-141.3)<br>Java HotSpot(TM) Client VM (build 1.4.2-38, mixed mode)</pre>
+          </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Macintosh/Linux/Solaris:</span>
+          </td>
+          <td>
+          <pre>$ java -version<br>java version "1.4.2_04"<br>Java(TM) 2 Runtime Environment, Standard Edition (build 1.4.2_04-141.3)<br>Java HotSpot(TM) Client VM (build 1.4.2-38, mixed mode)</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+*NOTE: It is possible, but not recommended, to use Java 1.5
+    <p> If
+you do not have the
+correct version of Java installed, install
+the Java Software
+Development Kit (SDK) from&nbsp;<a href="http://java.sun.com/j2se/">http://java.sun.com/j2se/1.4.2/download.html</a></p>
+    <p>Note: Java is already
+installed on Mac OS/X computers. </p>
+  </li>
+  <li> <span style="font-weight: bold;">Set
+environment variables </span>
+    <p>In the UNIX operating
+systems, you typically modify a startup
+file like ~/.bash_login to set and export these shell variables. In
+Windows XP, you go to </p>
+    <p>Start -&gt; Control
+Panel -&gt; System
+-&gt;
+Advanced -&gt; Environment Variables -&gt; New </p>
+    <p> in order to create or
+modify the
+named variables.</p>
+    <p>Set the JAVA_HOME
+environment variable to point to the base directory
+of your Java installation. This will enable Tomcat to find the right
+Java installation automatically. This may already be set up for you by
+your Java SDK installation.</p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <th colspan="2">Sample
+Commands</th>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Windows:</span></td>
+          <td>Set the environment
+variable JAVA_HOME to "C:\j2sdk1.4.2_04" (do not
+include the quotes) </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Mac:</span>
+          </td>
+          <td>
+          <pre>export JAVA_HOME=/Library/Java/Home</pre>
+          </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Linux:</span>
+          </td>
+          <td>
+          <pre>export JAVA_HOME=/usr/local/java-current</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Extend the PATH variable so
+as to include the Java commands.</p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <th colspan="2">Sample
+Commands</th>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Windows:</span></td>
+          <td>Append the string
+";C:\j2sdk1.4.2_04\bin" (include the semicolon but
+not the quotes)
+to the end of the System variable named Path. </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Mac:</span>
+          </td>
+          <td>not necessary</td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">*nix:</span>
+          </td>
+          <td>
+          <pre>export PATH=$PATH:$JAVA_HOME/bin/</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>You should test that these
+variables are set correctly. &nbsp;In
+both
+Windows XP and *nix operating systems you can simply start a new shell
+and type the 'set' command to see your environment variables.</p>
+    <p>Once the variables are set
+properly, run the java -version command once
+more as a final check. </p>
+    <p>You can also look for the
+Sun Java Installation Instructions page at
+the Java web site for further details.</p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Download
+and Install Tomcat 5.5 binary (and compatibility patch)</span></p>
+    <p>The latest stable version
+of Tomcat 5.5 (currently 5.5.9) can be downloaded as a binary
+from:</p>
+    <p><a
+ href="http://jakarta.apache.org/site/downloads/downloads_tomcat-5.cgi">http://jakarta.apache.org/site/downloads/downloads_tomcat-5.cgi</a></p>
+    <p>If you're using Java 1.4
+(which is recommended) be sure to also download the <span
+ style="font-weight: bold;">5.5.9_Compat</span>
+archive.</p>
+    <p>Choose a location to
+install Tomcat, and unpack both the Tomcat binary and the compatibility
+patch there in the same location.
+The compatibility patch will simply overlay your Tomcat directories
+with the appropriate files. From this point forward these instructions
+will refer to the top-level Tomcat directory (e.g.
+jakarta-tomcat-5.5.9)
+as $CATALINA_HOME. You may set this as an environment variable for
+convenience sake, but this is not required. &nbsp;Make sure that
+you have write permissions to the Tomcat files and directories.</p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Tomcat Configuration</span></p>
+    <p>Sakai supports UTF-8
+allowing for non-Roman characters. In order for all of the Sakai tools
+to properly handle UTF-8 non-Roman characters, Tomcat must be
+configured to accept UTF-8 URLs. UTF-8 is the offical standard for
+URLs, however Tomcat ships with ISO-8859-1 as the default URL encoding.
+To change this setting, edit $CATALINA_HOME/conf/server.xml. Add the
+attribute
+URIEncoding="UTF-8" to the <connector>
+element. For example:</connector></p>
+    <pre>&lt;Connector<br>port="8080" maxThreads="150" minSpareThreads="25" maxSpareThreads="75"<br>enableLookups="false" redirectPort="8443" acceptCount="100"<br>debug="0" connectionTimeout="20000" disableUploadTimeout="true"<br>URIEncoding="UTF-8"/&gt;<br></pre>
+  </li>
+  <p>If you want to run Tomcat on
+different ports than the defaults, this would also be a good time to
+make those changes in the server.xml file. See Tomcat documentation for
+more details.</p>
+  <p>If you're going to run Tomcat
+in isolation (i.e. if you're not going to configure it to run with
+Apache) then you'll want to make a further minor Tomcat change
+that may spare some confusion later. In order to make sure that
+entering the URL to your Sakai server will redirect to the Sakai
+application appropriately,
+you'll need to copy an index.html file to webapps/ROOT. If you don't,
+then you'll have to append '/portal' to the end of your URL in the
+browser when you wish to reach the Sakai application (this is because
+the ROOT webapp is still Tomcat's default webapp). This index.html file
+should look like this:</p>
+  <pre>&lt;html&gt;<br>&lt;head&gt;<br>&lt;meta http-equiv="refresh" content="0;url=/portal"&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>redirecting to /portal ...<br>&lt;/body&gt;<br>&lt;/html&gt;<br><br></pre>
+  <p>If
+you are going to connect Tomcat with Apache, you can handle this as a
+matter
+of Apache configuration.</p>
+  <li>
+    <p><span style="font-weight: bold;">Download Maven</span></p>
+    <p>Maven is the build tool
+used by Sakai, and the latest stable release (currently 1.0.2) can be
+downloaded from: </p>
+    <p><a href="http://maven.apache.org/start/download.html">http://maven.apache.org/start/download.html</a></p>
+    <p>Choose a location to
+install Maven, and unpack the archive there. You will have a top-level
+directory named maven-&lt;VERSION&gt;
+(e.g. maven-1.0.2).</p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Configure Maven</span></p>
+    <p>To use Maven you'll need to
+set two environment variables and create a local repository using a
+script provided by Maven.</p>
+    <p>First, define the
+MAVEN_HOME environment variable which
+is the directory where you just unpacked the Maven install archive. You
+will also need to add MAVEN_HOME/bin to your path so that you can run
+the scripts provided with Maven. </p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <th colspan="2">Sample
+Commands</th>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Windows:</span></td>
+          <td>Create a new
+MAVEN_HOME environment variable to "C:\maven-1.0.2"<br>
+Append to the PATH variable ";C:\maven-1.0.2\bin" </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Mac/*nix:</span>
+          </td>
+          <td>
+          <pre>export MAVEN_HOME=/usr/local/maven<br>export PATH=$PATH:$MAVEN_HOME/bin</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p> Next, you should create
+your local repository by running the following command:</p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <th colspan="2">Sample
+Commands</th>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Windows:</span></td>
+          <td>
+          <pre>%MAVEN_HOME%\bin\install_repo.bat %HOMEDRIVE%%HOMEPATH%\.maven\repository</pre>
+          </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Mac/*nix:</span>
+          </td>
+          <td>
+          <pre>$MAVEN_HOME/bin/install_repo.sh $HOME/.maven/repository</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Finally, you'll need to
+create a properties file in your home directory which will configure
+Maven for your Sakai build. Simply create a new text file with the
+filename <span style="font-weight: bold;">build.properties</span>
+in your home
+directory, and paste in the following contents:</p>
+    <pre>maven.repo.remote =http://www.ibiblio.org/maven/,http://cvs.sakaiproject.org/maven/<br>maven.tomcat.home=/usr/local/tomcat/</pre>
+    <p>*WARNING: Do not omit the
+trailing slashes, and be sure to change the value of <span
+ style="font-weight: bold;">maven.tomcat.home</span>
+to match the path to your Tomcat installation</p>
+    <p>If you are running on
+Windows, special care is needed in identifying
+your tomcat home. Maven wants Unix-style forward slashes, "/", and is
+confused by Windows-style backslashes "\". If you have your tomcat
+located in "c:\tomcat", you need to identify it like this:</p>
+    <pre>maven.tomcat.home = c:/tomcat/</pre>
+  </li>
+  <li>
+    <p style="font-weight: bold;">Test
+Maven</p>
+    <p> To confirm that you can
+start Maven, run the command:</p>
+    <pre>maven -v</pre>
+    <p>This should start maven,
+and cause it to report its version.</p>
+  </li>
+</ol>
+*NOTE: See the maven.pdf resource posted to the Resources area of the
+sakai-dev site on <a href="http://collab.sakaiproject.org/">http://collab.sakaiproject.org</a>
+for a more thorough examination of how maven is used with Sakai.
+<ol>
+</ol>
+<br>
+<h3><a name="Deploy"></a>Deploy
+Sakai Source</h3>
+<ol>
+  <li>
+    <p><span style="font-weight: bold;">Download Source</span></p>
+    <p>Download the Sakai Source
+archive from:</p>
+    <p><a href="http://cvs.sakaiproject.org/release/2.0.1/">http://cvs.sakaiproject.org/release/2.0.1/</a></p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Unpack
+Source Archive</span></p>
+    <p>Choose a location to unpack
+the Sakai source (we recommend somewhere in your home directory or one
+of its subdirectories), and when you unpack it you will see a directory
+named sakai-src.</p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Run Maven</span></p>
+    <p>From within sakai-src, run
+the command:</p>
+    <pre>maven sakai</pre>
+    <p>This will run for a few
+minutes with very verbose output. It will download any necessary jars
+into the local repository (do not be too concerned with reported jar
+download failures for your first build. &nbsp;This is normal for a
+new install, and maven will later build many of the required jars.
+&nbsp;Subsequent builds should not report these failures), compile
+the Sakai code, and deploy Sakai to Tomcat
+in the form of .war files in the $CATALINA_HOME/webapps directory. If
+it completes with the message BUILD SUCCESSFUL, you should be able to
+move on to the next step. If you are greeted with the report BUILD
+FAILED read the accompanying error message carefully to troubleshoot
+(see the <a href="Troubleshooting.html">Troubleshooting
+Guide</a>). </p>
+    <p>You will probably be
+able to start up Tomcat and run Sakai with the default configuration at
+this point,
+but it might be better to take care of some basic configuration first.</p>
+  </li>
+</ol>
+<br>
+<h3><a name="Configuration"></a>Post-Installation
+Configuration</h3>
+<ol>
+This set of instructions covers all the basic configuration details
+apart from database configuration, which deserves its own category
+(below). &nbsp;For more optional configurations that may be
+significant for institutions working toward production (including
+enterprise
+integration) see the <a href="ProdConfig.html">Production
+Configuration Guide</a>. <li>
+    <p><span style="font-weight: bold;">Create sakai folder for
+properties files</span></p>
+    <p>Sakai runs with a default
+set of properties for its various components. &nbsp;To override
+them you'll want to specify them in a sakai.properties file which
+should be located in $CATALINA_HOME/sakai by default. &nbsp;This
+directory is not created by maven, so you'll have to do so
+manually.
+&nbsp;Once this directory is created, there are several
+*.properties files you can place inside which can override default
+properties.&nbsp;</p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">The sakai.properties file</span></p>
+    <p>The main configuration file
+for Sakai is called sakai.properties, and you can either create it from
+scratch or copy in a known working copy. A sample sakai.properties file
+which self-documents many of the standard
+properties in its comments can be found in:</p>
+    <pre>sakai-src/docs/sakai.properties</pre>
+    <p>sakai.properties can define
+two different types of values.
+&nbsp;The first
+type is those values that are made available to the running code from
+the Sakai
+configuration service. &nbsp;A line of sakai.properties sets this
+sort
+of value if it has the form:&nbsp;</p>
+    <pre>name=value</pre>
+    <p>The second type of
+sakai.properties value overrides the
+configuration defaults of individual sakai components. &nbsp;These
+defaults are set in the components.xml file of any particular
+component, and so configuration can be achieved by also editing a large
+number of components.xml files, but it's a best practice - for reasons
+that should be obvious - to keep all configuration changes in
+sakai.properties. &nbsp;Override values have the form:</p>
+    <pre>name@component-name=value</pre>
+    <p>New values can be freely
+added to
+the
+sakai.properties file, since any component property can in principle be
+overridden here, and so any sample sakai.properties will show only a
+small fraction
+of all the possible values.</p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Personalizing Sakai</span></p>
+    <p>Sakai has a number of
+places where your institution names, service names, and the host name
+of
+your service are used. These can be
+configured in sakai.properties:</p>
+    <pre># identify your application server with a short name, unique among the servers in your cluster.<br># choose a server id even if you are running a single app server<br>serverId=localhost<br><br># the URL to the server, including transport, DNS name, and port, if any<br>serverUrl=http://localhost:8080<br><br># the DNS name of the server<br>serverName=localhost<br><br># the URL to send folks to after they logout<br>loggedOutUrl=http://localhost:8080/portal<br><br># some fill-ins for the css/vm ui (Worksite Setup, Digest Service, Email notification, Worksite Setup, Contact Support, Portal)<br>ui.institution = Your Institution<br>ui.service = SakaiOrWhatever<br><br>#copyright text to appear in the bottom area of each web page.<br>bottom.copyrighttext=(c) 2003, 2004, 2005 sakaiproject.org. All rights reserved.<br><br># links placed on the bottom nav - set the .count to the number of items, then add each item<br>bottomnav.count = 2<br>bottomnav.1 = &lt;a href="https://localhost/portal/site/!gateway"&gt;Gateway&lt;/a&gt;<br>bottomnav.2 = &lt;a href="http://sakaiproject.org/cms" target="_blank"&gt;The Sakai Project&lt;/a&gt;<br></pre>
+You can add more or other links to the bottom navigation bar by setting
+the proper bottomnav.count
+value and adding bottomnav.N values (1 through the number of links). </li>
+  <li>
+    <p><span style="font-weight: bold;">Email Configuration</span></p>
+    <p>Sakai needs to be set up
+for two
+email functions: receiving email sent to Sakai sites, and sending out
+email notifications.</p>
+    <p>For sending mail Sakai
+needs the address (name or IP) of an SMTP server that will accept mail
+from Sakai. This needs to be
+set in your sakai.properties file:</p>
+    <pre>smtp@org.sakaiproject.service.framework.email.EmailService=some.smtp.org</pre>
+    <p>To enable Sakai to receive
+mail there are a few settings needed in the sakai.properties file:</p>
+    <pre># dns addresses used for incoming email<br>smtp.dns.1 = 255.255.255.1<br>smtp.dns.2 = 255.255.255.2<br><br># SMTP port on which our SMTP server runs. Default is 25. Recommend running on 8025, and using a<br>standard mailer on 25 to forward mail to Sakai.<br>smtp.port = 25<br><br># flag to enable or disable our SMTP server for incoming email (true | false)<br>smtp.enabled = true</pre>
+    <p>To disable the SMTP server
+for incoming email, use this in sakai.properties:</p>
+    <pre>smtp.enabled = false</pre>
+    <p>Sakai's SMTP server is
+'James,' and to run with the above
+configuration which runs James on the standard SMTP port 25 you must be
+running with admin privileges. Most production folks don't want to let
+Tomcat run with that, and would rather run a standard mailer like
+postfix on port 25 and configure it to forward requests to Sakai.
+You might also already have a mailer service running on port 25 (Linux
+usually has it running by default), and so you'd want to change the
+James port simply to avoid a conflict. You'll typically want to run
+James on another, non-restricted port, then. &nbsp;For example:</p>
+    <pre>smtp.port = 8025</pre>
+    <p>If you do wish to run James
+on port 25 for any reason, you should be aware that James will try to
+handle outgoing mail if it runs on port 25, even though it shouldn't.
+There is a way around this.
+If you pass Tomcat the system property:</p>
+    <pre>-Dmail.smtp.host=&lt;host ip&gt;</pre>
+    <p>This
+will allow James to run on port 25 while still delegating outgoing mail
+to be handled by an external SMTP host. You can also accomplish this by
+setting it in the CATALINA_OPTS environment variable.</p>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Test Sakai</span></p>
+    <p>Sakai has not at this point
+been fully configured, but you should now be able to bring it up as a
+working web application by starting Tomcat, and it can be helpful at
+this point to
+know whether Sakai is working before you try to connect
+it to an external database. Tomcat will take half a
+minute or so to start up,
+depending on the speed of your machine, and it's a good idea to watch
+the Tomcat log as it comes up to catch
+any errors (see the <a href="Troubleshooting.html">Troubleshooting
+Guide</a>).</p>
+    <p>From $CATALINA_HOME you can
+run the following startup
+commands: </p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <th colspan="2">Sample
+Commands</th>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Windows:</span></td>
+          <td>
+          <pre>bin\catalina start</pre>
+          </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Mac/*nix:</span>
+          </td>
+          <td>
+          <pre>bin/catalina.sh start</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Once Tomcat has loaded the
+Sakai application (again, this can take a minute or so) point your
+browser to
+http://localhost:8080/portal. If the gateway page does not come up,
+check the Tomcat logs (see
+the <a href="Troubleshooting.html">Troubleshooting
+Guide</a>). &nbsp;If the gateway
+page does come up,
+log in with the default admin account: &nbsp;username = admin,
+password = admin. &nbsp;If you can log in without errors you should
+be able to stop Tomcat and proceed with further configuring your Sakai
+installation, if you need to.</p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <th colspan="2">Sample
+Commands</th>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Windows:</span></td>
+          <td>
+          <pre>bin\catalina stop</pre>
+          </td>
+        </tr>
+        <tr>
+          <td><span style="font-weight: bold;">Mac/*nix:</span>
+          </td>
+          <td>
+          <pre>bin/catalina.sh stop</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">JVM Tuning (optional)</span></p>
+    <p>The Java virtual machine's
+configuration is very important to tune for best performance in any
+production environment.
+Unfortunately this is something of a black art, which is why it is here
+only labeled as optional and it comes with a caution. We recommend that
+you
+take the time to experiment with different memory and garbage
+collection settings and see what works best in your environment.
+&nbsp;The following details are offered only as samples or
+suggestions: before making any such changes to a production system
+please consult a systems administrator or local Java guru,
+if you're not such a person.</p>
+    <p>The standard way to control
+the JVM options when Tomcat starts up is to have an environment
+variable JAVA_OPTS defined with JVM startup options. &nbsp;One
+sample value might be:</p>
+    <pre>JAVA_OPTS=-server -Xms512m -Xmx512m -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps</pre>
+    <p>This is a fairly good
+starting
+point: it selects server mode, turns on garbage collection details,
+and sets the memory. We have found the best results when you set the
+min and max memory to the same values. 512 megs is not too much memory
+for Sakai; 1 gig is even better.</p>
+    <p>Tomcat will see this
+environment variable and use it. Instead of putting this in an
+environment variable, you might modify the
+$CATALINA_HOME/bin/catalina.bat or $CATALINA_HOME/bin/catalina.sh file
+to manually set these values.</p>
+  </li>
+</ol>
+<a name="Database"></a><br>
+<h3>Database Configuration</h3>
+<ol>
+  <li>
+    <p style="font-weight: bold;">Deploy
+Drivers</p>
+    <p>The supported
+production-grade databases include MySQL 4.1+ and
+Oracle 9i+. The version of the JDBC driver (or connector) is also
+important. For MySQL a 3.1.10 (or higher) connector should be used,
+while for Oracle
+the 10g driver should be used, even if the database is version 9i. The
+9i driver will not be sufficient. </p>
+    <p>You
+need to have
+appropriate JDBC drivers for your database installed
+in your $CATALINA_HOME/common/lib directory. For Oracle and MySQL
+drivers are
+available here:</p>
+    <ul>
+      <li> Oracle: <a
+ href="http://www.oracle.com/technology/software/tech/java/sqlj_jdbc/htdocs/jdbc101020.html">http://www.oracle.com/technology/software/tech/java/sqlj_jdbc/htdocs/jdbc101020.html</a></li>
+      <li>MySQL:&nbsp;<a
+ href="http://dev.mysql.com/downloads/connector/j/3.0.html">http://dev.mysql.com/downloads/connector/j/3.1.html</a></li>
+    </ul>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Create Sakai Database and
+User</span></p>
+    <p> A Sakai database and
+privileged user
+must be prepared for Sakai's use. Consult your database documentation
+for details, but here are sample commands for MySQL:</p>
+    <pre>C:\sakai\reference\sql\legacy\mysql\&gt;<br>mysql -u root -p<br>Enter password: ******<br>Welcome to the MySQL monitor. Commands end with ; or \g.<br><br><br>Your MySQL connection id is 51 to server version: 4.1.5-gamma-nt<br><br><br>Type 'help;' or '\h' for help. Type '\c' to clear the buffer.<br><br><br>mysql&gt; create database sakai default character set utf8;<br>Query OK, 1 row affected (0.00 sec)<br><br><br>mysql&gt; grant all on sakai.* to sakaiuser@'localhost' identified<br>by 'sakaipassword';<br>Query OK, 0 rows affected (0.00 sec)<br><br><br>mysql&gt; grant all on sakai.* to sakaiuser@'127.0.0.1' identified<br>by 'sakaipassword';<br>Query OK, 0 rows affected (0.00 sec)<br><br><br>mysql&gt; quit </pre>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">The placeholder.properties
+File</span></p>
+    <p>The placeholder properties
+are all related to&nbsp;database technology and behavior, and as
+with the sakai.properties file, placeholder.properties belongs in the
+$CATALINA_HOME/sakai directory. These placeholder properties must be
+set properly for the database you are using.&nbsp;See the sample
+placeholder.properties file in the&nbsp;source code:</p>
+    <pre>sakai-src/kernel/component/src/config/org/sakaiproject/config/placeholder.properties<br></pre>
+    <p>To select MySQL as your
+database technology the placeholder.properties must include:</p>
+    <pre>hibernate.dialect=net.sf.hibernate.dialect.MySQLDialect<br>auto.ddl=true<br>jdbc.defaultTransactionIsolation=java.sql.Connection.TRANSACTION_READ_COMMITTED</pre>
+    <p>To select Oracle as your
+database technology the placeholder.properties must include:</p>
+    <pre>hibernate.dialect=net.sf.hibernate.dialect.Oracle9Dialect<br>auto.ddl=true<br>jdbc.defaultTransactionIsolation=java.sql.Connection.TRANSACTION_READ_COMMITTED</pre>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">sakai.properties Database
+Properties</span></p>
+    <p>There are settings in
+sakai.properties that also define the database technology and
+connection information. Appropriate sakai.properties settings for
+Oracle and MySQL, respectively, are listed below (although some pieces
+will of course need to be altered appropriately for your installation):</p>
+    <ul>
+      <li>
+        <p style="font-weight: bold;">Oracle:</p>
+        <pre>vendor@org.sakaiproject.service.framework.sql.SqlService=oracle<br>driverClassName@javax.sql.BaseDataSource=oracle.jdbc.driver.OracleDriver<br>url@javax.sql.BaseDataSource=jdbc:oracle:thin:@your.oracle.dns:1521:SID<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL </pre>
+      </li>
+      <li>
+        <p style="font-weight: bold;">MySQL:</p>
+        <pre>vendor@org.sakaiproject.service.framework.sql.SqlService=mysql<br>driverClassName@javax.sql.BaseDataSource=com.mysql.jdbc.Driver<br>url@javax.sql.BaseDataSource=jdbc:mysql://127.0.0.1:3306/sakai?useUnicode=true&amp;characterEncoding=UTF-8<br>username@javax.sql.BaseDataSource=[database user name]<br>password@javax.sql.BaseDataSource=[password]<br>validationQuery@javax.sql.BaseDataSource=select 1 from DUAL</pre>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><span style="font-weight: bold;">Special Database
+Configuration (including upgrade issues)</span></p>
+    <p><span style="font-weight: bold;">Database DDL and Seed Data
+Configuration:</span><br>
+Each database you use for a Sakai installation needs to have certain
+tables and seed data. Sakai will automatically create these tables if
+the auto.ddl feature is enabled. This is fine for most situations, and
+is used when you run Sakai from source or SVN, and in the demo.</p>
+    <p>To enable auto.ddl (it is
+also enabled by default) have this setting in the
+placeholder.properties file:</p>
+    <pre>auto.ddl=true</pre>
+    <p>In certain situations, you
+may want to manually create and populate the tables (or your DBA will
+want to do this). In these cases, turn off the auto.ddl feature.
+Disable auto.ddl by placing this in the placeholder.properties file:</p>
+    <pre>auto.ddl=false</pre>
+    <p>The sql files to use to
+create tables are found distributed throughout the source code. Each
+Sakai component can have one. The convention used in the code is to
+place them under src/sql/folder. There will be a separate file for
+Oracle, MySQL, and hsqldb, each located under a separate folder. For
+example, the sql to create and populate the content hosting tables for
+MySQL is found here:</p>
+    <pre>sakai-src/legacy/component/src/sql/mysql/sakai_content.sql</pre>
+    <p>auto.ddl can be safely left
+turned
+on even if you earlier switched it off to manually create tables, for
+it will not do anything if the needed tables already
+exist.</p>
+    <p><span style="font-weight: bold;">Samigo Schema Check:</span><br>
+If you're running Oracle or are upgrading from a previous Sakai version
+you should check the datatype of the
+"MEDIA" column in the SAM_MEDIA_T
+table.</p>
+    <p>The correct types for each
+database are:</p>
+    <ul>
+      <li>HSQLDB --&gt;
+varbinary</li>
+      <li>Oracle --&gt; blob</li>
+      <li>MySQL --&gt; longblob</li>
+    </ul>
+    <p>If you need to change this
+type for your database, this will
+also
+involve finding the primary key
+constraint, dropping it and then
+recreating it. Contact your local DBA for further information on making
+this
+change.</p>
+    <p>Below is some sample Oracle
+SQLplus output to better illustrate (SYS_C0064435 is the example
+constraint; replace it with yours): </p>
+    <table border="1" cellpadding="2" cellspacing="2">
+      <tbody>
+        <tr>
+          <td>
+          <pre>SQL&gt; alter table SAM_MEDIA_T modify MEDIA BLOB;<br><br>Table altered.<br><br>SQL&gt; select constraint_name from user_constraints where table_name='SAM_MEDIA_T' and CONSTRAINT_TYPE='P';<br><br>CONSTRAINT_NAME<br>------------------------------<br>SYS_C0064435<br><br>SQL&gt; alter table sam_media_t drop constraint SYS_C0064435;<br><br>Table altered.<br><br>SQL&gt; alter table SAM_MEDIA_T add constraint SYS_C0064435 primary key (MEDIAID);<br><br>Table altered.<br><br>SQL&gt; desc SAM_MEDIA_T;<br><br>[table with BLOB type]<br><br>SQL&gt; select constraint_name from user_constraints where table_name='SAM_MEDIA_T' and CONSTRAINT_TYPE='P';<br><br>CONSTRAINT_NAME<br>------------------------------<br>SYS_C0064435<br><br>SQL&gt; commit;<br><br>Commit complete.</pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <p><span style="font-weight: bold;">Samigo
+upgrade patch for MySQL:</span> <br>
+If you have an existing
+MySQL instance that you installed for sakai 2.0.0,
+please run the following script to update your existing tables.</p>
+    <pre>&gt; mysql -u username -p schemaname &lt; $HOME/sakai-src/sam/src/mysql/samigo-2.0.0.patch1.sql --force</pre>
+    <p>This will change the
+column type of date columns to 'datetime'.</p>
+    <p><span style="font-weight: bold;">1.5 to 2.0 DB conversion script</span><br>
+    </p>
+    <p>A script included with the source release will need to be run on
+a Sakai 1.5 DB to perform the schema alterations necessary for Sakai
+2.0. You can find this script in
+sakai-src/docs/sakai_1_5-2_0_conversion.sql. Note that the Oracle parts
+of this script have
+been commented out because only the MySQL statements have been tested.</p>
+  </li>
+</ol>
+<p>
+</p>
+</body>
+</html>
