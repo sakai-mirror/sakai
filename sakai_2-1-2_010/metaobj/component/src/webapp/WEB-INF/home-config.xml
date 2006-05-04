@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans default-lazy-init="true">
+   <bean id="homeFactory" class="org.sakaiproject.metaobj.shared.mgt.HomeFactoryImpl">
+      <property name="homeFactories">
+         <list>
+            <!-- <ref bean="xmlHomeFactory"/>
+            <ref bean="mapHomeFactory"/> -->
+            <ref bean="dbXmlHomeFactory"/>
+         </list>
+      </property>
+   </bean>
+   <!--
+      <bean id="mapHomeFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.MapHomeFactoryImpl">
+         <property name="homes">
+            <map>
+               <entry key="fileArtifact"><ref bean="fileArtifactHome"/></entry>
+               <entry key="folder"><ref bean="folderHome"/></entry>
+            </map>
+         </property>
+      </bean>
+
+      <bean id="xmlHomeFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.XmlHomeFactoryImpl">
+         <property name="homes">
+            <map>
+               <entry key="unknownFileType"><ref bean="unknownFileTypeXmlHome"/></entry>
+               <entry key="image"><ref bean="imageXmlHome"/></entry>
+               <entry key="folderXmlHome"><ref bean="folderXmlHome"/></entry>
+               <entry key="texthtml"><ref bean="textHtmlXmlHome"/></entry>
+               <entry key="texturl"><ref bean="textUrlXmlHome"/></entry>
+            </map>
+         </property>
+      </bean>
+      -->
+   <bean id="dbXmlHomeFactory" class="org.sakaiproject.metaobj.shared.mgt.factories.DbXmlHomeFactoryImpl"
+      init-method="init">
+      <property name="structuredArtifactDefinitionManager">
+         <ref bean="structuredArtifactDefinitionManager"/>
+      </property>
+      <property name="proxyCreator">
+         <ref bean="autoProxyCreator"/>
+      </property>
+   </bean>
+   <!--
+      <bean id="unknownFileTypeXmlHome" class="org.sakaiproject.metaobj.repository.mgt.TechnicalMetadataHome">
+         <property name="nodeMetadataService">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService" />
+         </property>
+         <property name="streamStore">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.StreamStore" />
+         </property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="type">
+            <bean class="org.sakaiproject.metaobj.shared.model.Type">
+               <property name="description"><value>Unknown File Type</value></property>
+               <property name="systemOnly"><value>true</value></property>
+            </bean>
+         </property>
+         <property name="typeId">
+            <value>unknownFileType</value>
+         </property>
+         <property name="schemaFileName"><value>unknownFileType.xsd</value></property>
+         <property name="rootNode"><value>technicalMetadata</value></property>
+      </bean>
+
+      <bean id="imageXmlHome" class="org.sakaiproject.metaobj.repository.mgt.TechnicalMetadataHome">
+         <property name="nodeMetadataService">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService" />
+         </property>
+         <property name="streamStore">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.StreamStore" />
+         </property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="type">
+            <bean class="org.sakaiproject.metaobj.shared.model.Type">
+               <property name="description"><value>Image File</value></property>
+               <property name="systemOnly"><value>true</value></property>
+            </bean>
+         </property>
+         <property name="typeId">
+            <value>image</value>
+         </property>
+         <property name="schemaFileName"><value>image.xsd</value></property>
+         <property name="rootNode"><value>technicalMetadata</value></property>
+      </bean>
+
+      <bean id="textHtmlXmlHome" class="org.sakaiproject.metaobj.repository.mgt.TechnicalMetadataHome">
+         <property name="nodeMetadataService">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService" />
+         </property>
+         <property name="streamStore">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.StreamStore" />
+         </property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="type">
+            <bean class="org.sakaiproject.metaobj.shared.model.Type">
+               <property name="description"><value>Text and Html Files</value></property>
+               <property name="systemOnly"><value>true</value></property>
+            </bean>
+         </property>
+         <property name="typeId">
+            <value>texthtml</value>
+         </property>
+         <property name="schemaFileName"><value>unknownFileType.xsd</value></property>
+         <property name="rootNode"><value>technicalMetadata</value></property>
+      </bean>
+
+      <bean id="textUrlXmlHome" class="org.sakaiproject.metaobj.repository.mgt.TechnicalMetadataHome">
+         <property name="nodeMetadataService">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService" />
+         </property>
+         <property name="streamStore">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.StreamStore" />
+         </property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="type">
+            <bean class="org.sakaiproject.metaobj.shared.model.Type">
+               <property name="description"><value>Url File</value></property>
+               <property name="systemOnly"><value>true</value></property>
+            </bean>
+         </property>
+         <property name="typeId">
+            <value>texturl</value>
+         </property>
+         <property name="schemaFileName"><value>url.xsd</value></property>
+         <property name="rootNode"><value>technicalMetadata</value></property>
+      </bean>
+
+      <bean id="folderXmlHome" class="org.sakaiproject.metaobj.repository.mgt.TechnicalMetadataHome">
+         <property name="nodeMetadataService">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService" />
+         </property>
+         <property name="streamStore">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.StreamStore" />
+         </property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="type">
+            <bean class="org.sakaiproject.metaobj.shared.model.Type">
+               <property name="description"><value>Folder</value></property>
+               <property name="systemOnly"><value>true</value></property>
+            </bean>
+         </property>
+         <property name="typeId">
+            <value>folderXmlHome</value>
+         </property>
+         <property name="schemaFileName"><value>folder.xsd</value></property>
+         <property name="rootNode"><value>technicalMetadata</value></property>
+      </bean>
+
+      <bean id="repositoryHelper" class="org.sakaiproject.metaobj.repository.model.impl.RepositoryNodePresentableObjectHomeImpl" >
+         <property name="repositoryManager"><ref bean="repositoryManager"/></property>
+      </bean>
+
+      <bean id="fileArtifactHome" class="org.sakaiproject.metaobj.repository.mgt.FileHome">
+         <property name="homeFactory"><ref bean="homeFactory"/></property>
+         <property name="nodeMetadataService">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService" />
+         </property>
+         <property name="streamStore">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.StreamStore" />
+         </property>
+         <property name="quotaDao">
+            <ref bean="quotaDao"/>
+         </property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="authnManager"><ref bean="authManager"/></property>
+         <property name="repositoryHelper"><ref bean="repositoryHelper"/></property>
+         <property name="type">
+            <bean class="org.sakaiproject.metaobj.shared.model.Type">
+               <property name="description"><value>Uploaded File</value></property>
+            </bean>
+         </property>
+         <property name="typeId">
+            <value>fileArtifact</value>
+         </property>
+      </bean>
+
+      <bean id="folderHome" class="org.sakaiproject.metaobj.repository.mgt.FolderHome">
+         <property name="homeFactory"><ref bean="homeFactory"/></property>
+         <property name="nodeMetadataService">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService" />
+         </property>
+         <property name="streamStore">
+            <ref bean="org.sakaiproject.metaobj.repository.intf.StreamStore" />
+         </property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="authnManager"><ref bean="authManager"/></property>
+         <property name="repositoryHelper"><ref bean="repositoryHelper"/></property>
+         <property name="type">
+            <bean class="org.sakaiproject.metaobj.shared.model.Type">
+               <property name="description"><value>Folder</value></property>
+            </bean>
+         </property>
+         <property name="typeId">
+            <value>folder</value>
+         </property>
+      </bean>
+   -->
+</beans>

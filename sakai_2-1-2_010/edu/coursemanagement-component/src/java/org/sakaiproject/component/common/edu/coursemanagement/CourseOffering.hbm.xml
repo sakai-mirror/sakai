@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CourseOfferingImpl" table="CM_COURSEOFFERING_T">
+        <id name="courseOfferingId" column="COURSEOFFERINGID" type="java.lang.Long">
+            <generator class="native">
+              <param name="sequence">CM_COURSEOFFERING_ID_S</param>
+            </generator>
+        </id>
+
+        <!-- Meta data --> 
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
+        <property name="description" column="DESCRIPTION" type="java.lang.String"  not-null="false" />
+        <property name="offeringNumber" column="OFFERINGNUMBER" type="java.lang.String"  not-null="true" />
+        <many-to-one name="session"
+            column="SESSIONID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.SessionImpl"/>
+
+        <property name="maximumStudents" column="MAXIMUMSTUDENTS" type="java.lang.Integer"  not-null="false" />
+        <property name="defaultLocation" column="DEFAULTLOCATION"  type="java.lang.String"  not-null="false" />
+        <property name="defaultMeetingTime" column="DEFAULTMEETINGTIME" type="java.lang.String"  not-null="false" />
+        <property name="defaultSchedule" column="DEFAULTSCHEDULE" type="java.lang.String"  not-null="false" />
+
+        <!-- Cross Listing -->
+        <property name="isCrossListed" column="ISCROSSLISTED" type="java.lang.Boolean"  not-null="false" />
+        <property name="equivalentString" column="EQUIVALENTS" type="java.lang.String"  not-null="false" />
+
+        <!-- Typing -->
+        <many-to-one name="offeringStatus"
+            column="COURSEOFFERINGSTATUSID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.CourseOfferingStatusTypeImpl"/>
+        <many-to-one name="offeringType"
+            column="COURSEOFFERINGTYPEID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.CourseOfferingTypeImpl"/>
+
+        <!-- Structural -->
+        <set name="courseSections" cascade="all" inverse="true">
+            <key column="COURSEOFFERINGID"/>
+            <one-to-many class="CourseSectionImpl"/>
+        </set>
+        <property name="canonicalCourse" column="CANONICALCOURSEUUID" type="java.lang.String"  not-null="true" />
+ 
+        <!-- Grouping -->
+        <set name="participationSet" cascade="all" inverse="true">
+            <key column="COURSEOFFERINGID"/>
+            <one-to-many class="ParticipationRecordImpl"/>
+        </set>
+
+        <many-to-one name="enrollmentType"
+            column="ENROLLMENTTYPEID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.EnrollmentTypeImpl"/>
+               
+        <!-- Persistence --> 
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
+        <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+  
+     </class>
+    
+</hibernate-mapping>

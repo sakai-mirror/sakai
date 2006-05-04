@@ -1,0 +1,156 @@
+/**********************************************************************************
+*
+* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+*
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+*
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
+package org.sakaiproject.tool.net;
+
+package org.sakaiproject.tool.util.*;
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+import javax.xml.parsers.*;
+
+import org.w3c.dom.*;
+import org.xml.sax.*;
+
+public class HttpTransactionDemo {
+
+  public static void main(String args[]) throws DomException, IOException  {
+
+    HttpTransaction									transaction;
+    HttpTransaction.Authenticator   authenticator;
+
+    URL         url;
+    List        cookieList;
+
+    int         status;
+    Set         headerSet;
+    Iterator    iterator;
+
+    String          urlString, type;
+    BufferedReader  in;
+
+
+    in = new BufferedReader(new InputStreamReader(System.in));
+    transaction = new HttpTransaction();
+    cookieList = CookieUtils.newCookieList();
+
+    while (true) {
+ //-----------------------------------------------
+    System.out.println("");
+
+    System.out.print("URL? ");
+    urlString = in.readLine();
+    System.out.print("[POST]? ");
+    type = in.readLine();
+    if (type.length() == 0) type = "POST";
+
+    System.out.println("Supplied ---------------------------------------------");
+    System.out.println(type + " \"" + urlString + "\"");
+  	url = new URL(urlString);
+
+    authenticator = new HttpTransaction.Authenticator();
+    authenticator.setCredentials("ADS", "ssmail", "password");
+    Authenticator.setDefault(authenticator);
+
+    transaction.initialize(url, cookieList);
+    transaction.setTransactionType(type);
+
+    status = transaction.doTransaction();
+
+    headerSet = transaction.getResponseHeaders().entrySet();
+    iterator  = headerSet.iterator();
+
+		System.out.println("CONNECTED to: " + transaction.getBaseUrlSpecification());
+
+    if (iterator.hasNext()) {
+      System.out.println("HTTP -------------------------------------------------");
+    }
+    System.out.println("URL: " + transaction.getUrl());
+    System.out.println("Status: " + status);
+
+    System.out.println("Headers ----------------------------------------------");
+    while (iterator.hasNext()) {
+      Map.Entry entry = (Map.Entry) iterator.next();
+
+      System.out.println(entry.getKey() + ": " + entry.getValue());
+    }
+
+    iterator = transaction.getResponseCookies().iterator();
+
+    if (iterator.hasNext()) {
+      System.out.println("Cookies ----------------------------------------------");
+    }
+    while (iterator.hasNext()) {
+      CookieData 	cookie 			= (CookieData) iterator.next();
+      String  		value;
+      int     		ivalue;
+      boolean 		bvalue;
+
+      System.out.print(cookie.getSecure() ? "(secure) " : "" + "Cookie: "
+                     + cookie.getName() + "=" + cookie.getValue() + "; ");
+
+      if ((value = cookie.getDomain()) != null) {
+        System.out.print("$Domain=" + value + "; ");
+      }
+
+      if ((value = cookie.getPath()) != null) {
+        System.out.print("$Path=" + value + "; ");
+      }
+
+      if ((value = cookie.getVersion()) != null) {
+        System.out.print("$Version=" + value + "; ");
+      }
+
+      if ((value = cookie.getExpires()) != null) {
+        System.out.print("(expires " + value + ")");
+      }
+
+      if ((ivalue = cookie.getMaxAge()) != CookieData.NULL_AGE) {
+        System.out.print("(max-age " + ivalue + ")");
+      }
+
+      System.out.println("");
+
+      bvalue = CookieUtils.inDomain(url.toString(), cookie);
+      System.out.println("inDomain: " + bvalue);
+      bvalue = CookieUtils.inPath(url.toString(), cookie);
+      System.out.println("inPath: " + bvalue);
+    }
+
+    iterator = CookieUtils.getCookiesByName(cookieList, url, "TLTSID").iterator();
+    while (iterator.hasNext()) {
+      CookieData cookie = (CookieData) iterator.next();
+      System.out.println("By Name (TLTSID): " + cookie.getName());
+    }
+
+    iterator = CookieUtils.getCookiesByPrefix(cookieList, url, "TL").iterator();
+    while (iterator.hasNext()) {
+      CookieData cookie = (CookieData) iterator.next();
+      System.out.println("By Prefix (TL): " + cookie.getName());
+    }
+
+    System.out.println("Response ---------------------------------------------");
+    System.out.println(transaction.getResponseString());
+    System.out.println("");
+  }
+ //-----------------------------------------------
+  }
+}
