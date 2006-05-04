@@ -1,0 +1,9 @@
+hibernate.connection.driver_class=oracle.jdbc.driver.OracleDriver
+hibernate.connection.url=jdbc:oracle:thin:@yourhost.stanford.edu:1521:sid
+hibernate.connection.username=yourusername
+hibernate.connection.password=yourpassword
+hibernate.dialect=net.sf.hibernate.dialect.Oracle9Dialect
+hibernate.show_sql=false
+hibernate.hbm2ddl.auto=update
+#hibernate.cache.provider_class=net.sf.hibernate.cache.EhCacheProvider
+database.jar=ojdbc14.jar

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+   "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="org.sakaiproject.metaobj.shared.model">
+
+   <class name="StructuredArtifactDefinitionBean" table="osp_structured_artifact_def">
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="description" type="string" column="description"/>
+      <property name="documentRoot" type="string" column="documentRoot" not-null="true"/>
+      <property name="owner" column="owner" not-null="true" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>
+      <property name="created" type="java.util.Date" update="false" not-null="true"/>
+      <property name="modified" type="java.util.Date" update="true" not-null="true"/>
+      <property name="systemOnly" column="systemOnly" type="boolean" not-null="true"/>
+      <property name="externalType" column="externalType" type="string" not-null="true"/>
+      <property name="siteId" type="string" not-null="false"/>
+      <property name="siteState" type="int" not-null="true"/>
+      <property name="globalState" type="int" not-null="true"/>
+      <property name="schema" column="schemaData" type="binary" not-null="true" length="2147483647"/>
+      <property name="instruction" type="text"/>
+      <property name="schemaHash" column="schema_hash" type="string"/>
+   </class>
+
+</hibernate-mapping>
