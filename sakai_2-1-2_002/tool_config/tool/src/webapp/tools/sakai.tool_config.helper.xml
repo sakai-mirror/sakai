@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.tool_config.helper"
+			title="Options Helper Tool"
+			description="A Helper tool that will present the end user with an edit form constructed from a tool's configuration options.">
+
+	<category name="sakai.helper" />
+
+	</tool>
+
+</registration>

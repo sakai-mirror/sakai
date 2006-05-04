@@ -1,0 +1,157 @@
+/**********************************************************************************
+*
+* $Header$
+*
+***********************************************************************************
+*
+* Copyright (c) 2005 University of Cambridge
+* 
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+* 
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
+package uk.ac.cam.caret.sakai.rwiki.component.service.impl;
+
+import java.util.List;
+
+import javax.servlet.ServletRequest;
+
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.service.framework.log.Logger;
+import org.sakaiproject.service.framework.portal.PortalService;
+import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SiteService;
+
+import uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService;
+import uk.ac.cam.caret.sakai.rwiki.service.exception.PermissionException;
+
+/**
+ * @author andrew
+ *
+ */
+
+// FIXME: Component
+public class RWikiSecurityServiceImpl implements RWikiSecurityService {
+    private Logger log;
+
+
+
+    
+    public void init() {
+        List l = FunctionManager.getRegisteredFunctions("rwiki.");
+        if ( !l.contains(SECURE_READ) ) FunctionManager.registerFunction(SECURE_READ);
+        if ( !l.contains(SECURE_UPDATE) ) FunctionManager.registerFunction(SECURE_UPDATE);
+        if ( !l.contains(SECURE_CREATE) ) FunctionManager.registerFunction(SECURE_CREATE);
+        if ( !l.contains(SECURE_SUPER_ADMIN) ) FunctionManager.registerFunction(SECURE_SUPER_ADMIN);
+        if ( !l.contains(SECURE_ADMIN) ) FunctionManager.registerFunction(SECURE_ADMIN);
+    }
+    
+    private PortalService portalService;
+    
+    private SecurityService securityService;
+    
+    private SiteService siteService;
+    
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#getRealm(javax.servlet.http.HttpServletRequest)
+     */
+    public String getRealm(ServletRequest request) {
+        try {
+            Site currentSite = siteService.getSite(portalService.getCurrentSiteId());
+            return currentSite.getReference();
+        } catch (IdUnusedException e) {
+            throw new PermissionException("You must access the RWiki through a proper site");
+        }
+    }
+    
+    public String getSiteId() {
+        return portalService.getCurrentSiteId();
+    }
+    
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkGetPermission(java.lang.String, java.lang.String)
+     */
+    public boolean checkGetPermission(String user, String realm) {
+        return (securityService.unlock(SECURE_READ,realm));
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkUpdatePermission(java.lang.String, java.lang.String)
+     */
+    public boolean checkUpdatePermission(String user, String realm) {
+        return (securityService.unlock(SECURE_UPDATE, realm));
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkAdminPermission(java.lang.String, java.lang.String)
+     */
+    public boolean checkAdminPermission(String user, String realm) {
+        return securityService.unlock(SECURE_ADMIN, realm);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkSuperAdminPermission(java.lang.String, java.lang.String)
+     */
+    public boolean checkSuperAdminPermission(String user, String realm) {
+        return securityService.unlock(SECURE_SUPER_ADMIN, realm);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkCreatePermission(java.lang.String, java.lang.String)
+     */
+    public boolean checkCreatePermission(String user, String realm) {
+        return securityService.unlock(SECURE_CREATE, realm);
+    }
+
+    /* (non-Javadoc)
+     * @see uk.ac.cam.caret.sakai.rwiki.service.api.RWikiSecurityService#checkSearchPermission(java.lang.String, java.lang.String)
+     */
+    public boolean checkSearchPermission(String user, String realm) {
+        return securityService.unlock(SECURE_READ, realm);
+    }
+
+    public PortalService getPortalService() {
+        return portalService;
+    }
+
+    public void setPortalService(PortalService portalService) {
+        this.portalService = portalService;
+    }
+
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
+
+    public void setSecurityService(SecurityService securityService) {
+        this.securityService = securityService;
+    }
+
+    public SiteService getSiteService() {
+        return siteService;
+    }
+
+    public void setSiteService(SiteService siteService) {
+        this.siteService = siteService;
+    }
+
+	public Logger getLog() {
+		return log;
+	}
+
+	public void setLog(Logger log) {
+		this.log = log;
+	}
+
+}

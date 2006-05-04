@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.test.group"
+			title="Site Group Tests"
+			description="Test some site group and group awareness APIs.">
+
+		<category name="sakai.test" />
+
+	</tool>
+
+</registration>
