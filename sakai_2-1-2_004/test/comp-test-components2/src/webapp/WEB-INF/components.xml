@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<!-- shared components hosted here -->
+
+	<bean id="org.sakaiproject.api.test.components.Api4"
+			class="org.sakaiproject.component.test.components.Component4"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="value"><value>[s4 c4 comp2]</value></property>
+		<property name="api1"><ref bean="org.sakaiproject.api.test.components.Api1"/></property>
+	</bean>
+
+	<bean id="org.sakaiproject.api.test.components.Api5"
+			class="org.sakaiproject.component.test.components.Component5"
+			init-method="init"
+			destroy-method="destroy"
+			singleton="true">
+		<property name="value"><value>[s5 c5 comp2]</value></property>
+	</bean>
+
+</beans>

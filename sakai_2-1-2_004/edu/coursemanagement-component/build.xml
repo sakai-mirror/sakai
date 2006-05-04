@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="CourseManagement" default="schemaexport" basedir=".">
+  <target name="schemaexport" >
+	<taskdef name="schemaexport"
+	         classname="net.sf.hibernate.tool.hbm2ddl.SchemaExportTask">
+	  <classpath>
+		<fileset dir="../../../../tomcat/shared/lib">
+		  <include name="*.jar"/>
+		</fileset>
+		<pathelement location="target/classes"/>
+	  </classpath>
+	</taskdef>
+<!--
+        <copy file="hibernate.properties"
+          tofile="target/classes/hibernate.properties"
+          overwrite="true"
+          verbose="true" 
+        />
+-->
+	<schemaexport     quiet="no"
+		  	  text="yes"
+		  	  drop="no"
+		  	  delimiter=";"
+		  	  output="schema-export.sql">
+
+	  <fileset dir="src/java/org/sakaiproject/component/common/edu/coursemanagement">
+		<include name="CanonicalCourse.hbm.xml" />
+		<include name="CourseSet.hbm.xml" />
+		<include name="CourseOffering.hbm.xml" />
+		<include name="CourseSection.hbm.xml" />
+		<include name="EnrollmentRecord.hbm.xml" />
+		<include name="ParticipationRecord.hbm.xml" />
+		<include name="CanonicalCourseStatusType.hbm.xml" />
+		<include name="CourseOfferingStatusType.hbm.xml" />
+		<include name="CourseOfferingType.hbm.xml" />
+		<include name="CourseSectionStatusType.hbm.xml" />
+		<include name="CourseSectionType.hbm.xml" />
+		<include name="CourseSetType.hbm.xml" />
+		<include name="EnrollmentStatusType.hbm.xml" />
+		<include name="EnrollmentType.hbm.xml" />
+		<include name="ParticipationStatusType.hbm.xml" />
+		<include name="Session.hbm.xml" />
+		<include name="SessionType.hbm.xml" />
+	  </fileset>  	        
+	</schemaexport>
+  </target>
+
+</project>
+
+
+
