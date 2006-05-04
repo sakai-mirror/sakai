@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <bean id="presentationMain" class="org.sakaiproject.component.app.help.model.ResourceBean">
+        <property name="docId">
+            <value>presentation_main</value>
+        </property>
+        <property name="name">
+            <value>Presentation Tool</value>
+        </property>
+        <property name="location">
+            <value>/sakai_presentation/main.htm</value>
+        </property>
+    </bean>
+
+   <bean id="org.sakaiproject.api.app.help.TableOfContents" class="org.sakaiproject.component.app.help.model.TableOfContentsBean">
+ 
+        <property name="name">
+            <value>root</value>
+        </property>
+        <property name="categories">
+            <list>
+                <bean id="presentationCategory" class="org.sakaiproject.component.app.help.model.CategoryBean">
+ 
+                    <property name="name">
+                        <value>Pesentation Tool</value>
+                    </property>
+                    <property name="resources">
+                        <list>
+                            <ref bean="presentationMain"/>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+</beans>

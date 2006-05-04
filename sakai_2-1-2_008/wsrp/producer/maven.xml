@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- default goal for the project builds and installs the war in the local repository -->
+<project xmlns:ant="jelly:ant" default="sakai:sakai.build">
+
+  <goal name="sakai:sakai.build">
+    <attainGoal name="_replace_tokens"/>
+    <attainGoal name="war:install"/>
+  </goal>
+
+    <!-- We run war:war-resources prior to _replace_tokens so that we can preprocess some files that require tag
+         replacements. NOTE: war:war-resources requires maven-war-plugin version 1.6.1. -->
+  <goal name="_replace_tokens" prereqs="war:war-resources">
+    <!-- Define a default value, if maven.tomcat.port is not already defined in ~/build.properties -->
+    <ant:property name="maven.tomcat.port" value="8080"/>
+    <ant:property name="webinf.dir" value="${maven.build.dir}/${pom.artifactId}/WEB-INF/"/>
+
+    <ant:echo message="Replacing @HOME@ with ${maven.tomcat.home}"/>    
+    <ant:replace file="${webinf.dir}/classes/wsrp4j-logger.properties"          token="@HOME@"     value="${maven.tomcat.home}"/>     
+  </goal>
+
+</project>
