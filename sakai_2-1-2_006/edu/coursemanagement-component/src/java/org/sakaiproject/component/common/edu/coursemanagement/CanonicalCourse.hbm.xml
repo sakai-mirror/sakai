@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+  "-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping package="org.sakaiproject.component.common.edu.coursemanagement">
+
+    <class name="CanonicalCourseImpl" table="CM_CANONICALCOURSE_T">
+        <id name="canonicalCourseId" column="CANONICALCOURSEID" type="java.lang.Long">
+            <generator class="native">
+              <param name="sequence">CM_CANONICALCOURSE_ID_S</param>
+            </generator>
+        </id>
+
+        <!--  Meta data -->
+        <property name="title" column="TITLE" type="java.lang.String"  not-null="true" />
+        <property name="description">
+          <column name="DESCRIPTION" sql-type="varchar(4000)" not-null="false" />
+        </property>  
+        <property name="courseNumber" column="COURSENUMBER" type="java.lang.String"  not-null="true" />
+        <property name="defaultCredits" column="DEFAULTCREDITS" type="java.lang.String"  not-null="false" />
+        <property name="topicsString" column="TOPICS" type="java.lang.String"  not-null="false" />
+        <property name="prerequisiteString" column="PREREQUISITE" type="java.lang.String"  not-null="false" />
+
+        <!-- Typing -->
+        <many-to-one name="canonicalCourseStatus"
+            column="CANONICALCOURSESTATUSID"
+            class="org.sakaiproject.component.common.edu.coursemanagement.CanonicalCourseStatusTypeImpl"/>
+
+        <!-- Cross Listing -->
+        <property name="equivalentString" column="EQUIVALENTS" type="java.lang.String"  not-null="false" />
+
+        <!-- Structural -->
+        <set name="courseOfferingSet" cascade="all" inverse="true">
+            <key column="CANONICALCOURSEID"/>
+            <one-to-many class="CourseOfferingImpl"/>
+        </set>
+
+        <property name="parentId" column="PARENTID" type="java.lang.String"  not-null="false" />
+
+        <!-- Persistence -->
+        <property name="uuid" column="UUID" type="java.lang.String"  not-null="true" />
+        <property name="createdBy" column="CREATEDBY" type="java.lang.String"  not-null="true" />
+        <property name="createdDate" column="CREATEDDATE" type="java.util.Date"  not-null="true" />
+        <property name="lastModifiedBy" column="LASTMODIFIEDBY" type="java.lang.String"  not-null="true" />
+        <property name="lastModifiedDate" column="LASTMODIFIEDDATE" type="java.util.Date"  not-null="true" />
+    </class>
+    
+</hibernate-mapping>
