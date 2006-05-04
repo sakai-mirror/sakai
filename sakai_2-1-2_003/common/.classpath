@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="authentication/src/java"/>
+	<classpathentry kind="src" path="agent-api/src/java"/>
+	<classpathentry kind="src" path="authorization-api/src/java"/>
+	<classpathentry kind="src" path="common-components/src/webapp/WEB-INF"/>
+	<classpathentry kind="src" path="common-composite-component/src/java"/>
+	<classpathentry kind="src" path="common-composite-component/src/test"/>
+	<classpathentry kind="src" path="common-composite-component-data/src/java"/>
+	<classpathentry kind="src" path="edu-person-api/src/java"/>
+	<classpathentry kind="src" path="manager-api/src/java"/>
+	<classpathentry kind="src" path="registry-api/src/java"/>
+	<classpathentry kind="src" path="superstructure-api/src/java"/>
+	<classpathentry kind="src" path="type-api/src/java"/>
+	<classpathentry kind="src" path="uuid-api/src/java"/>
+	<classpathentry kind="src" path="uuid-component/src/java"/>
+	<classpathentry kind="src" path="authentication-component/src/java"/>
+	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="src" path="/kernel"/>
+	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.1.5.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/concurrent/jars/concurrent-1.3.4.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-beanutils/jars/commons-beanutils-1.7.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-id/jars/commons-id-0.1-dev.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/legacy-service"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

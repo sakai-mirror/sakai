@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springkernel.org/dtd/spring-beans.dtd">
+
+<beans>
+
+  <!-- Base Hibernate SessionFactory -->
+  <bean id="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl.common"
+    class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
+
+    <property name="mappingResources">
+      <list>
+        <value>
+          org/sakaiproject/component/common/type/TypeImpl.hbm.xml
+        </value>
+        <value>
+          org/sakaiproject/component/common/superstructure/Node.hbm.xml
+        </value>
+        <value>
+          org/sakaiproject/component/common/superstructure/NodeParentChildMap.hbm.xml
+        </value>
+        <value>
+          org/sakaiproject/component/common/agent/AgentBean.hbm.xml
+        </value>
+        <value>
+          org/sakaiproject/component/common/agent/GroupParentMemberMap.hbm.xml
+        </value>
+        <value>
+          org/sakaiproject/component/common/authorization/DefaultPermissionsImpl.hbm.xml
+        </value>
+        <value>
+          org/sakaiproject/component/common/authorization/AuthorizationImpl.hbm.xml
+        </value>
+        <value>
+          org/sakaiproject/component/common/edu/person/SakaiPersonImpl.hbm.xml
+        </value>
+      </list>
+    </property>
+
+  </bean>
+
+  <!-- I will have to come back to the denormalization stuff later
+    <bean name="org.springframework.orm.hibernate.SessionFactory"
+    id="org.springframework.orm.hibernate.SessionFactory"
+    parent="org.springframework.orm.hibernate.SessionFactoryDenorm">
+    <property name="entityInterceptor">
+    <bean
+    class="org.sakaiproject.component.common.hibernate.DenormalizationInterceptor"
+    init-method="init">
+    <property name="denormalizationDao">
+    <bean
+    name="org.sakaiproject.service.common.hibernate.DenormalizationDao"
+    class="org.sakaiproject.component.common.hibernate.DenormalizationDao">
+    <property name="sessionFactory">
+    <ref
+    local="org.springframework.orm.hibernate.SessionFactoryDenorm" />
+    </property>
+    </bean>
+    </property>
+    </bean>
+    </property>
+    </bean>
+  -->
+
+  <!--
+    <bean id="org.sakaiproject.api.common.authentication.AuthenticationManager"
+    class="org.sakaiproject.component.common.authentication.OpenAuthnComponent"
+    init-method="init"
+    destroy-method="destroy"
+    singleton="true">
+    </bean>
+  -->
+
+  <bean id="org.sakaiproject.api.common.uuid.UuidManager"
+    class="org.sakaiproject.component.common.uuid.UuidManagerCommonsImpl">
+  </bean>
+
+  <bean id="org.sakaiproject.api.common.type.TypeManager"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="transactionManager">
+      <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+    </property>
+    <property name="target">
+      <bean
+        class="org.sakaiproject.component.common.type.TypeManagerImpl">
+        <property name="sessionFactory">
+          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+        </property>
+        <property name="uuidManager">
+          <ref bean="org.sakaiproject.api.common.uuid.UuidManager" />
+        </property>
+        <property name="agentGroupManager">
+          <ref
+            bean="org.sakaiproject.api.common.agent.AgentGroupManager" />
+        </property>
+        <property name="persistableHelper">
+          <ref
+            bean="org.sakaiproject.component.common.manager.PersistableHelper" />
+        </property>
+      </bean>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean
+    id="org.sakaiproject.api.common.superstructure.SuperStructureManager"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="transactionManager">
+      <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+    </property>
+    <property name="target">
+      <bean
+        class="org.sakaiproject.component.common.superstructure.SuperStructureManagerImpl">
+        <property name="sessionFactory">
+          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+        </property>
+        <property name="idManager">
+          <ref bean="org.sakaiproject.api.common.uuid.UuidManager" />
+        </property>
+        <property name="typeManager">
+          <ref bean="org.sakaiproject.api.common.type.TypeManager" />
+        </property>
+        <property name="agentGroupManager">
+          <ref
+            bean="org.sakaiproject.api.common.agent.AgentGroupManager" />
+        </property>
+        <property name="persistableHelper">
+          <ref
+            bean="org.sakaiproject.component.common.manager.PersistableHelper" />
+        </property>
+      </bean>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- The interim implementation which is backed by UserDirectoryService -->
+  <bean name="org.sakaiproject.api.common.agent.AgentGroupManager"
+    class="org.sakaiproject.component.common.agent.AgentGroupManagerUserDirectoryProxy">
+    <property name="userDirectoryService">
+      <ref
+        bean="org.sakaiproject.service.legacy.user.UserDirectoryService" />
+    </property>
+  </bean>
+
+  <!-- 
+    <bean name="org.sakaiproject.api.common.agent.AgentGroupManager"
+    class="org.sakaiproject.component.common.agent.AgentGroupManagerImpl">
+    <property name="sessionFactory">
+    <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+    </property>
+    <property name="uuidManager">
+    <ref bean="org.sakaiproject.api.common.uuid.UuidManager" />
+    </property>
+    <property name="superStructureManager">
+    <ref
+    bean="org.sakaiproject.api.common.superstructure.SuperStructureManager" />
+    </property>
+    <property name="typeManager">
+    <ref bean="org.sakaiproject.api.common.type.TypeManager" />
+    </property>
+    <property name="sessionManager">
+    <ref bean="org.sakaiproject.api.kernel.session.SessionManager" />
+    </property>
+    <property name="persistableHelper">
+    <ref
+    bean="org.sakaiproject.component.common.manager.PersistableHelper" />
+    </property>
+    </bean>
+  -->
+
+  <bean
+    id="org.sakaiproject.api.common.authorization.DefaultPermissionsManager"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="transactionManager">
+      <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+    </property>
+    <property name="target">
+      <bean
+        class="org.sakaiproject.component.common.authorization.DefaultPermissionsManagerImpl">
+        <property name="sessionFactory">
+          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+        </property>
+        <property name="idManager">
+          <ref bean="org.sakaiproject.api.common.uuid.UuidManager" />
+        </property>
+        <property name="persistableHelper">
+          <ref
+            bean="org.sakaiproject.component.common.manager.PersistableHelper" />
+        </property>
+      </bean>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean
+    id="org.sakaiproject.api.common.authorization.AuthorizationManager"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="transactionManager">
+      <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+    </property>
+    <property name="target">
+      <bean
+        class="org.sakaiproject.component.common.authorization.AuthorizationManagerImpl"
+        singleton="true" init-method="init">
+        <property name="sessionFactory">
+          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+        </property>
+        <property name="idManager">
+          <ref bean="org.sakaiproject.api.common.uuid.UuidManager" />
+        </property>
+        <property name="agentGroupManager">
+          <ref
+            bean="org.sakaiproject.api.common.agent.AgentGroupManager" />
+        </property>
+        <property name="superStructureManager">
+          <ref
+            bean="org.sakaiproject.api.common.superstructure.SuperStructureManager" />
+        </property>
+        <property name="persistableHelper">
+          <ref
+            bean="org.sakaiproject.component.common.manager.PersistableHelper" />
+        </property>
+      </bean>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="org.sakaiproject.api.common.edu.person.SakaiPersonManager"
+    class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <property name="transactionManager">
+      <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
+    </property>
+    <property name="target">
+      <bean
+        class="org.sakaiproject.component.common.edu.person.SakaiPersonManagerImpl"
+        init-method="init">
+        <property name="sessionFactory">
+          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
+        </property>
+        <property name="uuidManager">
+          <ref bean="org.sakaiproject.api.common.uuid.UuidManager" />
+        </property>
+        <property name="typeManager">
+          <ref bean="org.sakaiproject.api.common.type.TypeManager" />
+        </property>
+        <property name="agentGroupManager">
+          <ref
+            bean="org.sakaiproject.api.common.agent.AgentGroupManager" />
+        </property>
+        <property name="persistableHelper">
+          <ref
+            bean="org.sakaiproject.component.common.manager.PersistableHelper" />
+        </property>
+      </bean>
+    </property>
+    <property name="transactionAttributes">
+      <props>
+        <prop key="*">PROPAGATION_REQUIRED</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="org.sakaiproject.component.common.manager.PersistableHelper"
+    class="org.sakaiproject.component.common.manager.PersistableHelper">
+    <property name="sessionManager">
+      <ref bean="org.sakaiproject.api.kernel.session.SessionManager" />
+    </property>
+  </bean>
+
+</beans>

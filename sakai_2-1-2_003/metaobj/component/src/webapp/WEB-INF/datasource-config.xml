@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="false">
+
+   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+      <property name="driverClassName">
+         <value>${hibernate.connection.driver_class}</value>
+      </property>
+      <property name="url">
+         <value>${hibernate.connection.url}</value>
+      </property>
+      <property name="username">
+         <value>${hibernate.connection.username}</value>
+      </property>
+      <property name="password">
+         <value>${hibernate.connection.password}</value>
+      </property>
+      <property name="maxActive">
+         <value>${hibernate.connection.maxActive}</value>
+      </property>
+      <property name="maxWait">
+         <value>${hibernate.connection.maxWait}</value>
+      </property>
+   </bean>
+
+   <!-- Hibernate SessionFactory -->
+   <bean id="sessionFactory" class="org.sakaiproject.metaobj.utils.mvc.impl.beans.AddableSessionFactoryBean">
+      <property name="dataSource">
+         <ref bean="dataSource"/>
+      </property>
+
+      <property name="mappingResources">
+         <list>
+            <value>org/theospi/portfolio/security/impl/simple/AuthorizationImpl.hbm.xml</value>
+            <value>org/theospi/portfolio/shared/mgt/StructuredArtifactDefinition.hbm.xml</value>
+         </list>
+      </property>
+
+      <property name="hibernateProperties">
+         <props>
+            <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+            <prop key="hibernate.query.substitutions">${hibernate.query.substitutions}</prop>
+            <prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+            <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+            <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+         </props>
+      </property>
+   </bean>
+
+   <bean id="webdavMappings"
+      class="org.sakaiproject.metaobj.utils.mvc.impl.beans.AdditionalHibernateMappings">
+      <property name="mappingResources">
+         <list>
+            <value>org/theospi/portfolio/repository/impl/Repository.hbm.xml</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="transactionManager" class="org.springframework.orm.hibernate.HibernateTransactionManager">
+      <property name="sessionFactory">
+         <ref local="sessionFactory"/>
+      </property>
+   </bean>
+
+
+   <!-- Transaction Interceptor set up to do PROPAGATION_REQUIRED on all methods -->
+   <bean id="matchNameWithPropReq"
+      class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+      <property name="properties">
+         <props>
+            <prop key="get*">PROPAGATION_SUPPORTS</prop>
+            <prop key="find*">PROPAGATION_SUPPORTS</prop>
+            <prop key="is*">PROPAGATION_SUPPORTS</prop>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+         </props>
+      </property>
+   </bean>
+
+
+   <bean id="matchNameTxInterceptor"
+      class="org.springframework.transaction.interceptor.TransactionInterceptor">
+      <property name="transactionManager">
+         <ref bean="transactionManager"/>
+      </property>
+      <property name="transactionAttributeSource">
+         <ref bean="matchNameWithPropReq"/>
+      </property>
+   </bean>
+
+
+   <bean id="autoProxyCreator"
+      class="org.sakaiproject.metaobj.utils.aop.AdvisorBeanNameAutoProxyCreator">
+      <property name="interceptorNames">
+         <list>
+            <idref local="matchNameTxInterceptor"/>
+         </list>
+      </property>
+      <property name="beanNames">
+         <list>
+            <!--
+                     <value>authManager</value>
+                     <value>authzManager</value>
+                     <value>agentManager</value>
+                      <value>imageXmlHome</value>
+                      <value>unknownFileTypeXmlHome</value>
+                      <value>folderXmlHome</value>
+                     <value>fileArtifactHome</value>
+                     <value>homeFactory</value>
+                     <value>org.sakaiproject.metaobj.repository.intf.NodeTreeService</value>
+                     <value>org.sakaiproject.metaobj.repository.intf.NodeMetadataService</value>
+                     <value>org.sakaiproject.metaobj.repository.intf.StreamStore</value>
+                     <value>wck</value>
+                     <value>lockManager</value>
+                     <value>repositoryManager</value>
+                     <value>quotaDao</value>
+                     <value>idManager</value>
+                     <value>fileArtifactFinder</value>
+                     <value>artifactFinder</value>
+                     <value>artifactFinderManager</value>
+                     <value>org.sakaiproject.metaobj.shared.mgt.PortalParamManager</value>
+                     <value>org.sakaiproject.metaobj.worksite.mgt.WorksiteManager</value>
+            -->
+         </list>
+      </property>
+   </bean>
+
+</beans>

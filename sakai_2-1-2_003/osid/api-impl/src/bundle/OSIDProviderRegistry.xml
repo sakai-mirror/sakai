@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<registry>
+	<record xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:oki="http://www.okiproject.org/registry/elements/1.0/">
+		
+		<oki:osidservice>org.osid.repository</oki:osidservice>
+		<oki:osidversion>2.0</oki:osidversion>
+		<oki:osidloadkey>org.sakaiproject.component.osid.repository.srw</oki:osidloadkey>
+        
+		<dc:title>SRW</dc:title> 
+        <dc:description>General SRW-Supporting Site Access</dc:description> 
+        <dc:identifier>0-00-000</dc:identifier> 
+        <dc:creator>Jeff Kahn</dc:creator> 
+        <dc:publisher>Massachusetts Institute of Technology</dc:publisher> 
+        <dc:date>2005-07-16T19:20:30.45+01:00</dc:date>
+        <dc:rights>General Use, Source Available</dc:rights> 
+	</record>
+</registry>

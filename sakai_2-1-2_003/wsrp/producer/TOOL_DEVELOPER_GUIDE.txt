@@ -1,0 +1,30 @@
+This file is meant to document steps that tool developers need to be aware of to make sure their tools are 
+WSRP friendly. Please feel free to edit this to keep it current with any new findings.
+
+Known Issues:
+--------------
+1. URL Encoding in JavaScript: Several vm templates, including the macro (chef_toolbar) use the following pattern:
+        onclick="location = '$base'#if($item.Form)+buildQueryString('$item.Form')#end;return false;"
+   The call to javascript function 'buildQueryString' defined in legacy/libray/src/webapp/js/headscript.js 
+   will not respect the WSRP encoding of the URL.
+
+2. If you have hard-coded URL parameters in the vm files using the following pattern:
+	#toolLink($action "doSomething")&messageId=$message.Id
+   It needs to be converted over to look something like
+   	#toolLinkParam($action "doSomething" "messageId=$message.Id")
+   The third parameter to the macro is the entire query string (without the first '&', but subsequent ampersands
+   should be retained. 
+   
+   If you have edited several files that require this change, you can use the find/replace in Eclipse using the
+   following Regular Expressions (verbatim, including the quotes just copy and paste them into Eclipse, make sure you have checked
+   "Regular Expression" checkbox). I would do it for *.vm to catch any other vm files that were slipped in 
+   without this change. Notice there are two variants of the regular expressions, one is quoted using single quote
+   another using double quote. 
+   
+
+RegExp for changing toolLink to toolLinkParam in Eclipse
+Replace (include quote): '#toolLink\(([^)]*)\)&([^']*)'
+With (include quote): '#toolLinkParam($1 "$2")'
+
+Replace (include quote): "#toolLink\(([^)]*)\)&([^"]*)"
+With (include quote): "#toolLinkParam($1 "$2")"
