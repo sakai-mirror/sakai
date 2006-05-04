@@ -1,0 +1,38 @@
+Sakai RWiki for Sakai 2
+-----------------------
+
+The provided war should be installed as sakai-rwiki.war in the webapps folder of a 
+sakai tomcat instance.
+
+How to Build
+------------
+
+There are several ways to build this project. The simplest is to do:
+
+maven sakai
+
+This should build and deploy the webapp to the correct place in your local sakai 
+instance.
+
+The other options are to build the following sub-projects separately: 
+radeox, jrcs, rwiki-service, and rwiki. Their default goals should be enough.
+Finally you would have to install the war created by the rwiki sub-project in
+your sakai-tomcat folder as sakai-rwiki.war
+
+Known Issues
+------------
+
+1. To install math support you should set the init-params headerScriptSrc and
+footerScript appropriately. We recommend that you keep these as the default and
+install an appropriate library in /library/jsMath. We suggest that you use
+jsMath (http://www.math.union.edu/~dpvc/jsMath/welcome.html) but cannot
+distribute it as it is GPL.
+
+2. Searching is restricted to the default permission realm, and doesn't check
+that the pages returned can actually be viewed by the searcher.
+
+3. We are currently missing functionality to provide for permission realm
+changes to pages, and renaming of pages.
+
+4. There are very few unit-tests for this code, some more should be written. A
+similar statement applies for javadoc comments.

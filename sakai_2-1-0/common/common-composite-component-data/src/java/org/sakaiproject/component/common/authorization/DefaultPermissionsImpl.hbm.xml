@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+
+  <class
+    name="org.sakaiproject.component.common.authorization.DefaultPermissionsImpl"
+    table="CMN_DEFAULT_PERMISSIONS_T" optimistic-lock="version">
+
+    <cache usage="read-write" />
+
+    <!-- Persistable fields -->
+    <id name="id" type="long">
+      <column name="ID" not-null="true" length="19" />
+      <generator class="native">
+        <param name="sequence">CMN_DEFAULT_PERMISSIONS_S</param>
+      </generator>
+    </id>
+
+    <version name="version" column="VERSION" />
+
+    <property name="uuid" column="UUID" length="36" unique="true"
+      not-null="true" />
+    <property name="lastModifiedBy" column="LAST_MODIFIED_BY"
+      length="36" not-null="true" />
+    <property name="lastModifiedDate" column="LAST_MODIFIED_DATE"
+      not-null="true" />
+    <property name="createdBy" column="CREATED_BY" length="36"
+      not-null="true" />
+    <property name="createdDate" column="CREATED_DATE" not-null="true" />
+
+    <!--  Permissions fields -->
+    <property name="name">
+      <column name="NAME" length="255" not-null="true" unique="true"
+        index="CMN_PERMISSIONS_NAME_I" />
+    </property>
+
+    <property name="description">
+      <column name="DESCRIPTION" length="255" not-null="false" />
+    </property>
+
+    <!--  Default Permissions fields -->
+    <property name="audit">
+      <column name="AUDIT_C" unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I"
+        not-null="false" unique="false" index="CMN_PERMISSIONS_AUDIT_I" />
+    </property>
+
+    <property name="create">
+      <column name="CREATE_C"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_CREATE_I" />
+    </property>
+
+    <property name="createCollection">
+      <column name="CREATE_COLLECTION"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_CREATE_COLL_I" />
+    </property>
+
+    <property name="delete">
+      <column name="DELETE_C"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_DELETE_I" />
+    </property>
+
+    <property name="deleteCollection">
+      <column name="DELETE_COLLECTION"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_DELETE_COLL_I" />
+    </property>
+
+    <property name="execute">
+      <column name="EXECUTE_C"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_EXECUTE_I" />
+    </property>
+
+    <property name="managePermissions">
+      <column name="MANAGE_PERMISSSIONS"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_MNG_PERMS_I" />
+    </property>
+
+    <property name="read">
+      <column name="READ_C" unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I"
+        not-null="false" unique="false" index="CMN_PERMISSIONS_READ_I" />
+    </property>
+
+    <property name="readExtendedMetadata">
+      <column name="READ_EXTENDED_METADATA"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_READ_XMD_I" />
+    </property>
+
+    <property name="readMetadata">
+      <column name="READ_METADATA"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_READ_MD_I" />
+    </property>
+
+    <property name="readPermissions">
+      <column name="READ_PERMISSIONS"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_READ_PERMS_I" />
+    </property>
+
+    <property name="takeOwnership">
+      <column name="TAKE_OWNERSHIP"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_TAKE_OWN_I" />
+    </property>
+
+    <property name="write">
+      <column name="WRITE_C" unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I"
+        not-null="false" unique="false" index="CMN_PERMISSIONS_WRITE_I" />
+    </property>
+
+    <property name="writeExtendedMetadata">
+      <column name="WRITE_EXTENDED_METADATA"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_WRITE_XMD_I" />
+    </property>
+
+    <property name="writeMetadata">
+      <column name="WRITE_METADATA"
+        unique-key="CMN_PERMISSIONS_BUSINESS_KEY_I" not-null="false"
+        unique="false" index="CMN_PERMISSIONS_WRITE_MD_I" />
+    </property>
+
+  </class>
+
+  <query name="findPermissionsByUuid">
+    <![CDATA[from org.sakaiproject.component.common.authorization.DefaultPermissionsImpl p where p.uuid = :uuid]]>
+  </query>
+
+</hibernate-mapping>

@@ -1,0 +1,17 @@
+<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/support/chef_contactsupport_confirm.vm,v 1.3 2005/05/25 18:37:22 gsilver.umich.edu Exp $ -->
+<div class="portletBody">
+        #if ($alertMessage)<div class="alertMessage">gen.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>#end
+
+        #if (!$alertMessage)
+        <div class="information">
+            $tlang.getString("confi.thank") 
+        </div>
+        #end
+
+        <form action="#toolForm("$action")" method="post">
+        <div class="act">
+            <input type="submit" name="eventSubmit_doNew" value="$tlang.getString("confi.more")" />
+            <input type="submit" name="eventSubmit_doDoc" value="$tlang.getString("confi.goto")" />
+        </div>
+        </form>
+   </div>
