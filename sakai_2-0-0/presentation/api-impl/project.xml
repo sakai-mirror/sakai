@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+	<pomVersion>3</pomVersion>
+	<name>Presentation Component</name>
+	<groupId>sakaiproject</groupId>
+	<id>sakai-present-api-impl</id>
+	<currentVersion>2.0.0</currentVersion>
+	<organization>
+		<name>Sakai Project</name>
+		<url>http://www.sakaiproject.org/</url>
+	</organization>
+	<inceptionYear>2005</inceptionYear>
+
+        <properties>
+                <!-- build as a jar -->
+                <deploy.type>jar</deploy.type>
+        </properties>
+
+	<dependencies>
+
+                <!-- our maven plugin to allow us to run maven locally -->
+                <dependency>
+                        <groupId>sakaiproject</groupId>
+                        <artifactId>sakai</artifactId>
+                        <version>${pom.currentVersion}</version>
+                        <type>plugin</type>
+                </dependency>
+
+		<!-- to be able to access the IdManager interface -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-legacy-service</artifactId>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+
+		<!-- to be able to access the PresentationService interface.  -->
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-present-api</artifactId>
+			<type>jar</type>
+			<version>${pom.currentVersion}</version>
+		</dependency>
+
+		<!-- Need the OSID APIs -->
+                <dependency>
+                        <groupId>OKI</groupId>
+                        <artifactId>OkiOSID</artifactId>
+                        <version>2.0</version>
+                        <url>http://sourceforge.net/projects/okiproject</url>
+                </dependency>
+
+                <!-- to be able to access the Sakai utilitiy classes -->
+                <dependency>
+                        <groupId>sakaiproject</groupId>
+                        <artifactId>sakai-legacy-util</artifactId>
+                        <version>${pom.currentVersion}</version>
+                </dependency>
+
+	</dependencies>
+
+	<build>
+
+		<!-- java source -->
+		<sourceDirectory>src/java</sourceDirectory>
+
+		<!-- other resources for the jar - the message bundles -->
+		<resources>
+			<resource>
+				<directory>${basedir}/src/bundle</directory>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	
+	</build>
+
+</project>

@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE web-app
+	PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+	"http://java.sun.com/j2ee/dtds/web-app_2.3.dtd">
+
+<web-app>
+    <display-name>sakai-present-tool</display-name>
+    <description>Sakai Presentation Tool</description>
+    <context-param>
+        <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+        <param-value>server</param-value>
+    </context-param>
+
+<!--sakai2 - why is this needed /Chuck -->
+    <context-param>
+        <param-name>com.sun.faces.validateXml</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>com.sun.faces.verifyObjects</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    
+    <!-- Faces Servlet -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup> 2 </load-on-startup>
+    </servlet>
+
+    <!-- Faces Servlet Mapping -->
+    <!-- 
+         This mapping identifies a jsp page as having JSF content.  If a
+         request comes to the server for foo.jsf, the container will
+         send the request to the FacesServlet, which will expect a
+         corresponding foo.jsp page to exist containing the content.
+    -->
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+
+<!--sakai-->
+    <filter>
+        <filter-name>sakai.request</filter-name>
+        <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+
+<!--sakai-->
+    <listener>
+        <listener-class>org.sakaiproject.util.ToolListener</listener-class>
+    </listener>
+
+<!-- sakai-->
+    <servlet>
+        <servlet-name>sakai.presentation</servlet-name>
+        <servlet-class>org.sakaiproject.jsf.util.JsfTool</servlet-class>
+        <init-param>
+            <param-name>default</param-name>
+            <param-value>main</param-value>
+        </init-param>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value>/presentation</param-value>
+        </init-param>
+        <load-on-startup> 1 </load-on-startup>
+    </servlet>
+
+
+	<welcome-file-list>
+	  <welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

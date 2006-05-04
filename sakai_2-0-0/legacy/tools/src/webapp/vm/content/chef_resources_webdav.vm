@@ -1,0 +1,100 @@
+## $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/content/chef_resources_webdav.vm,v 1.7 2005/06/08 15:19:32 gsilver.umich.edu Exp $
+<!-- chef_resources_webdav.vm, use with org.chefproject.ContentListAction.java -->
+<script language="JavaScript" type="text/JavaScript">
+<!--
+	function openCopyrightWindow(theURL,winName,winSettings) 
+	{ 
+	  window.open(theURL,winName,winSettings);
+	  return false;
+	}
+//-->
+</script>
+## to prevent horiz scroll on IE
+<!--[if IE]>
+	<script type="text/javascript" language="JavaScript">
+		document.body.style.width='96%'
+	</script>
+<![endif]--> 
+
+<div class="portletBody">
+	#if($menu)#toolbar($menu)#end
+	<h3>$tlang.getString("dav.webdav")</h3>
+	<ul class="attchList">
+		<li><a href="#desc">$tlang.getString("dav.hd1")</a></li><br />
+		<li><a href="#site">$tlang.getString("dav.hd2")</a></li><br />
+		<li><a href="#win">$tlang.getString("dav.hd3")</a></li><br />
+		<li><a href="#osx">$tlang.getString("dav.hd4")</a></li><br />
+	</ul>
+
+	<a name="desc"></a>
+	<h4>$tlang.getString("dav.hd1")</h4>
+	<p>$tlang.getString("dav.graf10")</p>
+	<p>$tlang.getString("dav.graf11")</p>
+	
+	<a name="site"></a>
+	<h4>$tlang.getString("dav.hd2")</h4>
+	<p>$tlang.getString("dav.graf20a") <strong>${site_title}</strong>. $tlang.getString("dav.graf20b") <strong>#if("$!inMyWorkspace" == "true")${user_id}#else${site_id}#end</strong>.</p>
+	<p>$tlang.getString("dav.graf21")</p>
+	
+	<a name="win"></a>
+	<h4>$tlang.getString("dav.hd3")</h4>
+	<p>$tlang.getString("dav.graf30")</p>
+	<ol>
+		<li>$tlang.getString("dav.win1")</li>
+		<li>$tlang.getString("dav.win2")</li>
+		<ol type="a">
+			<li>$tlang.getString("dav.win2a")</li>
+			<li>$tlang.getString("dav.win2b")</li>
+			<li>$tlang.getString("dav.win2c")</li>
+		</ol>
+		<li>$tlang.getString("dav.win3")<br />
+		#if("$!inMyWorkspace" == "true")
+			<code>${server_url}${dav_user}$user_id</code>
+		#else
+			<code>${server_url}${dav_group}$site_id</code>
+		#end
+		</li>
+		<img src="${server_url}/library/content/netwkplace.jpg" width="423" height="345" style="clear:both;display:block">
+
+		<li>$tlang.getString("dav.win4")<br />
+			$tlang.getString("dav.win4note")</li>
+		<li>$tlang.getString("dav.win5")</li>
+		<ol type="a">
+			<li>$tlang.getString("dav.win5a")</li>
+			<li>$tlang.getString("dav.win5b")</li>
+		</ol>
+		<li>$tlang.getString("dav.win6")</li>
+		<img src="${server_url}/library/content/name.jpg" width="423" height="345" />
+		<li>$tlang.getString("dav.win7")</li>
+		<li>$tlang.getString("dav.win8")</li>
+		<li>$tlang.getString("dav.win9")</li>
+	</ol>
+
+	<a name="osx"></a>
+	<h4>$tlang.getString("dav.hd4")</h4>
+	<p>$tlang.getString("dav.graf40")</p>
+	<ol>
+		<li>$tlang.getString("dav.osx1")<br />
+			<a href="http://www.webdav.org/goliath/#download" target="_blank"><code>http://www.webdav.org/goliath/#download</code></a>
+		</li>
+		<li>$tlang.getString("dav.osx2")</li>
+		<li>$tlang.getString("dav.osx3")</li>
+		<img src="${server_url}/library/content/goliath.jpg" width="241" height="311"> 
+		<li>$tlang.getString("dav.osx4")</li>
+		<li>$tlang.getString("dav.osx5")<br />
+		#if("$!inMyWorkspace" == "true")
+			<code>${server_url}${dav_user}$user_id</code>
+		#else
+			<code>${server_url}${dav_group}$site_id</code>
+		#end
+		</li>
+		<li>$tlang.getString("dav.osx6")</li>
+		<li>$tlang.getString("dav.osx7")</li>
+		<li>$tlang.getString("dav.osx8")</li>
+		<li>$tlang.getString("dav.osx9")</li>
+	</ol>
+	
+	<div style="margin:2em .3em .3em .3em;text-align:left">
+		<a href="#toolLink("ResourcesAction" "doCancel")" style="background-color:#DDDCD7;border:1px solid #4A5573;color:#4A5573;padding:1px 3px 1px 3px;text-decoration:none">$tlang.getString("dav.cancel")</a>
+	</div>
+</div>
