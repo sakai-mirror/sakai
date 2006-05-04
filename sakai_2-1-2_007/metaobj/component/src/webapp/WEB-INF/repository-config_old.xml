@@ -1,0 +1,947 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+
+<beans default-lazy-init="true">
+
+   <bean id="org.sakaiproject.metaobj.repository.intf.NodeTreeService"
+      class="org.sakaiproject.metaobj.repository.impl.NodeTreeServiceImpl">
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.repository.intf.NodeMetadataService"
+      class="org.sakaiproject.metaobj.repository.impl.NodeMetadataServiceImpl">
+      <property name="authenticationManager">
+         <ref bean="authManager"/>
+      </property>
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+      <property name="nodeTreeService">
+         <ref bean="org.sakaiproject.metaobj.repository.intf.NodeTreeService"/>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.repository.intf.StreamStore"
+      class="org.sakaiproject.metaobj.repository.impl.StreamStoreImpl"
+      init-method="init">
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+      <property name="repositoryPath">
+         <value>${repository.path}</value>
+      </property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+   </bean>
+
+   <bean id="org.apache.commons.pool.ObjectPool.slideReferenceBasicFileStore"
+      class="org.sakaiproject.metaobj.repository.mgt.impl.pool.ProtectedStorePool">
+      <property name="factory">
+         <bean class="org.sakaiproject.metaobj.repository.mgt.impl.pool.ProtectedStorePoolFactory">
+            <property name="protectedStoreName">
+               <value>wck</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+
+   <bean id="SlideReferenceBasicFileStore" class="org.apache.slide.simple.reference.WebdavFileStore"
+      singleton="false">
+   </bean>
+
+   <bean id="lockManager" class="org.sakaiproject.metaobj.repository.mgt.impl.LockManagerImpl">
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.repository.mgt.webdav.WckProtectionProxyConfig"
+      class="org.sakaiproject.metaobj.repository.mgt.webdav.WckProtectionProxyConfig"
+      singleton="false">
+      <property name="transactionManager">
+         <ref bean="transactionManager"/>
+      </property>
+      <property name="rootNodeName">
+         <value>files</value>
+      </property>
+      <property name="fileNameValidator">
+         <ref bean="fileValidator"/>
+      </property>
+      <property name="authenticationManager">
+         <ref bean="authManager"/>
+      </property>
+      <property name="quotaDao">
+         <ref bean="quotaDao"/>
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager"/>
+      </property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="repositoryManager">
+         <ref bean="repositoryManager"/>
+      </property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="homeFactory">
+         <ref bean="homeFactory"/>
+      </property>
+      <property name="authzManager">
+         <ref bean="authzManager"/>
+      </property>
+      <property name="lockManager">
+         <ref bean="lockManager"/>
+      </property>
+      <property name="nodeTreeService">
+         <ref bean="org.sakaiproject.metaobj.repository.intf.NodeTreeService"/>
+      </property>
+      <property name="nodeMetadataService">
+         <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService"/>
+      </property>
+   </bean>
+
+   <bean id="wck" class="org.sakaiproject.metaobj.repository.mgt.webdav.WckProtectionProxy"
+      singleton="false" init-method="initRoot">
+      <property name="config">
+         <ref bean="org.sakaiproject.metaobj.repository.mgt.webdav.WckProtectionProxyConfig"/>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.repository.mgt.impl.WckRepositoryManagerHelper"
+      class="org.sakaiproject.metaobj.repository.mgt.impl.WckRepositoryManagerHelper">
+      <property name="wck">
+         <ref bean="wck"/>
+      </property>
+      <property name="authManager">
+         <ref bean="authManager"/>
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager"/>
+      </property>
+      <property name="homeFactory">
+         <ref bean="homeFactory"/>
+      </property>
+   </bean>
+
+   <bean id="repositoryManager" class="org.sakaiproject.metaobj.repository.mgt.impl.WckRepositoryManager">
+      <property name="wck">
+         <ref bean="wck"/>
+      </property>
+      <property name="quotaDao">
+         <ref bean="quotaDao"/>
+      </property>
+      <property name="authManager">
+         <ref bean="authManager"/>
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager"/>
+      </property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="authzManager">
+         <ref bean="authzManager"/>
+      </property>
+      <property name="baseDir">
+         <value>/files</value>
+      </property>
+      <!--<property name="slideUserBase"><value>/slide/users/</value></property>-->
+      <property name="host">
+         <value>${system.repository.host}</value>
+      </property>
+      <property name="userRootNodeType">
+         <bean class="org.sakaiproject.metaobj.shared.model.Type">
+            <property name="description">
+               <value>User Root Node</value>
+            </property>
+            <property name="systemOnly">
+               <value>true</value>
+            </property>
+         </bean>
+      </property>
+      <property name="wckRepositoryManagerHelper">
+         <ref bean="org.sakaiproject.metaobj.repository.mgt.impl.WckRepositoryManagerHelper"/>
+      </property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="mimeTypeManager">
+         <ref bean="org.sakaiproject.metaobj.repository.mgt.intf.MimeTypeManager"/>
+      </property>
+   </bean>
+   <bean id="nodeType" class="org.sakaiproject.metaobj.shared.model.Type">
+      <property name="description">
+         <value>Node</value>
+      </property>
+      <property name="systemOnly">
+         <value>true</value>
+      </property>
+   </bean>
+   <bean id="fileValidator" class="org.sakaiproject.metaobj.repository.control.FileNameValidator">
+      <!--<property name="fileNamePattern"><value>[^\'\"\:\;\[\]\{\}\~\`\!\@\#\$\%\^\&amp;\*\(\)\+\/\?\&lt;\&gt;\,\|\\]*</value></property>-->
+      <property name="fileNamePattern">
+         <value>[\w \-\.]*</value>
+      </property>
+   </bean>
+
+   <bean id="quotaDao" class="org.sakaiproject.metaobj.repository.model.impl.QuotaDaoImpl">
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+      <property name="defaultQuota">
+         <ref bean="defaultQuota"/>
+      </property>
+      <property name="nodeMetadataService">
+         <ref bean="org.sakaiproject.metaobj.repository.intf.NodeMetadataService"/>
+      </property>
+   </bean>
+
+   <bean id="defaultQuota" class="java.lang.Long">
+      <constructor-arg index="0" type="java.lang.String">
+         <description>Maximum number of bytes a user may store</description>
+         <value>20000000</value>
+      </constructor-arg>
+   </bean>
+
+
+   <bean id="fileArtifactFinder" class="org.sakaiproject.metaobj.repository.mgt.impl.FileArtifactFinderImpl">
+      <property name="homeFactory">
+         <ref bean="homeFactory"/>
+      </property>
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+   </bean>
+
+   <bean id="artifactFinder" class="org.sakaiproject.metaobj.repository.mgt.impl.ArtifactFinderImpl">
+      <property name="homeFactory">
+         <ref bean="homeFactory"/>
+      </property>
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+   </bean>
+
+
+   <bean id="org.sakaiproject.metaobj.utils.aop.InvocationDao" class="org.sakaiproject.metaobj.utils.aop.InvocationDao">
+      <property name="sessionFactory">
+         <ref bean="sessionFactory"/>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.metaobj.repository.mgt.intf.MimeTypeManager"
+      class="org.sakaiproject.metaobj.repository.mgt.impl.MimeTypeManagerImpl"
+      lazy-init="false">
+      <property name="mimeTypes">
+         <list>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/postscript</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-aiff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-aiff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-aiff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-aim</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-jg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/x-ms-asf</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/x-ms-asf</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/basic</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/x-msvideo</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/x-rad-screenplay</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-bcpio</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/octet-stream</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/bmp</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/html</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-cdf</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-x509-ca-cert</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/java</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-cpio</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-csh</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/css</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/bmp</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/msword</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/plain</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/x-dv</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-dvi</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/postscript</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/x-setext</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/octet-stream</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/gif</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-gtar</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-gzip</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-hdf</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/mac-binhex40</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/x-component</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/html</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/html</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/mac-binhex40</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/ief</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/vnd.sun.j2me.app-descriptor</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/java-archive</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/plain</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-java-jnlp-file</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/jpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/jpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/jpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/javascript</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/plain</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/plain</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-midi</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-latex</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-mpegurl</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-macpaint</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-troff-man</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-troff-me</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-midi</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-midi</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-mif</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/quicktime</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/x-sgi-movie</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/mpeg</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/mpeg2</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-wais-source</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-netcdf</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/oda</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-portable-bitmap</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/pict</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/pdf</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-portable-graymap</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/pict</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/pict</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-scpls</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/png</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-portable-anymap</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-macpaint</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-portable-pixmap</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/powerpoint</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/postscript</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-photoshop</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>video/quicktime</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-quicktime</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-quicktime</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-cmu-raster</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-rgb</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/vnd.rn-realmedia</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-troff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/rtf</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/richtext</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-sh</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-shar</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-midi</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-stuffit</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/basic</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-wais-source</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-sv4cpio</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-sv4crc</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-shockwave-flash</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-troff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-tar</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-tcl</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-tex</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-texinfo</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-texinfo</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/tiff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/tiff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-troff</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/tab-separated-values</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/plain</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/basic</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-ustar</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-xbitmap</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/xhtml+xml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/xhtml+xml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/xml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-xpixmap</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/xml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/x-xwindowdump</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>audio/x-wav</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/svg+xml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/svg+xml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-visio</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>image/vnd.wap.wbmp</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/vnd.wap.wml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/vnd.wap.wmlc</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/vnd.wap.wmlscript</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/vnd.wap.wmlscriptc</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>x-world/x-vrml</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-compress</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-compress</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/zip</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>application/x-zip-compressed</value>
+               </property>
+            </bean>
+            <bean class="org.sakaiproject.metaobj.shared.model.MimeType">
+               <property name="value">
+                  <value>text/url</value>
+               </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+
+</beans>
