@@ -1,52 +1,52 @@
-component		https://source.sakaiproject.org/svn/component/trunk
-util			https://source.sakaiproject.org/svn/util/trunk
-tool			https://source.sakaiproject.org/svn/tool/trunk
-authz			https://source.sakaiproject.org/svn/authz/trunk
-courier			https://source.sakaiproject.org/svn/courier/trunk
-event			https://source.sakaiproject.org/svn/event/trunk
-entity			https://source.sakaiproject.org/svn/entity/trunk
-velocity		https://source.sakaiproject.org/svn/velocity/trunk
-user			https://source.sakaiproject.org/svn/user/trunk
-memory			https://source.sakaiproject.org/svn/memory/trunk
-db				https://source.sakaiproject.org/svn/db/trunk
-email			https://source.sakaiproject.org/svn/email/trunk
-alias			https://source.sakaiproject.org/svn/alias/trunk
-site			https://source.sakaiproject.org/svn/site/trunk
-master			https://source.sakaiproject.org/svn/master/trunk
-reference		https://source.sakaiproject.org/svn/reference/trunk
-login			https://source.sakaiproject.org/svn/login/trunk
-access			https://source.sakaiproject.org/svn/access/trunk
-content			https://source.sakaiproject.org/svn/content/trunk
-metaobj			https://source.sakaiproject.org/svn/metaobj/trunk
-presence		https://source.sakaiproject.org/svn/presence/trunk
-calendar		https://source.sakaiproject.org/svn/calendar/trunk
-portal			https://source.sakaiproject.org/svn/portal/trunk
-jsf				https://source.sakaiproject.org/svn/jsf/trunk
-sections		https://source.sakaiproject.org/svn/sections/trunk
-gradebook		https://source.sakaiproject.org/svn/gradebook/trunk
-course-management	https://source.sakaiproject.org/svn/course-management/trunk
-test-harness	https://source.sakaiproject.org/svn/test-harness/trunk
-help			https://source.sakaiproject.org/svn/help/trunk
-archive			https://source.sakaiproject.org/svn/archive/trunk
-rwiki			https://source.sakaiproject.org/svn/rwiki/trunk
-search			https://source.sakaiproject.org/svn/search/trunk
-site-manage		https://source.sakaiproject.org/svn/site-manage/trunk
-announcement	https://source.sakaiproject.org/svn/announcement/trunk
-mailarchive		https://source.sakaiproject.org/svn/mailarchive/trunk
-chat			https://source.sakaiproject.org/svn/chat/trunk
-discussion		https://source.sakaiproject.org/svn/discussion/trunk
-message			https://source.sakaiproject.org/svn/message/trunk
-web				https://source.sakaiproject.org/svn/web/trunk
-osid			https://source.sakaiproject.org/svn/osid/trunk
-webservices		https://source.sakaiproject.org/svn/webservices/trunk
-assignment		https://source.sakaiproject.org/svn/assignment/trunk
-profile			https://source.sakaiproject.org/svn/profile/trunk
-dav				https://source.sakaiproject.org/svn/dav/trunk
-roster			https://source.sakaiproject.org/svn/roster/trunk
-syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
-presentation	https://source.sakaiproject.org/svn/presentation/trunk
-sam				https://source.sakaiproject.org/svn/sam/trunk
-osp				https://source.sakaiproject.org/svn/osp/trunk
-jobscheduler	https://source.sakaiproject.org/svn/jobscheduler/trunk
-providers		https://source.sakaiproject.org/svn/providers/trunk
-textarea		https://source.sakaiproject.org/svn/textarea/trunk
+component	-r9439	https://source.sakaiproject.org/svn/component/tags/sakai_2-2-001
+util		-r9439	https://source.sakaiproject.org/svn/util/tags/sakai_2-2-001
+tool		-r9439	https://source.sakaiproject.org/svn/tool/tags/sakai_2-2-001
+authz		-r9439	https://source.sakaiproject.org/svn/authz/tags/sakai_2-2-001
+courier		-r9439	https://source.sakaiproject.org/svn/courier/tags/sakai_2-2-001
+event		-r9439	https://source.sakaiproject.org/svn/event/tags/sakai_2-2-001
+entity		-r9439	https://source.sakaiproject.org/svn/entity/tags/sakai_2-2-001
+velocity	-r9439	https://source.sakaiproject.org/svn/velocity/tags/sakai_2-2-001
+user		-r9439	https://source.sakaiproject.org/svn/user/tags/sakai_2-2-001
+memory		-r9439	https://source.sakaiproject.org/svn/memory/tags/sakai_2-2-001
+db		-r9439	https://source.sakaiproject.org/svn/db/tags/sakai_2-2-001
+email		-r9439	https://source.sakaiproject.org/svn/email/tags/sakai_2-2-001
+alias		-r9439	https://source.sakaiproject.org/svn/alias/tags/sakai_2-2-001
+site		-r9439	https://source.sakaiproject.org/svn/site/tags/sakai_2-2-001
+master		-r9439	https://source.sakaiproject.org/svn/master/tags/sakai_2-2-001
+reference	-r9439	https://source.sakaiproject.org/svn/reference/tags/sakai_2-2-001
+login		-r9439	https://source.sakaiproject.org/svn/login/tags/sakai_2-2-001
+access		-r9439	https://source.sakaiproject.org/svn/access/tags/sakai_2-2-001
+content		-r9439	https://source.sakaiproject.org/svn/content/tags/sakai_2-2-001
+metaobj		-r9439	https://source.sakaiproject.org/svn/metaobj/tags/sakai_2-2-001
+presence	-r9439	https://source.sakaiproject.org/svn/presence/tags/sakai_2-2-001
+calendar	-r9439	https://source.sakaiproject.org/svn/calendar/tags/sakai_2-2-001
+portal		-r9439	https://source.sakaiproject.org/svn/portal/tags/sakai_2-2-001
+jsf		-r9439	https://source.sakaiproject.org/svn/jsf/tags/sakai_2-2-001
+sections	-r9439	https://source.sakaiproject.org/svn/sections/tags/sakai_2-2-001
+gradebook	-r9439	https://source.sakaiproject.org/svn/gradebook/tags/sakai_2-2-001
+course-management	-r9439	https://source.sakaiproject.org/svn/course-management/tags/sakai_2-2-001
+test-harness	-r9439	https://source.sakaiproject.org/svn/test-harness/tags/sakai_2-2-001
+help		-r9439	https://source.sakaiproject.org/svn/help/tags/sakai_2-2-001
+archive		-r9439	https://source.sakaiproject.org/svn/archive/tags/sakai_2-2-001
+rwiki		-r9439	https://source.sakaiproject.org/svn/rwiki/tags/sakai_2-2-001
+search		-r9439	https://source.sakaiproject.org/svn/search/tags/sakai_2-2-001
+site-manage	-r9439	https://source.sakaiproject.org/svn/site-manage/tags/sakai_2-2-001
+announcement	-r9439	https://source.sakaiproject.org/svn/announcement/tags/sakai_2-2-001
+mailarchive	-r9439	https://source.sakaiproject.org/svn/mailarchive/tags/sakai_2-2-001
+chat		-r9439	https://source.sakaiproject.org/svn/chat/tags/sakai_2-2-001
+discussion	-r9439	https://source.sakaiproject.org/svn/discussion/tags/sakai_2-2-001
+message		-r9439	https://source.sakaiproject.org/svn/message/tags/sakai_2-2-001
+web		-r9439	https://source.sakaiproject.org/svn/web/tags/sakai_2-2-001
+osid		-r9439	https://source.sakaiproject.org/svn/osid/tags/sakai_2-2-001
+webservices	-r9439	https://source.sakaiproject.org/svn/webservices/tags/sakai_2-2-001
+assignment	-r9439	https://source.sakaiproject.org/svn/assignment/tags/sakai_2-2-001
+profile		-r9439	https://source.sakaiproject.org/svn/profile/tags/sakai_2-2-001
+dav		-r9439	https://source.sakaiproject.org/svn/dav/tags/sakai_2-2-001
+roster		-r9439	https://source.sakaiproject.org/svn/roster/tags/sakai_2-2-001
+syllabus	-r9439	https://source.sakaiproject.org/svn/syllabus/tags/sakai_2-2-001
+presentation	-r9439	https://source.sakaiproject.org/svn/presentation/tags/sakai_2-2-001
+sam		-r9439	https://source.sakaiproject.org/svn/sam/tags/sakai_2-2-001
+osp		-r9439	https://source.sakaiproject.org/svn/osp/tags/sakai_2-2-001
+jobscheduler	-r9439	https://source.sakaiproject.org/svn/jobscheduler/tags/sakai_2-2-001
+providers	-r9439	https://source.sakaiproject.org/svn/providers/tags/sakai_2-2-001
+textarea	-r9439	https://source.sakaiproject.org/svn/textarea/tags/sakai_2-2-001
