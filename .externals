@@ -52,3 +52,4 @@ providers		-r10369	https://source.sakaiproject.org/svn/providers/tags/sakai_2-2-
 textarea		-r10369	https://source.sakaiproject.org/svn/textarea/tags/sakai_2-2-004
 msgcntr			-r10369	https://source.sakaiproject.org/svn/msgcntr/tags/sakai_2-2-004
 postem			-r10369	https://source.sakaiproject.org/svn/postem/tags/sakai_2-2-004
+cluster			https://source.sakaiproject.org/svn/cluster/trunk
