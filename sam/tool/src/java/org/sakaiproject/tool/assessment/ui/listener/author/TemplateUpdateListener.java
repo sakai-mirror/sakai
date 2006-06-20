@@ -253,19 +253,6 @@ public class TemplateUpdateListener
       feedback.setShowStatistics
         (templateBean.getFeedbackComponent_Statistics());
 
-      HashSet set = new HashSet();
-      Iterator iter = templateBean.getValueMap().keySet().iterator();
-      while (iter.hasNext())
-      {
-        String label = (String) iter.next();
-        String value = (String) templateBean.getValueMap().get(label).toString();
-        //log.info("Label: " + label + ", Value: " + value);
-        AssessmentMetaData data =
-          new AssessmentMetaData(template, label, value);
-        set.add(data);
-      }
-      template.setAssessmentMetaDataSet(set);
-
 
       //log.info("templateId = " + templateIdString);
       if (templateIdString.equals("0")) // New template
@@ -284,7 +271,26 @@ public class TemplateUpdateListener
       template.setLastModifiedBy(AgentFacade.getAgentString());
       template.setLastModifiedDate(new Date());
 
+      //** save template before dealing with meta data set
       delegate.save((AssessmentTemplateData)template);
+
+      delegate.deleteAllMetaData((AssessmentTemplateData)template);
+
+      HashSet set = new HashSet();
+      Iterator iter = templateBean.getValueMap().keySet().iterator();
+      while (iter.hasNext())
+      {
+        String label = (String) iter.next();
+        String value = (String) templateBean.getValueMap().get(label).toString();
+        //log.info("Label: " + label + ", Value: " + value);
+        AssessmentMetaData data =
+          new AssessmentMetaData(template, label, value);
+        set.add(data);
+      }
+      template.setAssessmentMetaDataSet(set);
+
+      delegate.save((AssessmentTemplateData)template);
+
     }
     catch (Exception ex)
     {

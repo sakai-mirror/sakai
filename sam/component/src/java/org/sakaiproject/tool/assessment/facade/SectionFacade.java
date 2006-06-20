@@ -145,18 +145,15 @@ public class SectionFacade implements Serializable, SectionDataIfc, Comparable {
    * @return org.osid.shared.Id
    */
   org.osid.shared.Id getId(){
+      /*
     try {
-      this.data = (SectionDataIfc) section.getData();
+      data = (SectionDataIfc) section.getData();
     }
     catch (AssessmentException ex) {
       throw new DataFacadeException(ex.getMessage());
     }
-    /**
-    SectionFacadeQueries sectionFacadeQueries = new SectionFacadeQueries();
-    return sectionFacadeQueries.getSectionId(this.data.getSectionId());
-    */
-    ItemFacadeQueriesAPI itemFacadeQueries = new ItemFacadeQueries();
-    return itemFacadeQueries.getItemId(this.data.getSectionId());
+      */
+    return null;
   }
 
   /**
