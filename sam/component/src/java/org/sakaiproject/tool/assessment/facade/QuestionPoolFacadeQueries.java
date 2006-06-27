@@ -764,6 +764,7 @@ public boolean poolIsUnique(Long questionPoolId, String title, Long parentPoolId
     }
   }
 
+
   /**
    * Copy a pool to a new location.
    */
@@ -786,8 +787,7 @@ public boolean poolIsUnique(Long questionPoolId, String title, Long parentPoolId
       // If so, make sure the source level is not higher(up the tree)
       // than the dest. to avoid the endless loop.
       if (!duplicate) {
-        haveCommonRoot = tree.haveCommonRoot
-            (sourceId, destId);
+        haveCommonRoot = tree.haveCommonRoot(sourceId, destId);
       }
 
       if (haveCommonRoot &&
@@ -797,136 +797,36 @@ public boolean poolIsUnique(Long questionPoolId, String title, Long parentPoolId
         // We should revisit this.
       }
 
+      QuestionPoolFacade newPool = (QuestionPoolFacade) oldPool.clone();
+      newPool.setParentPoolId(destId);
+      newPool.setQuestionPoolId(new Long(0));
+      Set questionSet = newPool.getQuestionPoolItems();
+      newPool.setQuestionPoolItems(new HashSet());
+
       // If Pools in same trees,
-      if (haveCommonRoot) {
-        // Copy to a Pool inside the root
-        // Copy *this* Pool first
-        QuestionPoolFacade newPool =
-            new QuestionPoolFacade
-            (oldPool.getData());
-        newPool.setParentPoolId(destId);
-        newPool.setQuestionPoolId(new Long(0));
-        newPool = savePool(newPool);
-
-        // Get the old questionpool Questions
-        Collection questions = oldPool.getQuestions();
-        Iterator iter = questions.iterator();
-
-        // For each question ,
-        while (iter.hasNext()) {
-          ItemFacade item = (ItemFacade) iter.next();
-          QuestionPoolItemData qpi = new QuestionPoolItemData
-              (new Long(newPool.getId().getIdString()), item.getItemIdString());
-
-          // add that question to questionpool
-          addItemToPool(qpi);
-        }
-
-        // Get the SubPools of oldPool
-        Iterator citer = (tree.getChildList(sourceId))
-            .iterator();
-        while (citer.hasNext()) {
-          Long childPoolId =
-              new Long( ( (IdImpl) citer.next()).getIdString());
-          copyPool(
-              tree, agentId, childPoolId,
-              new Long(newPool.getId().getIdString()));
-        }
-      }
-      else { // If Pools in different trees,
-
+      if (!haveCommonRoot) {
+        // If Pools in different trees,
         // Copy to a Pool outside the same root
         // Copy *this* Pool first
-        QuestionPoolFacade newPool =
-            new QuestionPoolFacade(oldPool.getData());
-        newPool.setParentPoolId(destId);
-        newPool.setQuestionPoolId(new Long(0));
-
-        //newPool = savePool(newPool);
-
-        if (duplicate) {
-	    //find name by loop through sibslings
-	    List siblings=this.getSubPools(destId);
-            boolean subVersion=true;
-	    int num=0;
-	    int indexNum=0;
-	    int maxNum=0;
-           for (int l = 0; l < siblings.size(); l++) {
-	       QuestionPoolData a = (QuestionPoolData)siblings.get(l);
-	       String n=a.getTitle();
-               if(n.startsWith("Copy of ")){
-		   if(n.equals("Copy of "+oldPoolName)){
-		      if (maxNum<1) maxNum=1;
-		   }
-	       }
-               if(n.startsWith("Copy(")){
-                       indexNum=n.indexOf(")",4);
-                       if(indexNum>5){
-			   try{
-			       num=Integer.parseInt(n.substring(5,indexNum));
-			       if(oldPoolName.equals(n.substring(indexNum+5).trim())){
-				   if (num>maxNum)
-				       maxNum=num;
-			       }
-			   }
-		       
-			   catch(NumberFormatException e){
-			      
-			   }
-		       }
-	       }
-	   }
-           if(maxNum==0)
-	  
-	       newPool.updateDisplayName("Copy of "+oldPoolName);
-           else
-               newPool.updateDisplayName("Copy("+(maxNum+1)+") of "+oldPoolName);
-	  
-        }
-        else {
+        if (duplicate) 
+          resetTitle(destId, newPool, oldPoolName);
+        else 
           newPool.updateDisplayName(oldPoolName);
-        }
-
-        newPool = savePool(newPool);
-
-        // Get the map of the old questionpool and its questions
-        // we don't create new questions, what we are doing is create association
-        // between the questions in the old pool and the new pool - daisyf
-        Collection questionPoolItems = oldPool.getQuestionPoolItems();
-        Collection newQuestionPoolItems = new ArrayList();
-        Iterator iter = questionPoolItems.iterator();
-
-        HashSet h = new HashSet();
-        // For each question ,
-        while (iter.hasNext()) {
-          QuestionPoolItemData item = (QuestionPoolItemData) iter.next();
-    int retryCount = PersistenceService.getInstance().getRetryCount().intValue();
-    while (retryCount > 0){
-      try {
-        getHibernateTemplate().save(new QuestionPoolItemData(
-           newPool.getQuestionPoolId(), item.getItemId()));
-        retryCount = 0;
       }
-      catch (Exception e) {
-        log.warn("problem copying pool: "+e.getMessage());
-        retryCount = PersistenceService.getInstance().retryDeadlock(e, retryCount);
-      }
-    }
-        }
 
-        // Get the SubPools of oldPool
-        Iterator citer = (tree.getChildList(sourceId))
-            .iterator();
-        while (citer.hasNext()) {
-          Long childPoolId = (Long) citer.next();
-          copyPool(tree, agentId, childPoolId, newPool.getQuestionPoolId());
-        }
+      newPool = savePool(newPool);
+      // then save question to pool
+      Set newQuestionSet = prepareQuestions(newPool.getQuestionPoolId(), questionSet);
+      saveQuestionSet(newQuestionSet);
+
+      // Get the SubPools of oldPool
+      Iterator citer = (tree.getChildList(sourceId)).iterator();
+      while (citer.hasNext()) {
+        Long childPoolId = (Long) citer.next();
+        copyPool(tree, agentId, childPoolId, newPool.getQuestionPoolId());
       }
     }
     catch (Exception e) {
-      e.printStackTrace();
-    }
-    catch (OsidException e) {
       e.printStackTrace();
     }
   }
@@ -984,6 +884,73 @@ public boolean poolIsUnique(Long questionPoolId, String title, Long parentPoolId
       h.put(q.getItemId(), q);
     }
     return h;
+  }
+
+  public HashSet prepareQuestions(Long questionPoolId, Set questionSet){
+    System.out.println("**** no of question="+questionSet.size());
+    HashSet set = new HashSet();
+    Iterator iter = questionSet.iterator();
+    while (iter.hasNext()){
+      QuestionPoolItemData i = (QuestionPoolItemData)iter.next();
+      System.out.println(questionPoolId.intValue()+":"+i.getItemId());
+      set.add(new QuestionPoolItemData(questionPoolId, i.getItemId()));
+    }
+    System.out.println("**** no of question adjusted="+set.size());
+    return set;
+  }
+
+  private void resetTitle(Long destId, QuestionPoolFacade newPool, String oldPoolName){
+    //find name by loop through sibslings
+    List siblings=getSubPools(destId);
+    boolean subVersion=true;
+    int num=0;
+    int indexNum=0;
+    int maxNum=0;
+    for (int l = 0; l < siblings.size(); l++) {
+       QuestionPoolData a = (QuestionPoolData)siblings.get(l);
+       String n=a.getTitle();
+       if(n.startsWith("Copy of ")){
+         if(n.equals("Copy of "+oldPoolName)){
+           if (maxNum<1) maxNum=1;
+         }
+       }
+       if(n.startsWith("Copy(")){
+         indexNum=n.indexOf(")",4);
+         if(indexNum>5){
+	   try{
+             num=Integer.parseInt(n.substring(5,indexNum));
+             if(oldPoolName.equals(n.substring(indexNum+5).trim())){
+               if (num>maxNum) maxNum=num;
+             }
+	   }
+	   catch(NumberFormatException e){
+             log.warn("rename title of duplicate pool:"+ e.getMessage());
+	   }
+       }
+     }
+   }
+   if(maxNum==0)
+     newPool.updateDisplayName("Copy of "+oldPoolName);
+   else
+     newPool.updateDisplayName("Copy("+(maxNum+1)+") of "+oldPoolName);
+  }
+
+  private void saveQuestionSet(Set newQuestionSet) {
+    Iterator iter = newQuestionSet.iterator();
+    while (iter.hasNext()){
+      QuestionPoolItemData i = (QuestionPoolItemData)iter.next();
+      int retryCount = PersistenceService.getInstance().getRetryCount().intValue();
+      while (retryCount > 0){
+        try {
+	  getHibernateTemplate().save(i);
+	  retryCount = 0;
+        }
+        catch (Exception e) {
+	  log.warn("problem saving question: "+e.getMessage());
+	  retryCount = PersistenceService.getInstance().retryDeadlock(e, retryCount);
+        }
+      }
+    }
   }
 
 }
