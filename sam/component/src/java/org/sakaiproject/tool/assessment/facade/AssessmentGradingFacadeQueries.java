@@ -22,6 +22,7 @@
 **********************************************************************************/
 package org.sakaiproject.tool.assessment.facade;
 
+import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -405,23 +406,56 @@ public class AssessmentGradingFacadeQueries extends HibernateDaoSupport implemen
   }
 
   public void removeMediaById(Long mediaId){
-    MediaData media = (MediaData) getHibernateTemplate().load(MediaData.class, mediaId);
-    int retryCount = PersistenceService.getInstance().getRetryCount().intValue();
-    while (retryCount > 0){ 
-      try {
-        getHibernateTemplate().delete(media);
-        retryCount = 0;
+    String mediaLocation = null;
+    Session session = null;
+    try{
+      session = getSessionFactory().openSession();
+      Connection conn = session.connection();
+      log.debug("****Connection="+conn);
+      String query0="select LOCATION from SAM_MEDIA_T where MEDIAID=?";
+      PreparedStatement statement0 = conn.prepareStatement(query0);
+      statement0.setLong(1, mediaId.longValue());
+      ResultSet rs =statement0.executeQuery();
+      if (rs.next()){
+        mediaLocation = rs.getString("LOCATION");
       }
-      catch (Exception e) {
-        log.warn("problem removing mediaId="+mediaId+":"+e.getMessage());
-        retryCount = PersistenceService.getInstance().retryDeadlock(e, retryCount);
+      //System.out.println("****mediaLocation="+mediaLocation);
+
+      String query="delete from SAM_MEDIA_T where MEDIAID=?";
+      PreparedStatement statement = conn.prepareStatement(query);
+      statement.setLong(1, mediaId.longValue());
+      statement.executeUpdate();
+    }
+    catch(Exception e){
+      log.warn(e.getMessage());
+    }
+    finally{
+      try{
+        if (session !=null) session.close();
       }
+      catch(Exception ex){
+        log.warn(ex.getMessage());
+      }
+    }
+    try{
+      if (mediaLocation != null){
+        File mediaFile = new File(mediaLocation);
+        mediaFile.delete();
+      }
+    }
+    catch (Exception e) {
+      log.warn("problem removing file="+e.getMessage());
     }
   }
 
   public MediaData getMedia(Long mediaId){
-    MediaData mediaData = (MediaData) getHibernateTemplate().load(MediaData.class,mediaId);
-    mediaData.setMedia(getMediaStream(mediaId));
+    MediaData mediaData = (MediaData) getHibernateTemplate().load(MediaData.class, mediaId);
+    if (mediaData != null){
+      String mediaLocation = mediaData.getLocation();
+      if (mediaLocation == null || (mediaLocation.trim()).equals("")){
+        mediaData.setMedia(getMediaStream(mediaId));
+      }
+    }
     return mediaData;
   }
 
