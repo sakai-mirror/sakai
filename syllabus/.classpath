@@ -12,10 +12,11 @@
 	<classpathentry kind="src" path="/legacy"/>
 	<classpathentry kind="src" path="/kernel"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.1.5.jar"/>
 	<classpathentry kind="src" path="/legacy-service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/util"/>
 	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xercesImpl-2.6.2.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jsf"/>
+	<classpathentry kind="lib" path="/Users/dlhaines/.maven/repository/springframework/jars/spring-1.2.6.jar"/>
+	<classpathentry kind="lib" path="/Users/dlhaines/.maven/repository/springframework/jars/spring-mock-1.2.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
