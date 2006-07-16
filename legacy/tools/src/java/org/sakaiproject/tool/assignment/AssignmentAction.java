@@ -3064,6 +3064,9 @@ extends PagedResourceActionII
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_SUBMISSION_ASSIGNMENT_EXPAND_FLAG, new Boolean (false));
 		
+		// save the user input
+		readGradeForm(data, state);
+		
 	}	// doHide_preview_assignment_student_view
 	
 	/**
@@ -3073,6 +3076,9 @@ extends PagedResourceActionII
 	{
 		SessionState state = ((JetspeedRunData)data).getPortletSessionState (((JetspeedRunData)data).getJs_peid ());
 		state.setAttribute (GRADE_SUBMISSION_ASSIGNMENT_EXPAND_FLAG, new Boolean (true));
+		
+		// save the user input
+		readGradeForm(data, state);
 		
 	}	// doShow_submission_assignment_instruction
 	
@@ -4891,6 +4897,17 @@ extends PagedResourceActionII
 				// cancel grading
 				doCancel_grade_submission(data);
 			}
+			else if (option.equals("hide_instruction"))
+			{
+				// hide the assignment instruction
+				doHide_submission_assignment_instruction(data);
+			}
+			else if (option.equals("show_instruction"))
+			{
+				// show the assignment instruction
+				doShow_submission_assignment_instruction(data);
+			}
+			
 			
 		}
 	}
