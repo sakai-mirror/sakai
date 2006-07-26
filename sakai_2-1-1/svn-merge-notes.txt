@@ -1,0 +1,298 @@
+The following revisions were NOT applied from the trunk to the 2.1 branch:
+
+------------------------------------------------------------------------
+r4896 | zqian@umich.edu | 2005-12-23 10:23:30 -0500 (Fri, 23 Dec 2005) | 3 lines
+
+SAK-2271: Send grades from Assignment tool to Gradebook tool.
+
+Changes in legacy project.xml for integration with gradebook service.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4893 | ggolden@umich.edu | 2005-12-22 19:09:26 -0500 (Thu, 22 Dec 2005) | 1 line
+
+eclipse cleanup for assignment posting to gradebook
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4889 | zqian@umich.edu | 2005-12-22 16:45:10 -0500 (Thu, 22 Dec 2005) | 3 lines
+
+SAK-2271: Send grades from Assignment tool to Gradebook tool.
+
+First phase
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4879 | jholtzman@berkeley.edu | 2005-12-22 13:54:53 -0500 (Thu, 22 Dec 2005) | 1 line
+
+Updated readme to reflect the new, simplified itest sakai plugin goal.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4873 | jholtzman@berkeley.edu | 2005-12-21 19:06:55 -0500 (Wed, 21 Dec 2005) | 1 line
+
+Removed section test package.  TODO:  Move any non-kernel tests to their own projects to avoid cyclic 
+dependencies.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4872 | jholtzman@berkeley.edu | 2005-12-21 18:54:20 -0500 (Wed, 21 Dec 2005) | 1 line
+
+Fixed typos in documentation.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4871 | jholtzman@berkeley.edu | 2005-12-21 18:45:28 -0500 (Wed, 21 Dec 2005) | 1 line
+
+Added documentation on using the test harness.  This will not be accurate until the sakai plugin version 2.2 is 
+available and the master project's properties change to use plugin version 2.2.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4867 | jimeng@umich.edu | 2005-12-21 17:26:17 -0500 (Wed, 21 Dec 2005) | 4 lines
+
+SAK-2930
+Waited to delete attachments until user clicks "Finish" button.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4859 | jimeng@umich.edu | 2005-12-21 14:56:39 -0500 (Wed, 21 Dec 2005) | 3 lines
+
+SAK-3035
+Ignore user dropboxes if they're not defined.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4855 | bkirschn@umich.edu | 2005-12-21 10:46:50 -0500 (Wed, 21 Dec 2005) | 2 lines
+
+added default locales
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4847 | bkirschn@umich.edu | 2005-12-20 17:23:36 -0500 (Tue, 20 Dec 2005) | 2 lines
+
+if not defined, list of available locales will default to system default
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4843 | jimeng@umich.edu | 2005-12-20 16:27:30 -0500 (Tue, 20 Dec 2005) | 3 lines
+
+SAK-3261
+Added reference to css class "exclude" for table rows containing paging widgets.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4839 | jimeng@umich.edu | 2005-12-20 16:08:38 -0500 (Tue, 20 Dec 2005) | 4 lines
+
+SAK-3237
+Paging widgets should only appear if there are more than 5 sites.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4837 | bkirschn@umich.edu | 2005-12-20 15:58:54 -0500 (Tue, 20 Dec 2005) | 2 lines
+
+Support for "locales" definition within sakai.properties, to define available language locales
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4834 | jimeng@umich.edu | 2005-12-20 15:40:55 -0500 (Tue, 20 Dec 2005) | 4 lines
+
+SAK-3230
+Links for "Finish" and "Cancel" were malformed.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4825 | ggolden@umich.edu | 2005-12-20 11:35:44 -0500 (Tue, 20 Dec 2005) | 2 lines
+
+eclipse cleanup for the resource loader move to high util
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4821 | bkirschn@umich.edu | 2005-12-20 10:08:35 -0500 (Tue, 20 Dec 2005) | 3 lines
+
+Move ResourceLoader class out of util directory, and into high-util directory (same package name).
+New jar file for dependencies is sakai-util-i18n.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4805 | ggolden@umich.edu | 2005-12-19 22:34:23 -0500 (Mon, 19 Dec 2005) | 1 line
+
+ignore target
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4795 | jimeng@umich.edu | 2005-12-19 14:52:44 -0500 (Mon, 19 Dec 2005) | 3 lines
+
+SAK-3024
+Showing instructions for form items.
+
+U legacy/tools/src/java/org/sakaiproject/tool/content/ResourcesAction.java
+Skipped missing target: 'legacy/tools/src/webapp/vm/content/chef_resources_itemtype.vm'
+U legacy/tools/src/webapp/vm/content/chef_resources_edit.vm
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4785 | lance@indiana.edu | 2005-12-19 11:09:34 -0500 (Mon, 19 Dec 2005) | 2 lines
+
+Migrating test-harness development to trunk per Josh Holtzman's request.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4756 | csev@umich.edu | 2005-12-18 19:18:51 -0500 (Sun, 18 Dec 2005) | 3 lines
+
+Remove unnecessary files.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4755 | csev@umich.edu | 2005-12-18 18:35:00 -0500 (Sun, 18 Dec 2005) | 4 lines
+
+Add the Sakai JSR-168 portlet - initial load.  This should not be in the maintenance
+branch.  It is intended as a provisional tool in release 2.2.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4754 | jimeng@umich.edu | 2005-12-18 14:51:34 -0500 (Sun, 18 Dec 2005) | 3 lines
+
+SAK-2443
+Added paging to two contexts used by attachment helper.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4744 | bkirschn@umich.edu | 2005-12-16 16:30:29 -0500 (Fri, 16 Dec 2005) | 2 lines
+
+SAK-3186: Make use of ResourceLoader class for dynamic language locales
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4742 | bkirschn@umich.edu | 2005-12-16 16:09:23 -0500 (Fri, 16 Dec 2005) | 3 lines
+
+SAK-3186: Update legacy tools, admin/su tool, preferences to use ResourceLoader class
+for dynamic language locale support
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4740 | esmiley@stanford.edu | 2005-12-16 15:09:50 -0500 (Fri, 16 Dec 2005) | 1 line
+
+SAK-1894: not needed in branch, post 2.1x, added http post audio capture
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4721 | jimeng@umich.edu | 2005-12-15 23:03:33 -0500 (Thu, 15 Dec 2005) | 3 lines
+
+SAK-2443
+Added paged display of other sites in Resources list view.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4709 | gsilver@umich.edu | 2005-12-15 14:24:21 -0500 (Thu, 15 Dec 2005) | 1 line
+
+adding OSPI classes
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4708 | bkirschn@umich.edu | 2005-12-15 14:08:36 -0500 (Thu, 15 Dec 2005) | 2 lines
+
+SAK-3186: Implement dynamic language support and associated user preferences
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4654 | jimeng@umich.edu | 2005-12-14 20:59:46 -0500 (Wed, 14 Dec 2005) | 3 lines
+
+SAK-1128
+Added asterisk to "Copyright Information" field
+
+svn merge -r 4653:4654 https://source.sakaiproject.org/svn/trunk/sakai/ --dry-run
+Skipped missing target: 'legacy/tools/src/webapp/vm/content/chef_resources_itemtype.vm'
+U    legacy/tools/src/webapp/vm/content/chef_resources_edit.vm
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4557 | jimeng@umich.edu | 2005-12-12 18:06:23 -0500 (Mon, 12 Dec 2005) | 5 lines
+
+SAK-3138
+Split out the velocity markup for creating items from the markup for deciding what kind of item to create.  This will be needed to allow 
+clients (other tools) to create/modify individual items in contexts other than Resources.
+Make the identifiers for the various  item-types public so they can be referenced from other classes.
+Added a new constant to identify the helper mode in which a client creates an individual item (ResourcesAction.MODE_ATTACHMENT_NEW_ITEM).
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4500 | lydial@stanford.edu | 2005-12-08 01:47:57 -0500 (Thu, 08 Dec 2005) | 1 line
+
+SAK-2862 please do not include this in maint branch
+------------------------------------------------------------------------
+r4499 | lydial@stanford.edu | 2005-12-08 01:35:09 -0500 (Thu, 08 Dec 2005) | 1 line
+
+SAK-2862, please do not merge this into the maint. branch yet. 
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4396 | john.ellis@rsmart.com | 2005-12-01 19:58:02 -0500 (Thu, 01 Dec 2005) | 5 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-3055
+SAK-3055
+added a spring aware scheduler job so that spring beans can be
+scheduled to execute with their bean configuration
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4255 | john.ellis@rsmart.com | 2005-11-29 18:58:17 -0500 (Tue, 29 Nov 2005) | 4 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2883
+SAK-2883
+added javadoc for interface and base class
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4161 | john.ellis@rsmart.com | 2005-11-27 11:38:52 -0500 (Sun, 27 Nov 2005) | 4 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2883
+SAK-2883
+added file helper filter and an example in metaobj
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4144 | john.ellis@rsmart.com | 2005-11-23 12:17:40 -0500 (Wed, 23 Nov 2005) | 4 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2932
+SAK-2932
+added attribute to tag
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4105 | jimeng@umich.edu | 2005-11-22 11:09:35 -0500 (Tue, 22 Nov 2005) | 3 lines
+
+SAK-2885
+Fixed problem with HTMLArea in safari.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4099 | john.ellis@rsmart.com | 2005-11-21 23:12:49 -0500 (Mon, 21 Nov 2005) | 6 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2907
+SAK-2907
+broke up the "writeConfiguration" call to allow for subclasses to insert custom configuration code.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4032 | john.ellis@rsmart.com | 2005-11-20 12:55:28 -0500 (Sun, 20 Nov 2005) | 4 lines
+
+http://bugs.sakaiproject.org/jira/browse/SAK-2882
+SAK-2882
+added a role flag to the agent interface
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4041 | jimeng@umich.edu | 2005-11-20 21:42:51 -0500 (Sun, 20 Nov 2005) | 4 lines
+
+SAK-2885
+Adding other open-source JavaScript-based WYSIWYG editors.
+Add support to switch from one editor to another by changing a value in sakai.properties.
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+r4056 | lance@indiana.edu | 2005-11-21 09:40:50 -0500 (Mon, 21 Nov 2005) | 2 lines
+
+Removed \\ directory which was causing checkouts to fail for Windows machines.
+------------------------------------------------------------------------
+

@@ -1,0 +1,204 @@
+##<!-- $Header: /cvs/sakai2/legacy/tools/src/webapp/vm/discussion/chef_threaded_discussionsII-List.vm,v 1.5 2005/05/28 03:04:35 ggolden.umich.edu Exp $ -->
+<script  type="text/javascript" language="JavaScript" src="#scriptLink('discussionscript.js')">
+</script>
+
+## this is double deep
+<script type="text/javascript" language="JavaScript">
+doubleDeep = true;
+</script>
+## to prevent horiz scroll on IE
+<!--[if IE]>
+	<script type="text/javascript" language="JavaScript">
+		document.body.style.width='96%'
+	</script>
+<![endif]--> 
+
+<div style="margin:0;padding:0;width:100%">
+			#if ($searching)
+				<div class="highlight" style="background-color:#FFFFA8 !important;padding:.3em .3em">
+					#if ($searchResultList.size()>0)
+						#if ($searchResultList.size() == 1)
+							$tlang.getString("list.oneite")
+						#else
+							$searchResultList.size() $tlang.getString("list.morite")
+						#end
+					#else 
+						$tlang.getString("list.noite")
+					#end
+				</div>
+			#end
+		#if ($alertMessage)
+			<div class="alertMessage">$tlang.getString("gen.alert") $validator.escapeHtml($alertMessage)</div>
+			<div style="display:block;clear:both"></div>
+		#end
+		#set ( $idString = $validator.escapeJavascript($currentMessage.Id))
+		#if ($!categories)
+			<table width="100%" border="0" cellspacing="0" cellpadding="3">
+			#foreach ($category in $categories)
+				<tr style="background-color:#F0F0F0;">
+					<td width="4%" style="border-bottom:3px solid #fff">
+						#if (!$expandedCategoryList.contains($category))
+							<a href="#" onclick="location='#toolLinkParam($action "doExpand_category" "category=$validator.escapeUrl($category)")'; return false;">
+								<img src = "#imageLink("sakai/expand.gif")" border="0" alt="$tlang.getString("list.exp")" /></a> 
+						#else
+							<a href="#" onclick="location='#toolLinkParam($action "doCollapse_category" "category=$validator.escapeUrl($category)")'; return false;">
+								<img src = "#imageLink("sakai/collapse.gif")" border="0" alt="$tlang.getString("list.col")" /></a> 
+						#end
+					</td>
+					<td nowrap="nowrap" style="border-bottom:3px solid #fff">
+						$validator.escapeHtml($category)
+						#if ($allow_remove_category)
+							<a href="#" onclick="location='#toolLinkParam($action "doDelete_category_confirm" "category=$validator.escapeUrl($category)")'; return false;" title="$tlang.getString("list.delcat")" >				
+								<img src = "#imageLink("sakai/delete.gif")" border="0" alt ="$tlang.getString("list.delcat")" /></a>
+						#end
+						
+					</td>
+				</tr>
+				#if ($expandedCategoryList.contains($category))
+					## show messages inside the category if the category has been expanded
+					#set ($topicId = "")
+					#set ($messages = $categoriesShowList.get($category))
+					#set ($expandedMessages = $expandedMessageList.get($category))
+					#if ($!messages.size()>0)
+						#foreach ($messageId in $messages)
+							#set ($message=false)
+							#set ($message = $channel.getDiscussionMessageNoException($messageId))
+							##if message is not null
+							#if ($!message)
+								#set ($category = $message.getDiscussionHeader().getCategory())
+								#set($depth=$message.getReplyToDepth())
+								#set ($replyNumber= $channel.getThreadNumberOfReplies($message))
+								#set ($topicId = $message.getId())
+								<tr   #if ($searchResultList.indexOf($message.Id) != -1) style="background-color:#FFFFA8"#end >
+									<td valign="bottom" style="white-space: nowrap;" width="4%">
+										#if ($currentMessage.Id == $message.Id)
+											<a name="$!idString" id="$!idString""><img src = "#imageLink("sakai/arrowhere.gif")" border="0" alt="$tlang.getString("list.curmes")"/></a>
+										#else
+											&nbsp;
+										#end
+									</td>
+									<td colspan="5" align="left" nowrap="nowrap">
+										#set ($text = "")
+										#if ($depth>0)
+											#foreach ($j in [1..$depth])
+												&nbsp;&nbsp;
+											#end
+										#end
+										#if ($replyNumber>0)
+											#if (!$expandedMessages.contains($message))
+												<a href="#" onclick="location='#toolLinkParam($action "doExpand_message" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.exp")"><img src = "#imageLink("sakai/expand.gif")" border="0" alt="$tlang.getString("list.exp")" /></a>					
+											#else
+												<a href="#" onclick="location='#toolLinkParam($action "doCollapse_message" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.col")"><img src = "#imageLink("sakai/collapse.gif")" border="0" alt="$tlang.getString("list.col")" /></a>					
+											#end
+										#else
+											&nbsp;&nbsp;&nbsp;
+										#end
+										#if ($visitedMessages.contains($message.id))
+											#if ($currentMessage.Id == $message.Id)
+## (gsilver) since this the message I am looking at, don't need a link - taking out bold as well as it makes the screen bounce
+##												<span style="font-weight:bold">
+##													<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$message.Id")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
+														#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
+														$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
+##													</a>
+##												</span>
+											#else
+												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$validator.escapeUrl($message.Id)")'; return false;">
+													#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
+													$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
+												</a>
+											#end
+											#set ($size = $message.Header.Attachments.size())
+											#set ($props = false)
+											#if (!$message.Header.Attachments.isEmpty())
+												#foreach ($attachment in $attachments)
+													#set ($props = $attachment.Properties) 
+													#if ($!props)
+														#set ($size = $size + 1)
+													#end
+												#end
+											#end
+											<span style="font-size:.8em">
+											#if ($replyNumber>0)
+												#if ($replyNumber==1) 
+													($tlang.getString("list.oneres"))
+												#else
+													($replyNumber $tlang.getString("list.morres"))
+												#end
+											#end
+											#set($lastestMessage=false)
+											#set($lastestMessage = $channel.getThreadLatestReply($message))
+											## always show the "created by" not "last modified by"
+											$validator.escapeHtml($message.getDiscussionHeader().getFrom().getDisplayName())
+											$message.getDiscussionHeader().getDate().toStringLocalFullZ()
+											</span>
+											#if ($size > 0)
+												<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString("list.hasatt")" />
+											#end
+											#if ($depth==0)
+												<a href="#" onclick="location='#toolLinkParam($action "doShow_topic_content" "topicId=$validator.escapeUrl($message.Id)")'; return false;"  title="$tlang.getString("list.shothecon")">
+												<img src = "#imageLink("sakai/content.gif")" border="0" alt="$tlang.getString("list.prifri")" />
+												</a>
+											#end
+											#if ($channel.allowRemoveMessage($message))
+												<a href="#" onclick="location='#toolLinkParam($action "doDelete_message_confirm" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.delthi")">				
+													<img src = "#imageLink("sakai/delete.gif")" border="0" alt="$tlang.getString("list.delthi")" /></a>
+											#end
+										#else
+											<span style="font-weight:bold">
+												<a id="$validator.escapeJavascript($message.id)" href="#" onclick="location='#toolLinkParam($action "doShow" "messageId=$validator.escapeUrl($message.Id)")'; return false;">#if ($message.getDiscussionHeader().getDraft())<span class="highlight">$tlang.getString("gen.dra") </span>#end
+													$validator.limit($validator.escapeHtml($message.getDiscussionHeader().getSubject()), 50)
+												</a>
+											</span>
+											#set ($size = $message.Header.Attachments.size())
+											#set ($props = false)
+											#if (!$message.Header.Attachments.isEmpty())
+												#foreach ($attachment in $attachments)
+													#set ($props = $attachment.Properties) 
+													#if ($!props)
+														#set ($size = $size + 1)
+													#end
+												#end
+											#end
+											<span style="font-size:.8em">
+											#if ($replyNumber>0)
+												#if ($replyNumber==1) 
+													($tlang.getString("list.oneres"))
+												#else
+													($replyNumber $tlang.getString("list.morres"))
+												#end
+											#end
+											#set($lastestMessage=false)
+											#set($lastestMessage = $channel.getThreadLatestReply($message))
+											## always show the "created by" not "last modified by"
+											$validator.escapeHtml($message.getDiscussionHeader().getFrom().getDisplayName())
+											$message.getDiscussionHeader().getDate().toStringLocalFullZ()</span>
+											#if ($size > 0)
+												<img src = "#imageLink("sakai/attachments.gif")" border="0" alt="$tlang.getString("list.hasatt")" />
+											#end
+											#if ($depth==0)
+												<a href="#" onclick="location='#toolLinkParam($action "doShow_topic_content" "topicId=$validator.escapeUrl($message.Id)")'; return false;"  title="$tlang.getString("list.shothecon")">
+												<img src = "#imageLink("sakai/content.gif")" border="0" alt="Show the content of this topic" />
+												</a>
+											#end
+											#if ($channel.allowRemoveMessage($message))
+												<a href="#" onclick="location='#toolLinkParam($action "doDelete_message_confirm" "messageId=$validator.escapeUrl($message.Id)")'; return false;" title="$tlang.getString("list.delthi")">
+													<img src = "#imageLink("sakai/delete.gif")" border="0" alt="$tlang.getString("list.delthi")" /></a>
+											#end
+										#end
+									</td>
+								</tr>
+							#end
+						#end	##	if
+					#end
+				#end
+			#end
+			</table>
+		#else
+			$tlang.getString("list.nodisite")
+		#end
+
+		<script  type="text/javascript" language="JavaScript">
+			scroll("$idString");
+		</script>
+</div>
