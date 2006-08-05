@@ -16,8 +16,8 @@ master			-r12664	https://source.sakaiproject.org/svn/master/tags/sakai_2-2-0
 reference		-r12664	https://source.sakaiproject.org/svn/reference/tags/sakai_2-2-0
 login			-r12664	https://source.sakaiproject.org/svn/login/tags/sakai_2-2-0
 access			-r12664	https://source.sakaiproject.org/svn/access/tags/sakai_2-2-0
-content			-r12664	https://source.sakaiproject.org/svn/content/tags/sakai_2-2-0
-metaobj			-r12664	https://source.sakaiproject.org/svn/metaobj/tags/sakai_2-2-0
+content				https://source.sakaiproject.org/svn/content/branches/sakai_2-2-0-availability
+metaobj				https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-2-0-availability
 presence		-r12664	https://source.sakaiproject.org/svn/presence/tags/sakai_2-2-0
 calendar		-r12664	https://source.sakaiproject.org/svn/calendar/tags/sakai_2-2-0
 portal			-r12664	https://source.sakaiproject.org/svn/portal/tags/sakai_2-2-0
