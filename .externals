@@ -13,7 +13,7 @@ email			-r13476	https://source.sakaiproject.org/svn/email/tags/sakai_2-2-1-003
 alias			-r13476	https://source.sakaiproject.org/svn/alias/tags/sakai_2-2-1-003
 site			-r13476	https://source.sakaiproject.org/svn/site/tags/sakai_2-2-1-003
 master			-r13476	https://source.sakaiproject.org/svn/master/tags/sakai_2-2-1-003
-reference		-r13476	https://source.sakaiproject.org/svn/reference/tags/sakai_2-2-1-003
+reference		https://source.sakaiproject.org/svn/reference/branches/sakai_2-2-1-working
 login			-r13476	https://source.sakaiproject.org/svn/login/tags/sakai_2-2-1-003
 access			-r13476	https://source.sakaiproject.org/svn/access/tags/sakai_2-2-1-003
 content			-r13476	https://source.sakaiproject.org/svn/content/tags/sakai_2-2-1-003
