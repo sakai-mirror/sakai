@@ -1,4 +1,4 @@
-component		-r13762	https://source.sakaiproject.org/svn/component/tags/sakai_2-2-1
+component		-r14860	https://source.sakaiproject.org/svn/component/tags/sakai_2-2-2
 util			-r13762	https://source.sakaiproject.org/svn/util/tags/sakai_2-2-1
 tool			-r13762	https://source.sakaiproject.org/svn/tool/tags/sakai_2-2-1
 authz			-r13762	https://source.sakaiproject.org/svn/authz/tags/sakai_2-2-1
@@ -12,8 +12,8 @@ db			-r13762	https://source.sakaiproject.org/svn/db/tags/sakai_2-2-1
 email			-r13762	https://source.sakaiproject.org/svn/email/tags/sakai_2-2-1
 alias			-r13762	https://source.sakaiproject.org/svn/alias/tags/sakai_2-2-1
 site			-r13762	https://source.sakaiproject.org/svn/site/tags/sakai_2-2-1
-master			-r13762	https://source.sakaiproject.org/svn/master/tags/sakai_2-2-1
-reference		-r13762 https://source.sakaiproject.org/svn/reference/tags/sakai_2-2-1
+master			-r14856	https://source.sakaiproject.org/svn/master/tags/sakai_2-2-2
+reference		-r14854 https://source.sakaiproject.org/svn/reference/tags/sakai_2-2-2
 login			-r13762	https://source.sakaiproject.org/svn/login/tags/sakai_2-2-1
 access			-r13762	https://source.sakaiproject.org/svn/access/tags/sakai_2-2-1
 content			-r13762	https://source.sakaiproject.org/svn/content/tags/sakai_2-2-1
