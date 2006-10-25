@@ -473,12 +473,30 @@ public class ItemData
       for (Iterator i = this.itemFeedbackSet.iterator(); i.hasNext(); ) {
         ItemFeedback itemFeedback = (ItemFeedback) i.next();
         if (itemFeedback.getTypeId().equals(typeId)) {
-          this.itemFeedbackSet.remove(itemFeedback);
+          //this.itemFeedbackSet.remove(itemFeedback);
+          i.remove();
         }
       }
     }
   }
 
+
+  public void removeMetaDataByType(String label) {
+    try {
+      if (itemMetaDataSet!= null) {
+	for (Iterator i = this.itemMetaDataSet.iterator(); i.hasNext(); ) {
+          ItemMetaData itemMetaData= (ItemMetaData) i.next();
+          if (itemMetaData.getLabel().equals(label)) {
+            //this.itemMetaDataSet.remove(itemMetaData);
+            i.remove();
+          }
+	}
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
 
  /**
  * If this is a true-false question return true if it is true, else false.
