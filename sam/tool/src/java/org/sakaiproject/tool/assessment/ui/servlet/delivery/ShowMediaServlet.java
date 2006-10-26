@@ -74,7 +74,16 @@ public class ShowMediaServlet extends HttpServlet
     int fileSize = mediaData.getFileSize().intValue();
     byte[] media = mediaData.getMedia();
     log.info("****1. media file size="+mediaData.getFileSize());
-    log.info("****2. media length="+media.length);
+    
+    /*
+     * 
+     * Bugfix for SAK-5584
+     * If the file upload content is stored in the file system, 
+     * mediaData.getMedia() returns null. Thus the following call 
+     * to media.length would throw a null pointer exception.
+     *
+     */
+    //log.info("****2. media length="+media.length);
 
     // get assessment's ownerId
     String assessmentCreatedBy = req.getParameter("createdBy");
