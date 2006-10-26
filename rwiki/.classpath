@@ -59,12 +59,12 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/test-harness"/>
 	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xmlParserAPIs-2.6.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/fop/jars/fop-20060405.jar"/>
-	<classpathentry kind="lib" path="/Users/dlhaines/.maven/repository/springframework/jars/spring-1.2.6.jar"/>
-	<classpathentry kind="lib" path="/Users/dlhaines/.maven/repository/springframework/jars/spring-mock-1.2.6.jar"/>
 	<classpathentry kind="src" path="/legacy-service"/>
 	<classpathentry kind="src" path="/kernel"/>
 	<classpathentry kind="src" path="/sections"/>
 	<classpathentry kind="src" path="/legacy"/>
 	<classpathentry kind="src" path="/util"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.2.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.2.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

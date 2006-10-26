@@ -24,7 +24,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-id/jars/commons-id-0.1-dev.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/legacy-service"/>
-	<classpathentry kind="lib" path="/Users/dlhaines/.maven/repository/springframework/jars/spring-1.2.6.jar"/>
-	<classpathentry kind="lib" path="/Users/dlhaines/.maven/repository/springframework/jars/spring-mock-1.2.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.2.6.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-mock-1.2.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
