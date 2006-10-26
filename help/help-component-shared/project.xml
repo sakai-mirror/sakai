@@ -42,6 +42,10 @@
 				<includes>
 					<include>**/*.xml</include>
 				</includes>
+                                <excludes>
+                                       <exclude>ehcache.xml</exclude>
+                                </excludes>
+
 			</resource>
 		</resources>
 	</build>
