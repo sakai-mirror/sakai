@@ -158,11 +158,24 @@ public class RequestScopeSuperBean {
         if ( messageService != null ) {
             Session session = SessionManager.getCurrentSession();
         
-            messageService.updatePresence(session.getId(),
-                this.getCurrentUser(),
-                this.getCurrentPageName(),
-                this.getCurrentPageSpace());
+            // BugFix SAK-6284 : Start
+            String user = this.getCurrentUser();
+            if (user != null && user.length() > 0)
+			{
+				String currentPageName = this.getCurrentPageName();
+				String pageSpace = this.getCurrentPageSpace();
+				if ( currentPageName != null && currentPageName.length() < 255 && pageSpace != null && pageSpace.length() < 255 ) {
+					messageService.updatePresence(session.getId(),
+												  this.getCurrentUser(),
+												  this.getCurrentPageName(),
+												  this.getCurrentPageSpace());
+				} else {
+					
+					logger.warn("Page names in wiki cannot be over 225 characters in length, presence not updated. Page Name was "+currentPageName);
+				}
+			} // BugFix SAK-6284 : End
         }
+        
         experimental  = ServerConfigurationService.getBoolean("wiki.experimental",false);
         withnotification  = ServerConfigurationService.getBoolean("wiki.notification",false);
         
