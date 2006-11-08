@@ -705,8 +705,10 @@ public class AssessmentGradingFacadeQueries extends HibernateDaoSupport implemen
         currentAgent = g.getAgentId();
         submittedDate = g.getSubmittedDate();
       }
-      if (currentAgent.equals(g.getAgentId()) && submittedDate.equals(g.getSubmittedDate())){
-        Object o = h.get(itemId);
+        if (currentAgent.equals(g.getAgentId()) 
+	&& ((submittedDate==null && g.getSubmittedDate()==null) 
+	|| (submittedDate!=null && submittedDate.equals(g.getSubmittedDate())))){
+	Object o = h.get(itemId);
         if (o != null)
           ((ArrayList) o).add(gradingId);
         else{
@@ -752,8 +754,11 @@ public class AssessmentGradingFacadeQueries extends HibernateDaoSupport implemen
         currentAgent = g.getAgentId();
         finalScore = g.getFinalScore();
       }
-      if (currentAgent.equals(g.getAgentId()) && finalScore.equals(g.getFinalScore())){
-        Object o = h.get(itemId);
+	if (currentAgent.equals(g.getAgentId())
+	&& ((finalScore==null && g.getFinalScore()==null)
+	|| (finalScore!=null && finalScore.equals(g.getFinalScore())))){        
+
+	Object o = h.get(itemId);
         if (o != null)
           ((ArrayList) o).add(gradingId);
         else{
