@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.util.java.StringUtil;
 import org.sakaiproject.util.xml.Xml;
 import org.w3c.dom.Element;
@@ -47,18 +48,35 @@ public class FormattedText
 	/** This list of good and evil tags was extracted from:
 	 * @link http://www.blooberry.com/indexdot/html/tagindex/all.htm
 	 */
-	private static String[] M_goodTags = {"a", "abbr", "acronym", "address", "b", "big", "blockquote", "br", "center", "cite", "code", 
+	private static String[] M_goodTags;
+        private static String[] M_archivalGoodTags = {"a", "abbr", "acronym", "address", "b", "big", "blockquote", "br", "center", "cite", "code", 
 											"dd", "del", "dir", "div", "dl", "dt", "em", "font", "hr", "h1", "h2", "h3", "h4", "h5", "h6", "i", "ins",
 											"kbd", "li", "marquee", "menu", "nobr", "ol", "p", "pre", "q", "rt", "ruby", "rbc", "rb", "rtc", "rp",
 											"s", "samp", "small", "span", "strike", "strong", "sub", "sup", "tt", "u", "ul", "var", "xmp" 
 											};
+        private static String[] M_richGoodTags = {"a", "abbr", "acronym", "address", "b", "big", "blockquote", "br", "center", "cite", "code", 
+											"dd", "del", "dir", "div", "dl", "dt", "em", "font", "hr", "h1", "h2", "h3", "h4", "h5", "h6", "i", "ins",
+											"kbd", "li", "marquee", "menu", "nobr", "ol", "p", "pre", "q", "rt", "ruby", "rbc", "rb", "rtc", "rp",
+											"s", "samp", "small", "span", "strike", "strong", "sub", "sup", "tt", "u", "ul", "var", "xmp", 
+											"img", "embed", 	
+											};
+        
+
 	
 	/** These evil HTML tags are disallowed when the user inputs formatted text; this protects
 	 * the system from broken pages as well as Cross-Site Scripting (XSS) attacks.
 	 */										
-	private static String[] M_evilTags = { "applet", "base", "body", "bgsound", "button", "col", "colgroup", "comment", "embed", 
+	private static String[] M_evilTags;
+        private static String[] M_archivalEvilTags = { "applet", "base", "body", "bgsound", "button", "col", "colgroup", "comment", "embed", 
 											"dfn", "embed", "fieldset", "form", "frame", "frameset", "head", "html",
 											"iframe", "ilayer", "img", "inlineinput", "isindex", "input", "keygen", "label", "layer", "legend",
+											"link", "listing", "map", "meta", "multicol", "nextid", "noembed", "noframes", "nolayer", "noscript",
+											"object", "optgroup", "option", "param", "plaintext", "script", "select", "sound", "spacer",
+											"spell", "submit", "textarea", "title", "wbr"
+											};
+        private static String[] M_richEvilTags = { "applet", "base", "body", "bgsound", "button", "col", "colgroup", "comment",  
+											"dfn", "fieldset", "form", "frame", "frameset", "head", "html",
+											"iframe", "ilayer", "inlineinput", "isindex", "input", "keygen", "label", "layer", "legend",
 											"link", "listing", "map", "meta", "multicol", "nextid", "noembed", "noframes", "nolayer", "noscript",
 											"object", "optgroup", "option", "param", "plaintext", "script", "select", "sound", "spacer",
 											"spell", "submit", "textarea", "title", "wbr"
@@ -77,6 +95,19 @@ public class FormattedText
 	
 	private static void init()
 	{
+		String focus = ServerConfigurationService.getString("tags.focus");
+
+                //this would be better if it allowed images and such as long as they are only from the current worksite
+                //but I'm not sure if any one actually wants it.. my users don't, we'll be using the rich set.
+		if ("archival".equals(focus)) {
+			M_goodTags = M_archivalGoodTags; 
+			M_evilTags = M_archivalEvilTags; 
+		}
+		else {	
+			M_goodTags = M_richGoodTags; 
+			M_evilTags = M_richEvilTags; 
+		}
+
 		M_evilTagsPatterns = new Pattern[M_evilTags.length];
 		for (int i=0; i<M_evilTags.length; i++)
 		{
