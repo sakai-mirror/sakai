@@ -37,8 +37,6 @@ import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.entity.Reference;
-// **QUICK Temporary PATCH - csev  - Wed Nov 29 00:06:07 EST 2006
-import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.time.Time;
 import org.sakaiproject.util.ContentHostingComparator;
@@ -51,7 +49,6 @@ import org.sakaiproject.util.Validator;
  */
 public class CollectionAccessFormatter
 {
-
 	/**
 	 * Format the collection as an HTML display.
 	 */
@@ -61,20 +58,6 @@ public class CollectionAccessFormatter
 		PrintWriter out = null;
 		// don't set the writer until we verify that
 		// getallresources is going to work.
-	
-		// **QUICK Temporary PATCH - csev  - Wed Nov 29 00:06:07 EST 2006
-		if(ContentHostingService.isAttachmentResource(x.getId())) 
-		{
-			try
-			{
-				res.sendError(HttpServletResponse.SC_NOT_FOUND);
-				return;
-			} catch ( java.io.IOException e ) {
-				return;  //  Whatever we do - do *not* list the directory contents
-			}
-		}
-		// **QUICK Temporary PATCH - csev  - Wed Nov 29 00:06:07 EST 2006
-
 		boolean printedHeader = false;
 		boolean printedDiv = false;
 
