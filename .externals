@@ -41,7 +41,7 @@ osid			-r19994	https://source.sakaiproject.org/svn/osid/branches/sakai_2-2-3
 webservices		-r19994	https://source.sakaiproject.org/svn/webservices/branches/sakai_2-2-3
 assignment		-r19994	https://source.sakaiproject.org/svn/assignment/branches/sakai_2-2-3
 profile			-r19994	https://source.sakaiproject.org/svn/profile/branches/sakai_2-2-3
-dav			-r19994	https://source.sakaiproject.org/svn/dav/branches/sakai_2-2-3
+dav			-r20533	https://source.sakaiproject.org/svn/dav/branches/sakai_2-2-3
 roster			-r19994	https://source.sakaiproject.org/svn/roster/branches/sakai_2-2-3
 syllabus		-r19994	https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-2-3
 presentation		-r19994	https://source.sakaiproject.org/svn/presentation/branches/sakai_2-2-3
