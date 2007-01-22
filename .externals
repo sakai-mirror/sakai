@@ -16,7 +16,7 @@ master			-r20204	https://source.sakaiproject.org/svn/master/branches/sakai_2-3-1
 reference		-r20204	https://source.sakaiproject.org/svn/reference/branches/sakai_2-3-1-prep
 login			-r20204	https://source.sakaiproject.org/svn/login/branches/sakai_2-3-1-prep
 access			-r20204	https://source.sakaiproject.org/svn/access/branches/sakai_2-3-1-prep
-content			-r20204	https://source.sakaiproject.org/svn/content/branches/sakai_2-3-1-prep
+content			-r20540	https://source.sakaiproject.org/svn/content/branches/sakai_2-3-1-prep
 metaobj			-r20204	https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-3-1-prep
 presence		-r20204	https://source.sakaiproject.org/svn/presence/branches/sakai_2-3-1-prep
 calendar		-r20204	https://source.sakaiproject.org/svn/calendar/branches/sakai_2-3-1-prep
