@@ -13,7 +13,7 @@ email			-r20204	https://source.sakaiproject.org/svn/email/branches/sakai_2-3-1-p
 alias			-r20204	https://source.sakaiproject.org/svn/alias/branches/sakai_2-3-1-prep
 site			-r20204	https://source.sakaiproject.org/svn/site/branches/sakai_2-3-1-prep
 master			-r20204	https://source.sakaiproject.org/svn/master/branches/sakai_2-3-1-prep
-reference		-r20204	https://source.sakaiproject.org/svn/reference/branches/sakai_2-3-1-prep
+reference		-r20544	https://source.sakaiproject.org/svn/reference/branches/sakai_2-3-1-prep
 login			-r20204	https://source.sakaiproject.org/svn/login/branches/sakai_2-3-1-prep
 access			-r20204	https://source.sakaiproject.org/svn/access/branches/sakai_2-3-1-prep
 content			-r20540	https://source.sakaiproject.org/svn/content/branches/sakai_2-3-1-prep
