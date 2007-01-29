@@ -41,7 +41,7 @@ osid			-r20204	https://source.sakaiproject.org/svn/osid/branches/sakai_2-3-1-pre
 webservices		-r20204	https://source.sakaiproject.org/svn/webservices/branches/sakai_2-3-1-prep
 assignment		-r20204	https://source.sakaiproject.org/svn/assignment/branches/sakai_2-3-1-prep
 profile			-r20204	https://source.sakaiproject.org/svn/profile/branches/sakai_2-3-1-prep
-dav			-r20532	https://source.sakaiproject.org/svn/dav/branches/sakai_2-3-1-prep
+dav			-r20777	https://source.sakaiproject.org/svn/dav/branches/sakai_2-3-1-prep
 roster			-r20204	https://source.sakaiproject.org/svn/roster/branches/sakai_2-3-1-prep
 syllabus		-r20204	https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-3-1-prep
 presentation		-r20204	https://source.sakaiproject.org/svn/presentation/branches/sakai_2-3-1-prep
