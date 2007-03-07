@@ -50,10 +50,10 @@ search			-r22260   https://source.sakaiproject.org/svn/search/trunk
 sections		-r22260   https://source.sakaiproject.org/svn/sections/trunk
 site			-r22260   https://source.sakaiproject.org/svn/site/trunk
 site-manage		-r22260   https://source.sakaiproject.org/svn/site-manage/trunk
-sludge			-r22260   https://source.sakaiproject.org/svn/sludge/trunk
 syllabus		-r22260   https://source.sakaiproject.org/svn/syllabus/trunk
 test-harness		-r22260   https://source.sakaiproject.org/svn/test-harness/trunk
 textarea		-r22260   https://source.sakaiproject.org/svn/textarea/trunk
+transformable		-r22260   https://source.sakaiproject.org/svn/transformable/trunk
 tool			-r22260   https://source.sakaiproject.org/svn/tool/trunk
 user			-r22260   https://source.sakaiproject.org/svn/user/trunk
 util			-r22260   https://source.sakaiproject.org/svn/util/trunk
