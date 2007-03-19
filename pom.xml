@@ -23,9 +23,11 @@
     <module>blog</module>
     <module>calendar</module>
     <module>chat</module>
+    <module>citations</module> 
     <module>cluster</module>
     <module>component</module>
     <module>content</module>
+    <module>content-review</module>
     <module>courier</module>
     <module>course-management</module>
     <module>dav</module>
@@ -65,7 +67,6 @@
     <module>sections</module>
     <module>site</module>
     <module>site-manage</module>
-    <module>sludge</module>
     <module>syllabus</module>
     <module>test-harness</module>
     <module>textarea</module>

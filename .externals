@@ -6,7 +6,7 @@ assignment		-r22956   https://source.sakaiproject.org/svn/assignment/trunk
 authz			-r22956   https://source.sakaiproject.org/svn/authz/trunk
 blog			-r22956   https://source.sakaiproject.org/svn/blog/trunk
 calendar		-r22956   https://source.sakaiproject.org/svn/calendar/trunk
-chat			-r22956   https://source.sakaiproject.org/svn/chat/branches/sakai_2-4-x
+chat			-r22956   https://source.sakaiproject.org/svn/chat/trunk
 citations               -r22956   https://source.sakaiproject.org/svn/citations/trunk
 cluster			-r22956   https://source.sakaiproject.org/svn/cluster/trunk
 component		-r22956   https://source.sakaiproject.org/svn/component/trunk
