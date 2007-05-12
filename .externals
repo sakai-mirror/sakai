@@ -3,6 +3,7 @@ alias			-r30454   https://source.sakaiproject.org/svn/alias/tags/sakai_2-4-0_QA_
 announcement		-r30454   https://source.sakaiproject.org/svn/announcement/tags/sakai_2-4-0_QA_016
 archive			-r30454   https://source.sakaiproject.org/svn/archive/tags/sakai_2-4-0_QA_016
 assignment		-r30454   https://source.sakaiproject.org/svn/assignment/tags/sakai_2-4-0_QA_016
+assignment/assignment-api/api/src/java/org/sakaiproject/assignment/taggable	-r30454		https://source.sakaiproject.org/svn/assignment/branches/sakai_2-4-x/assignment-api/api/src/java/org/sakaiproject/assignment/taggable
 authz			-r30454   https://source.sakaiproject.org/svn/authz/tags/sakai_2-4-0_QA_016
 blog			-r30454   https://source.sakaiproject.org/svn/blog/tags/sakai_2-4-0_QA_016
 calendar		-r30454   https://source.sakaiproject.org/svn/calendar/tags/sakai_2-4-0_QA_016
