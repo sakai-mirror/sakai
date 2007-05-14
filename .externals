@@ -2,7 +2,7 @@ access			-r30584   https://source.sakaiproject.org/svn/access/tags/sakai_2-4-0_Q
 alias			-r30584   https://source.sakaiproject.org/svn/alias/tags/sakai_2-4-0_QA_017
 announcement		-r30584   https://source.sakaiproject.org/svn/announcement/tags/sakai_2-4-0_QA_017
 archive			-r30584   https://source.sakaiproject.org/svn/archive/tags/sakai_2-4-0_QA_017
-assignment		-r30584   https://source.sakaiproject.org/svn/assignment/tags/sakai_2-4-0_QA_017
+assignment		-r30587   https://source.sakaiproject.org/svn/assignment/tags/sakai_2-4-0_QA_017
 assignment/assignment-api/api/src/java/org/sakaiproject/assignment/taggable	-r30584		https://source.sakaiproject.org/svn/assignment/branches/sakai_2-4-x/assignment-api/api/src/java/org/sakaiproject/assignment/taggable
 authz			-r30584   https://source.sakaiproject.org/svn/authz/tags/sakai_2-4-0_QA_017
 blog			-r30584   https://source.sakaiproject.org/svn/blog/tags/sakai_2-4-0_QA_017
