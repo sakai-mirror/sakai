@@ -34,7 +34,7 @@ site-manage			https://source.sakaiproject.org/svn/site-manage/branches/sakai_2-3
 announcement			https://source.sakaiproject.org/svn/announcement/branches/sakai_2-3-x
 mailarchive			https://source.sakaiproject.org/svn/mailarchive/branches/sakai_2-3-x
 chat				https://source.sakaiproject.org/svn/chat/branches/sakai_2-3-x
-discussion			https://source.sakaiproject.org/svn/discussion/branches/sakai_2-3-x
+discussion			https://source.sakaiproject.org/contrib/deprecated/discussion/branches/sakai_2-3-x
 message				https://source.sakaiproject.org/svn/message/branches/sakai_2-3-x
 web				https://source.sakaiproject.org/svn/web/branches/sakai_2-3-x
 osid				https://source.sakaiproject.org/svn/osid/branches/sakai_2-3-x
