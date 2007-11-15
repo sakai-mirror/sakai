@@ -16,7 +16,7 @@ courier                 -r31109 https://source.sakaiproject.org/svn/courier/trun
 course-management       -r31109 https://source.sakaiproject.org/svn/course-management/trunk
 dav                     -r31109 https://source.sakaiproject.org/svn/dav/trunk
 db                              https://source.sakaiproject.org/svn/db/branches/sakai_dbrefactor
-discussion                      https://source.sakaiproject.org/svn/discussion/branches/sakai_dbrefactor
+discussion                      https://source.sakaiproject.org/contrib/deprecated/discussion/branches/sakai_dbrefactor
 email                           https://source.sakaiproject.org/svn/email/branches/sakai_dbrefactor
 entity                  -r31109 https://source.sakaiproject.org/svn/entity/trunk
 event                           https://source.sakaiproject.org/svn/event/branches/sakai_dbrefactor
