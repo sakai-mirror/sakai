@@ -16,7 +16,7 @@ courier			https://source.sakaiproject.org/svn/courier/tags/maven1build
 course-management	https://source.sakaiproject.org/svn/course-management/tags/maven1build
 dav			https://source.sakaiproject.org/svn/dav/tags/maven1build
 db			https://source.sakaiproject.org/svn/db/tags/maven1build
-discussion		https://source.sakaiproject.org/svn/discussion/tags/maven1build
+discussion	-r38202	https://source.sakaiproject.org/svn/discussion/tags/maven1build
 email			https://source.sakaiproject.org/svn/email/tags/maven1build
 entity			https://source.sakaiproject.org/svn/entity/tags/maven1build
 event			https://source.sakaiproject.org/svn/event/tags/maven1build
