@@ -16,7 +16,7 @@ courier			https://source.sakaiproject.org/svn/courier/tags/sakai_2-5-0_QA_013
 course-management	https://source.sakaiproject.org/svn/course-management/tags/sakai_2-5-0_QA_013
 dav			https://source.sakaiproject.org/svn/dav/tags/sakai_2-5-0_QA_013
 db			https://source.sakaiproject.org/svn/db/tags/sakai_2-5-0_QA_013
-discussion		https://source.sakaiproject.org/svn/discussion/tags/sakai_2-5-0_QA_013
+discussion	-r38202	https://source.sakaiproject.org/svn/discussion/tags/sakai_2-5-0_QA_013
 email			https://source.sakaiproject.org/svn/email/tags/sakai_2-5-0_QA_013
 entity			https://source.sakaiproject.org/svn/entity/tags/sakai_2-5-0_QA_013
 entitybroker		https://source.sakaiproject.org/svn/entitybroker/tags/sakai_2-5-0_QA_013
