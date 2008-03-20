@@ -6,7 +6,8 @@ rm -rf $RELEASE
 mkdir $RELEASE
 rm -rf /tmp/maven2
 mkdir -p /tmp/maven2/org
-cp -r /Volumes/maven2i/org/sakaiproject /tmp/maven2/org/sakaiproject
+cp -r /Volumes/maven2/org/sakaiproject /tmp/maven2/org/sakaiproject
+
 
 
 
