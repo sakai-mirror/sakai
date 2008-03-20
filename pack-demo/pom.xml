@@ -4,7 +4,7 @@
  <parent>
     <artifactId>base</artifactId>
     <groupId>org.sakaiproject</groupId>
-    <version>M2</version>
+    <version>2.5.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -12,7 +12,7 @@
   <artifactId>pack-demo</artifactId>
   <packaging>pom</packaging>
   <name>Sakai Pack Demo</name>
-  <version>M2</version>
+  <version>2.5.0</version>
   <organization>
     <name>Sakai Project</name>
     <url>http://sakaiproject.org/</url>
@@ -51,6 +51,9 @@
                  <exec dir="../" executable="mvn" failonerror="true" >
     			<arg value="-Dmaven.tomcat.home=${basedir}/target/pack"/>
                         <arg value="-Dmaven.test.skip=true"/>
+                        <arg value="-Dkeystore=${keystore}" />
+                        <arg value="-Dalias=${alias}" />
+                        <arg value="-Dstorepass=${storepass}" />
 			<!-- <arg value="clean"/> -->
                         <arg value="install"/>
                         <arg value="sakai:deploy"/>
@@ -149,6 +152,7 @@
                 </tar>
                 <echo>* * * sakai-demo-${sakai.version}.tar.gz</echo>
                 <delete dir="${basedir}/target/pack/"/>
+                <delete dir="${basedir}/target/pack-stage/"/>
               </tasks>
             </configuration>
             <goals>
