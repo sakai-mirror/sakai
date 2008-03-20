@@ -53,7 +53,7 @@
                  <exec dir="../" executable="mvn" failonerror="true" >
     			<arg value="-Dmaven.tomcat.home=${basedir}/target/pack"/>
                         <arg value="-Dmaven.test.skip=true"/>
-			<arg value="clean"/>
+			<!-- <arg value="clean"/> -->
                         <arg value="install"/>
                         <arg value="sakai:deploy"/>
                  </exec>                       
