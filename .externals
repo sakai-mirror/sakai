@@ -10,12 +10,12 @@ chat -r49569 https://source.sakaiproject.org/svn/chat/branches/sakai_2-5-2
 citations -r49570 https://source.sakaiproject.org/svn/citations/branches/sakai_2-5-2
 cluster -r49571 https://source.sakaiproject.org/svn/cluster/branches/sakai_2-5-2
 component -r49572 https://source.sakaiproject.org/svn/component/branches/sakai_2-5-2
-content -r49573 https://source.sakaiproject.org/svn/content/branches/sakai_2-5-2
+content -r49670 https://source.sakaiproject.org/svn/content/branches/sakai_2-5-2
 content-review -r49574 https://source.sakaiproject.org/svn/content-review/branches/sakai_2-5-2
 courier -r49575 https://source.sakaiproject.org/svn/courier/branches/sakai_2-5-2
 course-management -r49576 https://source.sakaiproject.org/svn/course-management/branches/sakai_2-5-2
 dav -r49577 https://source.sakaiproject.org/svn/dav/branches/sakai_2-5-2
-db -r49578 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-2
+db -r49757 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-2
 email -r49579 https://source.sakaiproject.org/svn/email/branches/sakai_2-5-2
 entity -r49580 https://source.sakaiproject.org/svn/entity/branches/sakai_2-5-2
 entitybroker -r49581 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-2
