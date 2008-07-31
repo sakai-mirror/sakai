@@ -31,7 +31,7 @@ mailarchive -r49590 https://source.sakaiproject.org/svn/mailarchive/branches/sak
 master -r49591 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-2
 memory -r49592 https://source.sakaiproject.org/svn/memory/branches/sakai_2-5-2
 message -r49593 https://source.sakaiproject.org/svn/message/branches/sakai_2-5-2
-metaobj -r49594 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-2
+metaobj -r49785 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-2
 msgcntr -r49595 https://source.sakaiproject.org/svn/msgcntr/branches/sakai_2-5-2
 osp -r49785 https://source.sakaiproject.org/svn/osp/branches/sakai_2-5-2
 podcasts -r49597 https://source.sakaiproject.org/svn/podcasts/branches/sakai_2-5-2
