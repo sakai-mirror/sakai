@@ -11,7 +11,7 @@ citations -r50137 https://source.sakaiproject.org/svn/citations/tags/sakai_2-5-2
 cluster -r50137 https://source.sakaiproject.org/svn/cluster/tags/sakai_2-5-2_rc01
 component -r50137 https://source.sakaiproject.org/svn/component/tags/sakai_2-5-2_rc01
 content -r50137 https://source.sakaiproject.org/svn/content/tags/sakai_2-5-2_rc01
-content-r50137eview -r49822 https://source.sakaiproject.org/svn/content-review/tags/sakai_2-5-2_rc01
+content-review -r50137 https://source.sakaiproject.org/svn/content-review/tags/sakai_2-5-2_rc01
 courier -r50137 https://source.sakaiproject.org/svn/courier/tags/sakai_2-5-2_rc01
 course-management -r50137 https://source.sakaiproject.org/svn/course-management/tags/sakai_2-5-2_rc01
 dav -r50137 https://source.sakaiproject.org/svn/dav/tags/sakai_2-5-2_rc01
