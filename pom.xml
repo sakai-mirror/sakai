@@ -200,24 +200,12 @@
 				<configuration>
 					<debug>true</debug>
 					<links>
-						<link>
-							http://java.sun.com/j2se/1.5.0/docs/api/
-						</link>
-						<link>
-							http://java.sun.com/j2ee/1.5.0/docs/api/
-						</link>
-						<link>
-							http://static.springframework.org/spring/docs/2.0.8/api/
-						</link>
-						<link>
-							http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/
-						</link>
-						<link>
-							http://jakarta.apache.org/velocity/api/
-						</link>
-						<link>
-							http://www.hibernate.org/hib_docs/v3/api/
-						</link>
+						<link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+						<link>http://java.sun.com/j2ee/1.5.0/docs/api/</link>
+						<link>http://static.springframework.org/spring/docs/2.0.8/api/</link>
+						<link>http://java.sun.com/j2ee/javaserverfaces/1.1_01/docs/api/</link>
+						<link>http://jakarta.apache.org/velocity/api/</link>
+						<link>http://www.hibernate.org/hib_docs/v3/api/</link>
 						<link>http://james.apache.org/javadocs/</link>
 						<link>http://james.apache.org/mailet/</link>
 					</links>
@@ -225,10 +213,7 @@
 					<verbose>false</verbose>
 					<aggregate>true</aggregate>
 					<maxmemory>512m</maxmemory>
-					<additionalJOption>
-						-J-Xms168m -J-Xmx512m -J-XX:PermSize=128m
-						-J-XX:NewSize=64m
-					</additionalJOption>
+					<additionalJOption>-J-Xms168m -J-Xmx512m -J-XX:PermSize=128m -J-XX:NewSize=64m</additionalJOption>
 					<version>2.3</version>
 				</configuration>
 			</plugin>
