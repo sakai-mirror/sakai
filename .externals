@@ -9,7 +9,7 @@ calendar -r50925 https://source.sakaiproject.org/svn/calendar/branches/sakai_2-5
 chat -r50926 https://source.sakaiproject.org/svn/chat/branches/sakai_2-5-3
 citations -r50927 https://source.sakaiproject.org/svn/citations/branches/sakai_2-5-3
 cluster -r50928 https://source.sakaiproject.org/svn/cluster/branches/sakai_2-5-3
-component -r50929 https://source.sakaiproject.org/svn/component/branches/sakai_2-5-3
+component -r51001 https://source.sakaiproject.org/svn/component/branches/sakai_2-5-3
 content -r50930 https://source.sakaiproject.org/svn/content/branches/sakai_2-5-3
 content-review -r50931 https://source.sakaiproject.org/svn/content-review/branches/sakai_2-5-3
 courier -r50932 https://source.sakaiproject.org/svn/courier/branches/sakai_2-5-3
@@ -18,7 +18,7 @@ dav -r50934 https://source.sakaiproject.org/svn/dav/branches/sakai_2-5-3
 db -r50935 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-3
 email -r50936 https://source.sakaiproject.org/svn/email/branches/sakai_2-5-3
 entity -r50937 https://source.sakaiproject.org/svn/entity/branches/sakai_2-5-3
-entitybroker -r50938 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-3
+entitybroker -r51004 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-3
 event -r50939 https://source.sakaiproject.org/svn/event/branches/sakai_2-5-3
 gradebook -r50940 https://source.sakaiproject.org/svn/gradebook/branches/sakai_2-5-3
 help -r50941 https://source.sakaiproject.org/svn/help/branches/sakai_2-5-3
@@ -28,7 +28,7 @@ jsf -r50944 https://source.sakaiproject.org/svn/jsf/branches/sakai_2-5-3
 linktool -r50945 https://source.sakaiproject.org/svn/linktool/branches/sakai_2-5-3
 login -r50946 https://source.sakaiproject.org/svn/login/branches/sakai_2-5-3
 mailarchive -r50947 https://source.sakaiproject.org/svn/mailarchive/branches/sakai_2-5-3
-master -r50948 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-3
+master -r51006 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-3
 memory -r50949 https://source.sakaiproject.org/svn/memory/branches/sakai_2-5-3
 message -r50950 https://source.sakaiproject.org/svn/message/branches/sakai_2-5-3
 metaobj -r50951 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-3
@@ -42,7 +42,7 @@ presentation -r50958 https://source.sakaiproject.org/svn/presentation/branches/s
 privacy -r50959 https://source.sakaiproject.org/svn/privacy/branches/sakai_2-5-3
 profile -r50960 https://source.sakaiproject.org/svn/profile/branches/sakai_2-5-3
 providers -r50961 https://source.sakaiproject.org/svn/providers/branches/sakai_2-5-3
-reference -r50962 https://source.sakaiproject.org/svn/reference/branches/sakai_2-5-3
+reference -r51002 https://source.sakaiproject.org/svn/reference/branches/sakai_2-5-3
 reports -r50963 https://source.sakaiproject.org/svn/reports/branches/sakai_2-5-3
 reset-pass -r50964 https://source.sakaiproject.org/svn/reset-pass/branches/sakai_2-5-3
 rights -r50965 https://source.sakaiproject.org/svn/rights/branches/sakai_2-5-3
