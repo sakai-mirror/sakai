@@ -15,7 +15,7 @@ content-review -r50931 https://source.sakaiproject.org/svn/content-review/branch
 courier -r50932 https://source.sakaiproject.org/svn/courier/branches/sakai_2-5-3
 course-management -r50933 https://source.sakaiproject.org/svn/course-management/branches/sakai_2-5-3
 dav -r50934 https://source.sakaiproject.org/svn/dav/branches/sakai_2-5-3
-db -r50935 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-3
+db -r51481 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-3
 email -r50936 https://source.sakaiproject.org/svn/email/branches/sakai_2-5-3
 entity -r50937 https://source.sakaiproject.org/svn/entity/branches/sakai_2-5-3
 entitybroker -r51004 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-3
@@ -32,7 +32,7 @@ master -r51006 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-3
 memory -r50949 https://source.sakaiproject.org/svn/memory/branches/sakai_2-5-3
 message -r50950 https://source.sakaiproject.org/svn/message/branches/sakai_2-5-3
 metaobj -r50951 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-3
-msgcntr -r50952 https://source.sakaiproject.org/svn/msgcntr/branches/sakai_2-5-3
+msgcntr -r51478 https://source.sakaiproject.org/svn/msgcntr/branches/sakai_2-5-3
 osp -r50953 https://source.sakaiproject.org/svn/osp/branches/sakai_2-5-3
 podcasts -r50954 https://source.sakaiproject.org/svn/podcasts/branches/sakai_2-5-3
 portal -r50955 https://source.sakaiproject.org/svn/portal/branches/sakai_2-5-3
