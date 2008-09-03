@@ -15,7 +15,7 @@ content-review -r50931 https://source.sakaiproject.org/svn/content-review/branch
 courier -r50932 https://source.sakaiproject.org/svn/courier/branches/sakai_2-5-3
 course-management -r50933 https://source.sakaiproject.org/svn/course-management/branches/sakai_2-5-3
 dav -r50934 https://source.sakaiproject.org/svn/dav/branches/sakai_2-5-3
-db -r51481 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-3
+db -r51741 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-3
 email -r50936 https://source.sakaiproject.org/svn/email/branches/sakai_2-5-3
 entity -r50937 https://source.sakaiproject.org/svn/entity/branches/sakai_2-5-3
 entitybroker -r51004 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-3
