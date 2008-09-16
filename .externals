@@ -19,7 +19,7 @@ db -r51741 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-3
 email -r50936 https://source.sakaiproject.org/svn/email/branches/sakai_2-5-3
 entity -r50937 https://source.sakaiproject.org/svn/entity/branches/sakai_2-5-3
 entitybroker -r51004 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-3
-event -r50939 https://source.sakaiproject.org/svn/event/branches/sakai_2-5-3
+event -r52303 https://source.sakaiproject.org/svn/event/branches/sakai_2-5-3
 gradebook -r50940 https://source.sakaiproject.org/svn/gradebook/branches/sakai_2-5-3
 help -r50941 https://source.sakaiproject.org/svn/help/branches/sakai_2-5-3
 jcr -r50942 https://source.sakaiproject.org/svn/jcr/branches/sakai_2-5-3
