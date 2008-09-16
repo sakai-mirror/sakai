@@ -9,7 +9,7 @@ calendar -r50925 https://source.sakaiproject.org/svn/calendar/branches/sakai_2-5
 chat -r50926 https://source.sakaiproject.org/svn/chat/branches/sakai_2-5-3
 citations -r50927 https://source.sakaiproject.org/svn/citations/branches/sakai_2-5-3
 cluster -r50928 https://source.sakaiproject.org/svn/cluster/branches/sakai_2-5-3
-component -r51001 https://source.sakaiproject.org/svn/component/branches/sakai_2-5-3
+component -r52299 https://source.sakaiproject.org/svn/component/branches/sakai_2-5-3
 content -r50930 https://source.sakaiproject.org/svn/content/branches/sakai_2-5-3
 content-review -r50931 https://source.sakaiproject.org/svn/content-review/branches/sakai_2-5-3
 courier -r50932 https://source.sakaiproject.org/svn/courier/branches/sakai_2-5-3
