@@ -1,70 +1,70 @@
-access -r55884 https://source.sakaiproject.org/svn/access/tags/sakai-2.5.4-rc02
-alias -r55884 https://source.sakaiproject.org/svn/alias/tags/sakai-2.5.4-rc02
-announcement -r55884 https://source.sakaiproject.org/svn/announcement/tags/sakai-2.5.4-rc02
-archive -r55884 https://source.sakaiproject.org/svn/archive/tags/sakai-2.5.4-rc02
-assignment -r55884 https://source.sakaiproject.org/svn/assignment/tags/sakai-2.5.4-rc02
-authz -r55884 https://source.sakaiproject.org/svn/authz/tags/sakai-2.5.4-rc02
-blog -r55884 https://source.sakaiproject.org/svn/blog/tags/sakai-2.5.4-rc02
-calendar -r55884 https://source.sakaiproject.org/svn/calendar/tags/sakai-2.5.4-rc02
-chat -r55884 https://source.sakaiproject.org/svn/chat/tags/sakai-2.5.4-rc02
-citations -r55884 https://source.sakaiproject.org/svn/citations/tags/sakai-2.5.4-rc02
-cluster -r55884 https://source.sakaiproject.org/svn/cluster/tags/sakai-2.5.4-rc02
-component -r55884 https://source.sakaiproject.org/svn/component/tags/sakai-2.5.4-rc02
-content -r55884 https://source.sakaiproject.org/svn/content/tags/sakai-2.5.4-rc02
-content-review -r55884 https://source.sakaiproject.org/svn/content-review/tags/sakai-2.5.4-rc02
-courier -r55884 https://source.sakaiproject.org/svn/courier/tags/sakai-2.5.4-rc02
-course-management -r55884 https://source.sakaiproject.org/svn/course-management/tags/sakai-2.5.4-rc02
-dav -r55884 https://source.sakaiproject.org/svn/dav/tags/sakai-2.5.4-rc02
-db -r55884 https://source.sakaiproject.org/svn/db/tags/sakai-2.5.4-rc02
-email -r55884 https://source.sakaiproject.org/svn/email/tags/sakai-2.5.4-rc02
-entity -r55884 https://source.sakaiproject.org/svn/entity/tags/sakai-2.5.4-rc02
-entitybroker -r55884 https://source.sakaiproject.org/svn/entitybroker/tags/sakai-2.5.4-rc02
-event -r55884 https://source.sakaiproject.org/svn/event/tags/sakai-2.5.4-rc02
-gradebook -r55884 https://source.sakaiproject.org/svn/gradebook/tags/sakai-2.5.4-rc02
-help -r55884 https://source.sakaiproject.org/svn/help/tags/sakai-2.5.4-rc02
-jcr -r55884 https://source.sakaiproject.org/svn/jcr/tags/sakai-2.5.4-rc02
-jobscheduler -r55884 https://source.sakaiproject.org/svn/jobscheduler/tags/sakai-2.5.4-rc02
-jsf -r55884 https://source.sakaiproject.org/svn/jsf/tags/sakai-2.5.4-rc02
-linktool -r55884 https://source.sakaiproject.org/svn/linktool/tags/sakai-2.5.4-rc02
-login -r55884 https://source.sakaiproject.org/svn/login/tags/sakai-2.5.4-rc02
-mailarchive -r55884 https://source.sakaiproject.org/svn/mailarchive/tags/sakai-2.5.4-rc02
-mailtool -r55884 https://source.sakaiproject.org/svn/mailtool/tags/sakai-2.5.4-rc02
-master -r55884 https://source.sakaiproject.org/svn/master/tags/sakai-2.5.4-rc02
-memory -r55884 https://source.sakaiproject.org/svn/memory/tags/sakai-2.5.4-rc02
-message -r55884 https://source.sakaiproject.org/svn/message/tags/sakai-2.5.4-rc02
-metaobj -r55884 https://source.sakaiproject.org/svn/metaobj/tags/sakai-2.5.4-rc02
-msgcntr -r55884 https://source.sakaiproject.org/svn/msgcntr/tags/sakai-2.5.4-rc02
-osp -r55884 https://source.sakaiproject.org/svn/osp/tags/sakai-2.5.4-rc02
-podcasts -r55884 https://source.sakaiproject.org/svn/podcasts/tags/sakai-2.5.4-rc02
-polls -r55884 https://source.sakaiproject.org/svn/polls/tags/sakai-2.5.4-rc02
-portal -r55884 https://source.sakaiproject.org/svn/portal/tags/sakai-2.5.4-rc02
-postem -r55884 https://source.sakaiproject.org/svn/postem/tags/sakai-2.5.4-rc02
-presence -r55884 https://source.sakaiproject.org/svn/presence/tags/sakai-2.5.4-rc02
-presentation -r55884 https://source.sakaiproject.org/svn/presentation/tags/sakai-2.5.4-rc02
-privacy -r55884 https://source.sakaiproject.org/svn/privacy/tags/sakai-2.5.4-rc02
-profile -r55884 https://source.sakaiproject.org/svn/profile/tags/sakai-2.5.4-rc02
-providers -r55884 https://source.sakaiproject.org/svn/providers/tags/sakai-2.5.4-rc02
-reference -r55884 https://source.sakaiproject.org/svn/reference/tags/sakai-2.5.4-rc02
-reports -r55884 https://source.sakaiproject.org/svn/reports/tags/sakai-2.5.4-rc02
-reset-pass -r55884 https://source.sakaiproject.org/svn/reset-pass/tags/sakai-2.5.4-rc02
-rights -r55884 https://source.sakaiproject.org/svn/rights/tags/sakai-2.5.4-rc02
-roster -r55884 https://source.sakaiproject.org/svn/roster/tags/sakai-2.5.4-rc02
-rwiki -r55884 https://source.sakaiproject.org/svn/rwiki/tags/sakai-2.5.4-rc02
-sakai-mock -r55884 https://source.sakaiproject.org/svn/sakai-mock/tags/sakai-2.5.4-rc02
-sam -r55884 https://source.sakaiproject.org/svn/sam/tags/sakai-2.5.4-rc02
-samples -r55884 https://source.sakaiproject.org/svn/samples/tags/sakai-2.5.4-rc02
-search -r55884 https://source.sakaiproject.org/svn/search/tags/sakai-2.5.4-rc02
-sections -r55884 https://source.sakaiproject.org/svn/sections/tags/sakai-2.5.4-rc02
-site -r55884 https://source.sakaiproject.org/svn/site/tags/sakai-2.5.4-rc02
-site-manage -r55884 https://source.sakaiproject.org/svn/site-manage/tags/sakai-2.5.4-rc02
-syllabus -r55884 https://source.sakaiproject.org/svn/syllabus/tags/sakai-2.5.4-rc02
-test-harness -r55884 https://source.sakaiproject.org/svn/test-harness/tags/sakai-2.5.4-rc02
-textarea -r55884 https://source.sakaiproject.org/svn/textarea/tags/sakai-2.5.4-rc02
-tool -r55884 https://source.sakaiproject.org/svn/tool/tags/sakai-2.5.4-rc02
-user -r55884 https://source.sakaiproject.org/svn/user/tags/sakai-2.5.4-rc02
-usermembership -r55884 https://source.sakaiproject.org/svn/usermembership/tags/sakai-2.5.4-rc02
-util -r55884 https://source.sakaiproject.org/svn/util/tags/sakai-2.5.4-rc02
-velocity -r55884 https://source.sakaiproject.org/svn/velocity/tags/sakai-2.5.4-rc02
-warehouse -r55884 https://source.sakaiproject.org/svn/warehouse/tags/sakai-2.5.4-rc02
-web -r55884 https://source.sakaiproject.org/svn/web/tags/sakai-2.5.4-rc02
-webservices -r55884 https://source.sakaiproject.org/svn/webservices/tags/sakai-2.5.4-rc02
+access -r 55889 https://source.sakaiproject.org/svn/access/tags/sakai-2.5.4-rc02
+alias -r 55890 https://source.sakaiproject.org/svn/alias/tags/sakai-2.5.4-rc02
+announcement -r 55891 https://source.sakaiproject.org/svn/announcement/tags/sakai-2.5.4-rc02
+archive -r 55892 https://source.sakaiproject.org/svn/archive/tags/sakai-2.5.4-rc02
+assignment -r 55893 https://source.sakaiproject.org/svn/assignment/tags/sakai-2.5.4-rc02
+authz -r 55894 https://source.sakaiproject.org/svn/authz/tags/sakai-2.5.4-rc02
+blog -r 55895 https://source.sakaiproject.org/svn/blog/tags/sakai-2.5.4-rc02
+calendar -r 55896 https://source.sakaiproject.org/svn/calendar/tags/sakai-2.5.4-rc02
+chat -r 55897 https://source.sakaiproject.org/svn/chat/tags/sakai-2.5.4-rc02
+citations -r 55898 https://source.sakaiproject.org/svn/citations/tags/sakai-2.5.4-rc02
+cluster -r 55899 https://source.sakaiproject.org/svn/cluster/tags/sakai-2.5.4-rc02
+component -r 55900 https://source.sakaiproject.org/svn/component/tags/sakai-2.5.4-rc02
+content -r 55901 https://source.sakaiproject.org/svn/content/tags/sakai-2.5.4-rc02
+content-review -r 55902 https://source.sakaiproject.org/svn/content-review/tags/sakai-2.5.4-rc02
+courier -r 55903 https://source.sakaiproject.org/svn/courier/tags/sakai-2.5.4-rc02
+course-management -r 55904 https://source.sakaiproject.org/svn/course-management/tags/sakai-2.5.4-rc02
+dav -r 55905 https://source.sakaiproject.org/svn/dav/tags/sakai-2.5.4-rc02
+db -r 55906 https://source.sakaiproject.org/svn/db/tags/sakai-2.5.4-rc02
+email -r 55907 https://source.sakaiproject.org/svn/email/tags/sakai-2.5.4-rc02
+entity -r 55908 https://source.sakaiproject.org/svn/entity/tags/sakai-2.5.4-rc02
+entitybroker -r 55909 https://source.sakaiproject.org/svn/entitybroker/tags/sakai-2.5.4-rc02
+event -r 55910 https://source.sakaiproject.org/svn/event/tags/sakai-2.5.4-rc02
+gradebook -r 55911 https://source.sakaiproject.org/svn/gradebook/tags/sakai-2.5.4-rc02
+help -r 55912 https://source.sakaiproject.org/svn/help/tags/sakai-2.5.4-rc02
+jcr -r 55913 https://source.sakaiproject.org/svn/jcr/tags/sakai-2.5.4-rc02
+jobscheduler -r 55914 https://source.sakaiproject.org/svn/jobscheduler/tags/sakai-2.5.4-rc02
+jsf -r 55915 https://source.sakaiproject.org/svn/jsf/tags/sakai-2.5.4-rc02
+linktool -r 55916 https://source.sakaiproject.org/svn/linktool/tags/sakai-2.5.4-rc02
+login -r 55917 https://source.sakaiproject.org/svn/login/tags/sakai-2.5.4-rc02
+mailarchive -r 55918 https://source.sakaiproject.org/svn/mailarchive/tags/sakai-2.5.4-rc02
+mailtool -r 55919 https://source.sakaiproject.org/svn/mailtool/tags/sakai-2.5.4-rc02
+master -r 55920 https://source.sakaiproject.org/svn/master/tags/sakai-2.5.4-rc02
+memory -r 55921 https://source.sakaiproject.org/svn/memory/tags/sakai-2.5.4-rc02
+message -r 55922 https://source.sakaiproject.org/svn/message/tags/sakai-2.5.4-rc02
+metaobj -r 55923 https://source.sakaiproject.org/svn/metaobj/tags/sakai-2.5.4-rc02
+msgcntr -r 55924 https://source.sakaiproject.org/svn/msgcntr/tags/sakai-2.5.4-rc02
+osp -r 55925 https://source.sakaiproject.org/svn/osp/tags/sakai-2.5.4-rc02
+podcasts -r 55926 https://source.sakaiproject.org/svn/podcasts/tags/sakai-2.5.4-rc02
+polls -r 55927 https://source.sakaiproject.org/svn/polls/tags/sakai-2.5.4-rc02
+portal -r 55928 https://source.sakaiproject.org/svn/portal/tags/sakai-2.5.4-rc02
+postem -r 55929 https://source.sakaiproject.org/svn/postem/tags/sakai-2.5.4-rc02
+presence -r 55930 https://source.sakaiproject.org/svn/presence/tags/sakai-2.5.4-rc02
+presentation -r 55931 https://source.sakaiproject.org/svn/presentation/tags/sakai-2.5.4-rc02
+privacy -r 55932 https://source.sakaiproject.org/svn/privacy/tags/sakai-2.5.4-rc02
+profile -r 55933 https://source.sakaiproject.org/svn/profile/tags/sakai-2.5.4-rc02
+providers -r 55934 https://source.sakaiproject.org/svn/providers/tags/sakai-2.5.4-rc02
+reference -r 55935 https://source.sakaiproject.org/svn/reference/tags/sakai-2.5.4-rc02
+reports -r 55936 https://source.sakaiproject.org/svn/reports/tags/sakai-2.5.4-rc02
+reset-pass -r 55937 https://source.sakaiproject.org/svn/reset-pass/tags/sakai-2.5.4-rc02
+rights -r 55938 https://source.sakaiproject.org/svn/rights/tags/sakai-2.5.4-rc02
+roster -r 55939 https://source.sakaiproject.org/svn/roster/tags/sakai-2.5.4-rc02
+rwiki -r 55940 https://source.sakaiproject.org/svn/rwiki/tags/sakai-2.5.4-rc02
+sakai-mock -r 55941 https://source.sakaiproject.org/svn/sakai-mock/tags/sakai-2.5.4-rc02
+sam -r 55942 https://source.sakaiproject.org/svn/sam/tags/sakai-2.5.4-rc02
+samples -r 55943 https://source.sakaiproject.org/svn/samples/tags/sakai-2.5.4-rc02
+search -r 55944 https://source.sakaiproject.org/svn/search/tags/sakai-2.5.4-rc02
+sections -r 55945 https://source.sakaiproject.org/svn/sections/tags/sakai-2.5.4-rc02
+site -r 55946 https://source.sakaiproject.org/svn/site/tags/sakai-2.5.4-rc02
+site-manage -r 55947 https://source.sakaiproject.org/svn/site-manage/tags/sakai-2.5.4-rc02
+syllabus -r 55948 https://source.sakaiproject.org/svn/syllabus/tags/sakai-2.5.4-rc02
+test-harness -r 55949 https://source.sakaiproject.org/svn/test-harness/tags/sakai-2.5.4-rc02
+textarea -r 55950 https://source.sakaiproject.org/svn/textarea/tags/sakai-2.5.4-rc02
+tool -r 55951 https://source.sakaiproject.org/svn/tool/tags/sakai-2.5.4-rc02
+user -r 55952 https://source.sakaiproject.org/svn/user/tags/sakai-2.5.4-rc02
+usermembership -r 55953 https://source.sakaiproject.org/svn/usermembership/tags/sakai-2.5.4-rc02
+util -r 55954 https://source.sakaiproject.org/svn/util/tags/sakai-2.5.4-rc02
+velocity -r 55955 https://source.sakaiproject.org/svn/velocity/tags/sakai-2.5.4-rc02
+warehouse -r 55956 https://source.sakaiproject.org/svn/warehouse/tags/sakai-2.5.4-rc02
+web -r 55957 https://source.sakaiproject.org/svn/web/tags/sakai-2.5.4-rc02
+webservices -r 55958 https://source.sakaiproject.org/svn/webservices/tags/sakai-2.5.4-rc02
