@@ -182,6 +182,7 @@
         <module>rwiki</module>
         <module>sam</module>
         <module>samples</module>
+		<module>sdata</module>
         <module>search</module>
         <module>sections</module>
         <module>site</module>
@@ -191,6 +192,7 @@
         <module>textarea</module>
         <module>tool</module>
         <module>user</module>
+		<module>ux</module>
         <module>velocity</module>
         <module>web</module>
         <module>webservices</module>
