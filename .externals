@@ -16,7 +16,7 @@ course-management -r 56298 https://source.sakaiproject.org/svn/course-management
 dav -r 56299 https://source.sakaiproject.org/svn/dav/branches/sakai-3.0.0-milestone01
 email -r 56300 https://source.sakaiproject.org/svn/email/branches/sakai-3.0.0-milestone01
 emailtemplateservice -r 56301 https://source.sakaiproject.org/svn/emailtemplateservice/branches/sakai-3.0.0-milestone01
-entitybroker -r 56302 https://source.sakaiproject.org/svn/entitybroker/branches/sakai-3.0.0-milestone01
+entitybroker -r 56355 https://source.sakaiproject.org/svn/entitybroker/branches/sakai-3.0.0-milestone01
 gradebook -r 56303 https://source.sakaiproject.org/svn/gradebook/branches/sakai-3.0.0-milestone01
 help -r 56304 https://source.sakaiproject.org/svn/help/branches/sakai-3.0.0-milestone01
 jobscheduler -r 56305 https://source.sakaiproject.org/svn/jobscheduler/branches/sakai-3.0.0-milestone01
@@ -47,6 +47,7 @@ rwiki -r 56329 https://source.sakaiproject.org/svn/rwiki/branches/sakai-3.0.0-mi
 sakai-mock -r 56330 https://source.sakaiproject.org/svn/sakai-mock/branches/sakai-3.0.0-milestone01
 sam -r 56331 https://source.sakaiproject.org/svn/sam/branches/sakai-3.0.0-milestone01
 samples -r 56332 https://source.sakaiproject.org/svn/samples/branches/sakai-3.0.0-milestone01
+sdata -r 56352 https://source.sakaiproject.org/svn/sdata/branches/sakai-3.0.0-milestone01
 search -r 56333 https://source.sakaiproject.org/svn/search/branches/sakai-3.0.0-milestone01
 sections -r 56334 https://source.sakaiproject.org/svn/sections/branches/sakai-3.0.0-milestone01
 site -r 56335 https://source.sakaiproject.org/svn/site/branches/sakai-3.0.0-milestone01
@@ -57,6 +58,7 @@ test-harness -r 56339 https://source.sakaiproject.org/svn/test-harness/branches/
 textarea -r 56340 https://source.sakaiproject.org/svn/textarea/branches/sakai-3.0.0-milestone01
 tool -r 56341 https://source.sakaiproject.org/svn/tool/branches/sakai-3.0.0-milestone01
 user -r 56342 https://source.sakaiproject.org/svn/user/branches/sakai-3.0.0-milestone01
+ux -r 56353 https://source.sakaiproject.org/svn/ux/branches/sakai-3.0.0-milestone01
 velocity -r 56343 https://source.sakaiproject.org/svn/velocity/branches/sakai-3.0.0-milestone01
 was -r 56344 https://source.sakaiproject.org/svn/was/branches/sakai-3.0.0-milestone01
 warehouse -r 56345 https://source.sakaiproject.org/svn/warehouse/branches/sakai-3.0.0-milestone01
