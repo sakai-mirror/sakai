@@ -192,7 +192,8 @@
         <module>textarea</module>
         <module>tool</module>
         <module>user</module>
-		<module>ux</module>
+        <!-- Exclude ux until uxportal and uxwidgets deployment issues are fixed -->
+		<!--  <module>ux</module> -->
         <module>velocity</module>
         <module>web</module>
         <module>webservices</module>
