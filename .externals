@@ -67,3 +67,4 @@ util -r 60430 https://source.sakaiproject.org/svn/util/branches/sakai-2.5.5
 velocity -r 60431 https://source.sakaiproject.org/svn/velocity/branches/sakai-2.5.5
 warehouse -r 60432 https://source.sakaiproject.org/svn/warehouse/branches/sakai-2.5.5
 web -r 60433 https://source.sakaiproject.org/svn/web/branches/sakai-2.5.5
+webservices -r 60442 https://source.sakaiproject.org/svn/webservices/branches/sakai-2.5.5
