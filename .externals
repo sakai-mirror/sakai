@@ -1,66 +1,66 @@
-access  https://source.sakaiproject.org/svn/access/branches/sakai-2.6.0-rc01
-alias  https://source.sakaiproject.org/svn/alias/branches/sakai-2.6.0-rc01
-announcement  https://source.sakaiproject.org/svn/announcement/branches/sakai-2.6.0-rc01
-archive  https://source.sakaiproject.org/svn/archive/branches/sakai-2.6.0-rc01
-assignment  https://source.sakaiproject.org/svn/assignment/branches/sakai-2.6.0-rc01
-authz  https://source.sakaiproject.org/svn/authz/branches/sakai-2.6.0-rc01
-blog  https://source.sakaiproject.org/svn/blog/branches/sakai-2.6.0-rc01
-calendar  https://source.sakaiproject.org/svn/calendar/branches/sakai-2.6.0-rc01
-chat  https://source.sakaiproject.org/svn/chat/branches/sakai-2.6.0-rc01
-citations  https://source.sakaiproject.org/svn/citations/branches/sakai-2.6.0-rc01
-config https://source.sakaiproject.org/svn/config/branches/sakai-2.6.0-rc01/
-content  https://source.sakaiproject.org/svn/content/branches/sakai-2.6.0-rc01
-content-review  https://source.sakaiproject.org/svn/content-review/branches/sakai-2.6.0-rc01
-courier  https://source.sakaiproject.org/svn/courier/branches/sakai-2.6.0-rc01
-course-management  https://source.sakaiproject.org/svn/course-management/branches/sakai-2.6.0-rc01
-dav  https://source.sakaiproject.org/svn/dav/branches/sakai-2.6.0-rc01
-emailtemplateservice  https://source.sakaiproject.org/svn/emailtemplateservice/branches/sakai-2.6.0-rc01
-entitybroker  https://source.sakaiproject.org/svn/entitybroker/branches/sakai-2.6.0-rc01
-gradebook  https://source.sakaiproject.org/svn/gradebook/branches/sakai-2.6.0-rc01
-help  https://source.sakaiproject.org/svn/help/branches/sakai-2.6.0-rc01
-jobscheduler  https://source.sakaiproject.org/svn/jobscheduler/branches/sakai-2.6.0-rc01
-jsf  https://source.sakaiproject.org/svn/jsf/branches/sakai-2.6.0-rc01
-linktool  https://source.sakaiproject.org/svn/linktool/branches/sakai-2.6.0-rc01
-login  https://source.sakaiproject.org/svn/login/branches/sakai-2.6.0-rc01
-mailarchive  https://source.sakaiproject.org/svn/mailarchive/branches/sakai-2.6.0-rc01
-mailtool  https://source.sakaiproject.org/svn/mailtool/branches/sakai-2.6.0-rc01
-master  https://source.sakaiproject.org/svn/master/branches/sakai-2.6.0-rc01
-memory  https://source.sakaiproject.org/svn/memory/branches/sakai-2.6.0-rc01
-message  https://source.sakaiproject.org/svn/message/branches/sakai-2.6.0-rc01
-metaobj  https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.6.0-rc01
-msgcntr  https://source.sakaiproject.org/svn/msgcntr/branches/sakai-2.6.0-rc01
-osp  https://source.sakaiproject.org/svn/osp/branches/sakai-2.6.0-rc01
-podcasts  https://source.sakaiproject.org/svn/podcasts/branches/sakai-2.6.0-rc01
-polls  https://source.sakaiproject.org/svn/polls/branches/sakai-2.6.0-rc01
-portal  https://source.sakaiproject.org/svn/portal/branches/sakai-2.6.0-rc01
-postem  https://source.sakaiproject.org/svn/postem/branches/sakai-2.6.0-rc01
-presence  https://source.sakaiproject.org/svn/presence/branches/sakai-2.6.0-rc01
-presentation  https://source.sakaiproject.org/svn/presentation/branches/sakai-2.6.0-rc01
-privacy  https://source.sakaiproject.org/svn/privacy/branches/sakai-2.6.0-rc01
-profile  https://source.sakaiproject.org/svn/profile/branches/sakai-2.6.0-rc01
-providers  https://source.sakaiproject.org/svn/providers/branches/sakai-2.6.0-rc01
-reference  https://source.sakaiproject.org/svn/reference/branches/sakai-2.6.0-rc01
-reports  https://source.sakaiproject.org/svn/reports/branches/sakai-2.6.0-rc01
-reset-pass  https://source.sakaiproject.org/svn/reset-pass/branches/sakai-2.6.0-rc01
-rights  https://source.sakaiproject.org/svn/rights/branches/sakai-2.6.0-rc01
-roster  https://source.sakaiproject.org/svn/roster/branches/sakai-2.6.0-rc01
-rwiki  https://source.sakaiproject.org/svn/rwiki/branches/sakai-2.6.0-rc01
-sakai-mock  https://source.sakaiproject.org/svn/sakai-mock/branches/sakai-2.6.0-rc01
-sam  https://source.sakaiproject.org/svn/sam/branches/sakai-2.6.0-rc01
-samples  https://source.sakaiproject.org/svn/samples/branches/sakai-2.6.0-rc01
-search  https://source.sakaiproject.org/svn/search/branches/sakai-2.6.0-rc01
-sections  https://source.sakaiproject.org/svn/sections/branches/sakai-2.6.0-rc01
-site  https://source.sakaiproject.org/svn/site/branches/sakai-2.6.0-rc01
-site-manage  https://source.sakaiproject.org/svn/site-manage/branches/sakai-2.6.0-rc01
-syllabus  https://source.sakaiproject.org/svn/syllabus/branches/sakai-2.6.0-rc01
-taggable  https://source.sakaiproject.org/svn/taggable/branches/sakai-2.6.0-rc01
-test-harness  https://source.sakaiproject.org/svn/test-harness/branches/sakai-2.6.0-rc01
-textarea  https://source.sakaiproject.org/svn/textarea/branches/sakai-2.6.0-rc01
-tool  https://source.sakaiproject.org/svn/tool/branches/sakai-2.6.0-rc01
-user  https://source.sakaiproject.org/svn/user/branches/sakai-2.6.0-rc01
-usermembership  https://source.sakaiproject.org/svn/usermembership/branches/sakai-2.6.0-rc01
-velocity  https://source.sakaiproject.org/svn/velocity/branches/sakai-2.6.0-rc01
-was  https://source.sakaiproject.org/svn/was/branches/sakai-2.6.0-rc01
-warehouse  https://source.sakaiproject.org/svn/warehouse/branches/sakai-2.6.0-rc01
-web  https://source.sakaiproject.org/svn/web/branches/sakai-2.6.0-rc01
-webservices https://source.sakaiproject.org/svn/webservices/branches/sakai-2.6.0-rc01
+access -r 60527 https://source.sakaiproject.org/svn/access/branches/sakai-2.6.0-rc01
+alias -r 60528 https://source.sakaiproject.org/svn/alias/branches/sakai-2.6.0-rc01
+announcement -r 60529 https://source.sakaiproject.org/svn/announcement/branches/sakai-2.6.0-rc01
+archive -r 60530 https://source.sakaiproject.org/svn/archive/branches/sakai-2.6.0-rc01
+assignment -r 60531 https://source.sakaiproject.org/svn/assignment/branches/sakai-2.6.0-rc01
+authz -r 60532 https://source.sakaiproject.org/svn/authz/branches/sakai-2.6.0-rc01
+blog -r 60533 https://source.sakaiproject.org/svn/blog/branches/sakai-2.6.0-rc01
+calendar -r 60534 https://source.sakaiproject.org/svn/calendar/branches/sakai-2.6.0-rc01
+chat -r 60535 https://source.sakaiproject.org/svn/chat/branches/sakai-2.6.0-rc01
+citations -r 60536 https://source.sakaiproject.org/svn/citations/branches/sakai-2.6.0-rc01
+config -r 60537 https://source.sakaiproject.org/svn/config/branches/sakai-2.6.0-rc01
+content -r 60538 https://source.sakaiproject.org/svn/content/branches/sakai-2.6.0-rc01
+content-review -r 60539 https://source.sakaiproject.org/svn/content-review/branches/sakai-2.6.0-rc01
+courier -r 60540 https://source.sakaiproject.org/svn/courier/branches/sakai-2.6.0-rc01
+course-management -r 60541 https://source.sakaiproject.org/svn/course-management/branches/sakai-2.6.0-rc01
+dav -r 60542 https://source.sakaiproject.org/svn/dav/branches/sakai-2.6.0-rc01
+emailtemplateservice -r 60543 https://source.sakaiproject.org/svn/emailtemplateservice/branches/sakai-2.6.0-rc01
+entitybroker -r 60544 https://source.sakaiproject.org/svn/entitybroker/branches/sakai-2.6.0-rc01
+gradebook -r 60545 https://source.sakaiproject.org/svn/gradebook/branches/sakai-2.6.0-rc01
+help -r 60546 https://source.sakaiproject.org/svn/help/branches/sakai-2.6.0-rc01
+jobscheduler -r 60547 https://source.sakaiproject.org/svn/jobscheduler/branches/sakai-2.6.0-rc01
+jsf -r 60548 https://source.sakaiproject.org/svn/jsf/branches/sakai-2.6.0-rc01
+linktool -r 60549 https://source.sakaiproject.org/svn/linktool/branches/sakai-2.6.0-rc01
+login -r 60550 https://source.sakaiproject.org/svn/login/branches/sakai-2.6.0-rc01
+mailarchive -r 60551 https://source.sakaiproject.org/svn/mailarchive/branches/sakai-2.6.0-rc01
+mailtool -r 60552 https://source.sakaiproject.org/svn/mailtool/branches/sakai-2.6.0-rc01
+master -r 60553 https://source.sakaiproject.org/svn/master/branches/sakai-2.6.0-rc01
+memory -r 60554 https://source.sakaiproject.org/svn/memory/branches/sakai-2.6.0-rc01
+message -r 60555 https://source.sakaiproject.org/svn/message/branches/sakai-2.6.0-rc01
+metaobj -r 60556 https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.6.0-rc01
+msgcntr -r 60557 https://source.sakaiproject.org/svn/msgcntr/branches/sakai-2.6.0-rc01
+osp -r 60558 https://source.sakaiproject.org/svn/osp/branches/sakai-2.6.0-rc01
+podcasts -r 60559 https://source.sakaiproject.org/svn/podcasts/branches/sakai-2.6.0-rc01
+polls -r 60560 https://source.sakaiproject.org/svn/polls/branches/sakai-2.6.0-rc01
+portal -r 60561 https://source.sakaiproject.org/svn/portal/branches/sakai-2.6.0-rc01
+postem -r 60562 https://source.sakaiproject.org/svn/postem/branches/sakai-2.6.0-rc01
+presence -r 60563 https://source.sakaiproject.org/svn/presence/branches/sakai-2.6.0-rc01
+presentation -r 60564 https://source.sakaiproject.org/svn/presentation/branches/sakai-2.6.0-rc01
+privacy -r 60565 https://source.sakaiproject.org/svn/privacy/branches/sakai-2.6.0-rc01
+profile -r 60566 https://source.sakaiproject.org/svn/profile/branches/sakai-2.6.0-rc01
+providers -r 60567 https://source.sakaiproject.org/svn/providers/branches/sakai-2.6.0-rc01
+reference -r 60568 https://source.sakaiproject.org/svn/reference/branches/sakai-2.6.0-rc01
+reports -r 60569 https://source.sakaiproject.org/svn/reports/branches/sakai-2.6.0-rc01
+reset-pass -r 60570 https://source.sakaiproject.org/svn/reset-pass/branches/sakai-2.6.0-rc01
+rights -r 60571 https://source.sakaiproject.org/svn/rights/branches/sakai-2.6.0-rc01
+roster -r 60572 https://source.sakaiproject.org/svn/roster/branches/sakai-2.6.0-rc01
+rwiki -r 60573 https://source.sakaiproject.org/svn/rwiki/branches/sakai-2.6.0-rc01
+sakai-mock -r 60574 https://source.sakaiproject.org/svn/sakai-mock/branches/sakai-2.6.0-rc01
+sam -r 60575 https://source.sakaiproject.org/svn/sam/branches/sakai-2.6.0-rc01
+samples -r 60576 https://source.sakaiproject.org/svn/samples/branches/sakai-2.6.0-rc01
+search -r 60577 https://source.sakaiproject.org/svn/search/branches/sakai-2.6.0-rc01
+sections -r 60578 https://source.sakaiproject.org/svn/sections/branches/sakai-2.6.0-rc01
+site -r 60579 https://source.sakaiproject.org/svn/site/branches/sakai-2.6.0-rc01
+site-manage -r 60580 https://source.sakaiproject.org/svn/site-manage/branches/sakai-2.6.0-rc01
+syllabus -r 60581 https://source.sakaiproject.org/svn/syllabus/branches/sakai-2.6.0-rc01
+taggable -r 60582 https://source.sakaiproject.org/svn/taggable/branches/sakai-2.6.0-rc01
+test-harness -r 60583 https://source.sakaiproject.org/svn/test-harness/branches/sakai-2.6.0-rc01
+textarea -r 60584 https://source.sakaiproject.org/svn/textarea/branches/sakai-2.6.0-rc01
+tool -r 60585 https://source.sakaiproject.org/svn/tool/branches/sakai-2.6.0-rc01
+user -r 60586 https://source.sakaiproject.org/svn/user/branches/sakai-2.6.0-rc01
+usermembership -r 60587 https://source.sakaiproject.org/svn/usermembership/branches/sakai-2.6.0-rc01
+velocity -r 60588 https://source.sakaiproject.org/svn/velocity/branches/sakai-2.6.0-rc01
+was -r 60589 https://source.sakaiproject.org/svn/was/branches/sakai-2.6.0-rc01
+warehouse -r 60590 https://source.sakaiproject.org/svn/warehouse/branches/sakai-2.6.0-rc01
+web -r 60591 https://source.sakaiproject.org/svn/web/branches/sakai-2.6.0-rc01
+webservices -r 60592 https://source.sakaiproject.org/svn/webservices/branches/sakai-2.6.0-rc01
