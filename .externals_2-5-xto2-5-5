@@ -33,7 +33,7 @@ master -r 50498 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-x
 memory -r 48404 https://source.sakaiproject.org/svn/memory/branches/sakai_2-5-x
 message -r 48404 https://source.sakaiproject.org/svn/message/branches/sakai_2-5-x
 metaobj -r 52172 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-x
-msgcntr -r 59330 https://source.sakaiproject.org/svn/msgcntr/branches/sakai_2-5-x
+msgcntr -r 63921 https://source.sakaiproject.org/svn/msgcntr/branches/sakai_2-5-x
 osp -r 49423 https://source.sakaiproject.org/svn/osp/branches/sakai_2-5-x
 podcasts -r 48404 https://source.sakaiproject.org/svn/podcasts/branches/sakai_2-5-x
 polls -r 48404 https://source.sakaiproject.org/svn/polls/branches/sakai_2-5-x
