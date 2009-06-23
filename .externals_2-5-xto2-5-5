@@ -1,5 +1,5 @@
 access -r 58363 https://source.sakaiproject.org/svn/access/branches/sakai_2-5-x
-alias -r 48404 https://source.sakaiproject.org/svn/alias/branches/sakai_2-5-x
+alias -r 62880 https://source.sakaiproject.org/svn/alias/branches/sakai_2-5-x
 announcement -r 59424 https://source.sakaiproject.org/svn/announcement/branches/sakai_2-5-x
 archive -r 48404 https://source.sakaiproject.org/svn/archive/branches/sakai_2-5-x
 assignment -r 60465 https://source.sakaiproject.org/svn/assignment/branches/sakai_2-5-x
