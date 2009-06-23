@@ -6,7 +6,7 @@ assignment -r 63980 https://source.sakaiproject.org/svn/assignment/branches/saka
 authz -r 54764 https://source.sakaiproject.org/svn/authz/branches/sakai_2-5-x
 blog -r 59744 https://source.sakaiproject.org/svn/blog/branches/sakai_2-5-x
 calendar -r 60464 https://source.sakaiproject.org/svn/calendar/branches/sakai_2-5-x
-chat -r 55086 https://source.sakaiproject.org/svn/chat/branches/sakai_2-5-x
+chat -r 62545 https://source.sakaiproject.org/svn/chat/branches/sakai_2-5-x
 citations -r 59984 https://source.sakaiproject.org/svn/citations/branches/sakai_2-5-x
 cluster -r 48404 https://source.sakaiproject.org/svn/cluster/branches/sakai_2-5-x
 component -r 48404 https://source.sakaiproject.org/svn/component/branches/sakai_2-5-x
@@ -51,7 +51,7 @@ rights -r 48404 https://source.sakaiproject.org/svn/rights/branches/sakai_2-5-x
 roster -r 48404 https://source.sakaiproject.org/svn/roster/branches/sakai_2-5-x
 rwiki -r 54693 https://source.sakaiproject.org/svn/rwiki/branches/sakai_2-5-x
 sakai-mock -r 48404 https://source.sakaiproject.org/svn/sakai-mock/branches/sakai_2-5-x
-sam -r 59184 https://source.sakaiproject.org/svn/sam/branches/sakai_2-5-x
+sam -r 62685 https://source.sakaiproject.org/svn/sam/branches/sakai_2-5-x
 samples -r 48404 https://source.sakaiproject.org/svn/samples/branches/sakai_2-5-x
 search -r 53953 https://source.sakaiproject.org/svn/search/branches/sakai_2-5-x
 sections -r 48404 https://source.sakaiproject.org/svn/sections/branches/sakai_2-5-x
@@ -67,4 +67,4 @@ util -r 54002 https://source.sakaiproject.org/svn/util/branches/sakai_2-5-x
 velocity -r 58500 https://source.sakaiproject.org/svn/velocity/branches/sakai_2-5-x
 warehouse -r 48404 https://source.sakaiproject.org/svn/warehouse/branches/sakai_2-5-x
 web -r 54821 https://source.sakaiproject.org/svn/web/branches/sakai_2-5-x
-webservices -r 48404 https://source.sakaiproject.org/svn/webservices/branches/sakai_2-5-x
+webservices -r 57776 https://source.sakaiproject.org/svn/webservices/branches/sakai_2-5-x
