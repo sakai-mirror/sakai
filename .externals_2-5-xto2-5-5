@@ -39,7 +39,7 @@ podcasts -r 48404 https://source.sakaiproject.org/svn/podcasts/branches/sakai_2-
 polls -r 48404 https://source.sakaiproject.org/svn/polls/branches/sakai_2-5-x
 portal -r 49079 https://source.sakaiproject.org/svn/portal/branches/sakai_2-5-x
 postem -r 48404 https://source.sakaiproject.org/svn/postem/branches/sakai_2-5-x
-presence -r 48404 https://source.sakaiproject.org/svn/presence/branches/sakai_2-5-x
+presence -r 63371 https://source.sakaiproject.org/svn/presence/branches/sakai_2-5-x
 presentation -r 48404 https://source.sakaiproject.org/svn/presentation/branches/sakai_2-5-x
 privacy -r 48404 https://source.sakaiproject.org/svn/privacy/branches/sakai_2-5-x
 profile -r 48404 https://source.sakaiproject.org/svn/profile/branches/sakai_2-5-x
