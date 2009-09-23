@@ -1,3 +1,7 @@
+# sakai-trunk-qa
+master https://source.sakaiproject.org/svn/master/branches/sakai-trunk-qa
+
+# 2.6.x
 access -r66493 https://source.sakaiproject.org/svn/access/trunk
 alias -r66493 https://source.sakaiproject.org/svn/alias/trunk
 announcement -r66493 https://source.sakaiproject.org/svn/announcement/trunk
@@ -25,7 +29,6 @@ linktool -r66493 https://source.sakaiproject.org/svn/linktool/trunk
 login -r66493 https://source.sakaiproject.org/svn/login/trunk
 mailarchive -r66493 https://source.sakaiproject.org/svn/mailarchive/trunk
 mailtool -r66493 https://source.sakaiproject.org/svn/mailtool/trunk
-master -r66493 https://source.sakaiproject.org/svn/master/trunk
 memory -r66493 https://source.sakaiproject.org/svn/memory/trunk
 message -r66493 https://source.sakaiproject.org/svn/message/trunk
 metaobj -r66493 https://source.sakaiproject.org/svn/metaobj/trunk
