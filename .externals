@@ -32,7 +32,6 @@ mailtool -r66493 https://source.sakaiproject.org/svn/mailtool/trunk
 memory -r66493 https://source.sakaiproject.org/svn/memory/trunk
 message -r66493 https://source.sakaiproject.org/svn/message/trunk
 metaobj -r66493 https://source.sakaiproject.org/svn/metaobj/trunk
-msgcntr -r66493 https://source.sakaiproject.org/svn/msgcntr/trunk
 osp -r66493 https://source.sakaiproject.org/svn/osp/trunk
 podcasts -r66493 https://source.sakaiproject.org/svn/podcasts/trunk
 polls -r66493 https://source.sakaiproject.org/svn/polls/trunk
