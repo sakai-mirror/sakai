@@ -23,7 +23,7 @@
   <dependencies>
     <dependency>
       <groupId>org.sakaiproject.msgcntr</groupId>
-      <artifactId>messageforums-assembly</artifactId>
+      <artifactId>sakai-messageforums-assembly</artifactId>
       <version>${sakai.msgcntr.version}</version>
       <classifier>tomcat-overlay</classifier>
       <type>zip</type>
