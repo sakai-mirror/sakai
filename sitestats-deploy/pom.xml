@@ -17,13 +17,13 @@
     <url>http://sakaiproject.org/</url>
   </organization>
   <properties>
-    <clean.targets>components/sakai-sitestats-component</clean.targets>
+    <clean.targets>components/sitestats-component</clean.targets>
     <deploy.target>tomcat-overlay</deploy.target>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.sakaiproject.sitestats</groupId>
-      <artifactId>sakai-sitestats-assembly</artifactId>
+      <artifactId>sitestats-assembly</artifactId>
       <version>${sakai.sitestats.version}</version>
       <classifier>tomcat-overlay</classifier>
       <type>zip</type>
