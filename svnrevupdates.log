@@ -9,7 +9,6 @@ BRANCH REVISION UPDATES LOG
 20091005152257: sakai-2.6.x-qa -r67107 updated to -r67199
 20091005172333: sakai-2.6.x-qa -r67199 updated to -r67214
 20091007094820: sakai-2.6.x-qa -r67214 updated to -r67300
-
 20091008162836: sakai-2.6.x-qa -r67300 updated to -r67335
 20091008171507: sakai-2.6.x-qa -r67335 updated to -r67394
-20091009133355: sakai-2.6.x-qa -r67394 updated to -r67447
+20091009133355: sakai-2.6.x-qa -r67394 updated to -r67447 (2.6.1 release branch cut at r67447)
