@@ -31,7 +31,6 @@ metaobj  https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.6.1
 msgcntr  https://source.sakaiproject.org/svn/msgcntr/branches/sakai-2.6.1
 osp  https://source.sakaiproject.org/svn/osp/branches/sakai-2.6.1
 podcasts  https://source.sakaiproject.org/svn/podcasts/branches/sakai-2.6.1
-polls  https://source.sakaiproject.org/svn/polls/branches/sakai-2.6.1
 portal  https://source.sakaiproject.org/svn/portal/branches/sakai-2.6.1
 postem  https://source.sakaiproject.org/svn/postem/branches/sakai-2.6.1
 presence  https://source.sakaiproject.org/svn/presence/branches/sakai-2.6.1
@@ -64,3 +63,7 @@ was  https://source.sakaiproject.org/svn/was/branches/sakai-2.6.1
 warehouse  https://source.sakaiproject.org/svn/warehouse/branches/sakai-2.6.1
 web  https://source.sakaiproject.org/svn/web/branches/sakai-2.6.1
 webservices  https://source.sakaiproject.org/svn/webservices/branches/sakai-2.6.1
+
+# Use independent versioned releases for the following projects; eliminates all snapshot references in 2.6.1
+# polls and ets releases were generated from their respective 2.6.x branches
+polls https://source.sakaiproject.org/svn/polls/tags/polls-1.1.1
