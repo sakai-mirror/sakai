@@ -24,9 +24,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:https://source.sakaiproject.org/svn/sakai/trunk</connection>
-        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/sakai/trunk</developerConnection>
-        <url>https://source.sakaiproject.org/svn/sakai/trunk</url>
+        <connection>scm:svn:https://source.sakaiproject.org/svn/sakai/branches/sakai-2.7.x</connection>
+        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/sakai/branches/sakai-2.7.x</developerConnection>
+        <url>https://source.sakaiproject.org/svn/sakai/branches/sakai-2.7.x</url>
     </scm>
     <organization>
         <name>The Sakai Foundation</name>
