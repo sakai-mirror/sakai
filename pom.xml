@@ -43,7 +43,7 @@
             <id>framework</id>
             <modules>
                 <module>kernel-deploy</module>
-		<module>framework-shared-deploy</module>
+		        <module>framework-shared-deploy</module>
                 <module>access</module>
                 <module>alias</module>
                 <module>announcement/announcement-api/api</module>
@@ -245,7 +245,7 @@
                 <!-- <module>jsf/jsf-widgets</module> -->
                 <module>mailtool/mailtool</module>
                 <module>metaobj/metaobj-util/tool-lib</module>
-                <module>msgcntr/messageforums-app</module>
+                <!-- <module>msgcntr/messageforums-app</module> -->
                 <module>osp/common/tool-lib</module>
                 <module>osp/glossary/tool-lib</module>
                 <module>osp/jsf/widgets</module>
