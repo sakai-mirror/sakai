@@ -56,5 +56,5 @@ webservices https://source.sakaiproject.org/svn/webservices/tags/sakai-2.7.0-M1
 
 # The projects below will be released independently in the coming days and the paths below will be removed from .externals
 content-review https://source.sakaiproject.org/svn/content-review/tags/sakai-2.7.0-M1
-emailtemplateservice https://source.sakaiproject.org/svn/emailtemplateservice/tags/emailtemplateservice-0.4.x
-polls https://source.sakaiproject.org/svn/polls/tags/polls-1.3.x
+emailtemplateservice https://source.sakaiproject.org/svn/emailtemplateservice/tags/emailtemplateservice-0.4.0-M1
+polls https://source.sakaiproject.org/svn/polls/tags/polls-1.3.0-M1
