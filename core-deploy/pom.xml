@@ -72,7 +72,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.sakaiproject.msgcntr</groupId>
-                    <artifactId>sakai-messageforums-assembly</artifactId>
+                    <artifactId>messageforums-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
@@ -149,7 +149,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.sakaiproject.msgcntr</groupId>
-                    <artifactId>sakai-messageforums-assembly</artifactId>
+                    <artifactId>messageforums-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
