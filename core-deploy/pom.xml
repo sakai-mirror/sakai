@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<artifactId>base</artifactId>
-		<groupId>org.sakaiproject</groupId>
-		<version>2.7-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>
-	</parent>
-	<name>Sakai Core Deploy</name>
-	<groupId>org.sakaiproject</groupId>
-	<artifactId>core-deploy</artifactId>
-	<packaging>pom</packaging>
-	<version>2.7-SNAPSHOT</version>
-	<organization>
-		<name>Sakai Project</name>
-		<url>http://sakaiproject.org/</url>
-	</organization>
-	<profiles>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>base</artifactId>
+        <groupId>org.sakaiproject</groupId>
+        <version>2.7-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <name>Sakai Core Deploy</name>
+    <groupId>org.sakaiproject</groupId>
+    <artifactId>core-deploy</artifactId>
+    <packaging>pom</packaging>
+    <version>2.7-SNAPSHOT</version>
+    <organization>
+        <name>Sakai Project</name>
+        <url>http://sakaiproject.org/</url>
+    </organization>
+    <profiles>
         <profile>
             <id>full</id>
             <activation>
@@ -33,6 +33,7 @@
                     components/sakai-common-components;
                     components/sakai-privacy-pack;
                     components/samigo-pack;
+                    components/scheduler-component;
                     components/search-pack;
                     components/sections-pack;
                     components/sitestats-component
@@ -83,6 +84,12 @@
                     <type>zip</type>
                 </dependency>
                 <dependency>
+                    <groupId>org.sakaiproject.scheduler</groupId>
+                    <artifactId>scheduler-assembly</artifactId>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
                     <groupId>org.sakaiproject.search</groupId>
                     <artifactId>search-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
@@ -109,6 +116,7 @@
                     components/msgcntr-component;
                     components/sakai-privacy-pack;
                     components/samigo-pack;
+                    components/scheduler-component;
                     components/search-pack;
                     components/sections-pack;
                     components/sitestats-component;
@@ -173,6 +181,12 @@
                     <type>zip</type>
                 </dependency>
                 <dependency>
+                    <groupId>org.sakaiproject.scheduler</groupId>
+                    <artifactId>scheduler-assembly</artifactId>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
                     <groupId>org.sakaiproject.sitestats</groupId>
                     <artifactId>sitestats-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
@@ -191,7 +205,8 @@
             <id>cafe</id>
             <properties>
                 <clean.targets>components/archive-pack;
-                    components/emailtemplateservice-pack
+                    components/emailtemplateservice-pack;
+                    components/scheduler-component
                 </clean.targets>
                 <deploy.target>tomcat-overlay</deploy.target>
             </properties>
@@ -211,6 +226,29 @@
                 <dependency>
                     <groupId>org.sakaiproject.jsf</groupId>
                     <artifactId>jsf-assembly</artifactId>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
+                    <groupId>org.sakaiproject.scheduler</groupId>
+                    <artifactId>scheduler-assembly</artifactId>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>framework</id>
+            <properties>
+                <clean.targets>
+                    components/scheduler-component
+                </clean.targets>
+                <deploy.target>tomcat-overlay</deploy.target>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.sakaiproject.scheduler</groupId>
+                    <artifactId>scheduler-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
