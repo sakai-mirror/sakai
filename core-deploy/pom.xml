@@ -30,6 +30,7 @@
                     components/coursemanagement-hibernate-pack;
                     components/gradebook-service-pack;
                     components/msgcntr-component;
+                    components/profile-component;
                     components/sakai-common-components;
                     components/sakai-privacy-pack;
                     components/samigo-pack;
@@ -78,6 +79,12 @@
                     <type>zip</type>
                 </dependency>
                 <dependency>
+                    <groupId>org.sakaiproject.profile</groupId>
+                    <artifactId>profile-assembly</artifactId>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
                     <groupId>org.sakaiproject.samigo</groupId>
                     <artifactId>samigo-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
@@ -111,6 +118,7 @@
                     components/coursemanagement-hibernate-pack;
                     components/emailtemplateservice-pack;
                     components/gradebook-service-pack;
+                    components/profile-component;
                     components/profile2-pack;
                     components/sakai-common-components;
                     components/msgcntr-component;
@@ -158,6 +166,12 @@
                 <dependency>
                     <groupId>org.sakaiproject.msgcntr</groupId>
                     <artifactId>messageforums-assembly</artifactId>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
+                    <groupId>org.sakaiproject.profile</groupId>
+                    <artifactId>profile-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
