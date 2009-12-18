@@ -134,8 +134,7 @@
                     components/scheduler-component;
                     components/search-pack;
                     components/sections-pack;
-                    components/sitestats-component;
-                    components/tinyurl-pack
+                    components/sitestats-component
                 </clean.targets>
                 <deploy.target>tomcat-overlay</deploy.target>
             </properties>
@@ -209,13 +208,6 @@
                 <dependency>
                     <groupId>org.sakaiproject.sitestats</groupId>
                     <artifactId>sitestats-assembly</artifactId>
-                    <classifier>tomcat-overlay</classifier>
-                    <type>zip</type>
-                </dependency>
-                <dependency>
-                    <groupId>org.sakaiproject.tinyurl</groupId>
-                    <artifactId>tinyurl-assembly</artifactId>
-                    <version>0.9-SNAPSHOT</version>
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
