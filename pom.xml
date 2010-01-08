@@ -96,7 +96,6 @@
                 <module>dav</module>
                 <module>gradebook</module>
                 <module>help</module>
-                <!-- <module>jobscheduler</module> -->
                 <module>linktool</module>
                 <module>login</module>
                 <module>mailarchive</module>
@@ -106,7 +105,6 @@
                 <module>metaobj</module>
                 <module>osp</module>
                 <module>podcasts</module>
-                <module>polls</module>
                 <module>portal</module>
                 <module>postem</module>
                 <module>presence</module>
@@ -157,7 +155,6 @@
                 <module>dav</module>
                 <module>gradebook</module>
                 <module>help</module>
-                <!-- <module>jobscheduler</module> -->
                 <module>linktool</module>
                 <module>login</module>
                 <module>mailarchive</module>
@@ -167,7 +164,6 @@
                 <module>metaobj</module>
                 <module>osp</module>
                 <module>podcasts</module>
-                <module>polls</module>
                 <module>portal</module>
                 <module>postem</module>
                 <module>presence</module>
