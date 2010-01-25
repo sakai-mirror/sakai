@@ -50,5 +50,6 @@ warehouse -r 72437 https://source.sakaiproject.org/svn/warehouse/tags/sakai-2.7.
 was -r 72438 https://source.sakaiproject.org/svn/was/tags/sakai-2.7.0-b01
 web -r 72439 https://source.sakaiproject.org/svn/web/tags/sakai-2.7.0-b01
 webservices -r 72440 https://source.sakaiproject.org/svn/webservices/tags/sakai-2.7.0-b01
-# -r  https://source.sakaiproject.org/svn/#/tags/sakai-2.7.0-b01
+
+# content-review will be released independently during Jan 2010.
 content-review -r 72441 https://source.sakaiproject.org/svn/content-review/tags/sakai-2.7.0-b01
