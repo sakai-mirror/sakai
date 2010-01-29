@@ -14,8 +14,6 @@ content-review  https://source.sakaiproject.org/svn/content-review/branches/saka
 courier  https://source.sakaiproject.org/svn/courier/branches/sakai-2.6.2
 course-management  https://source.sakaiproject.org/svn/course-management/branches/sakai-2.6.2
 dav  https://source.sakaiproject.org/svn/dav/branches/sakai-2.6.2
-emailtemplateservice  https://source.sakaiproject.org/svn/emailtemplateservice/branches/sakai-2.6.2
-entitybroker  https://source.sakaiproject.org/svn/entitybroker/branches/sakai-2.6.2
 gradebook  https://source.sakaiproject.org/svn/gradebook/branches/sakai-2.6.2
 help  https://source.sakaiproject.org/svn/help/branches/sakai-2.6.2
 jobscheduler  https://source.sakaiproject.org/svn/jobscheduler/branches/sakai-2.6.2
@@ -31,7 +29,6 @@ metaobj  https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.6.2
 msgcntr  https://source.sakaiproject.org/svn/msgcntr/branches/sakai-2.6.2
 osp  https://source.sakaiproject.org/svn/osp/branches/sakai-2.6.2
 podcasts  https://source.sakaiproject.org/svn/podcasts/branches/sakai-2.6.2
-polls  https://source.sakaiproject.org/svn/polls/branches/sakai-2.6.2
 portal  https://source.sakaiproject.org/svn/portal/branches/sakai-2.6.2
 postem  https://source.sakaiproject.org/svn/postem/branches/sakai-2.6.2
 presence  https://source.sakaiproject.org/svn/presence/branches/sakai-2.6.2
