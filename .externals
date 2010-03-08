@@ -10,6 +10,7 @@ chat https://source.sakaiproject.org/svn/chat/branches/sakai-2.7.x
 citations https://source.sakaiproject.org/svn/citations/branches/sakai-2.7.x
 config https://source.sakaiproject.org/svn/config/branches/sakai-2.7.x
 content https://source.sakaiproject.org/svn/content/branches/sakai-2.7.x
+content-review https://source.sakaiproject.org/svn/content-review/branches/sakai-2.7.x
 courier https://source.sakaiproject.org/svn/courier/branches/sakai-2.7.x
 dav https://source.sakaiproject.org/svn/dav/branches/sakai-2.7.x
 gradebook https://source.sakaiproject.org/svn/gradebook/branches/sakai-2.7.x
@@ -50,6 +51,3 @@ warehouse https://source.sakaiproject.org/svn/warehouse/branches/sakai-2.7.x
 was https://source.sakaiproject.org/svn/was/branches/sakai-2.7.x
 web https://source.sakaiproject.org/svn/web/branches/sakai-2.7.x
 webservices https://source.sakaiproject.org/svn/webservices/branches/sakai-2.7.x
-
-# The projects below will be released independently in the coming days and the paths below will be removed from .externals
-content-review https://source.sakaiproject.org/svn/content-review/branches/sakai-2.7.x
