@@ -1,55 +1,54 @@
-access https://source.sakaiproject.org/svn/access/tags/sakai-2.7.0-b04
-alias https://source.sakaiproject.org/svn/alias/tags/sakai-2.7.0-b04
-announcement https://source.sakaiproject.org/svn/announcement/tags/sakai-2.7.0-b04
-archive https://source.sakaiproject.org/svn/archive/tags/sakai-2.7.0-b04
-assignment https://source.sakaiproject.org/svn/assignment/tags/sakai-2.7.0-b04
-authz https://source.sakaiproject.org/svn/authz/tags/sakai-2.7.0-b04
-blog https://source.sakaiproject.org/svn/blog/tags/sakai-2.7.0-b04
-calendar https://source.sakaiproject.org/svn/calendar/tags/sakai-2.7.0-b04
-chat https://source.sakaiproject.org/svn/chat/tags/sakai-2.7.0-b04
-citations https://source.sakaiproject.org/svn/citations/tags/sakai-2.7.0-b04
-config https://source.sakaiproject.org/svn/config/tags/sakai-2.7.0-b04
-content https://source.sakaiproject.org/svn/content/tags/sakai-2.7.0-b04
-courier https://source.sakaiproject.org/svn/courier/tags/sakai-2.7.0-b04
-dav https://source.sakaiproject.org/svn/dav/tags/sakai-2.7.0-b04
-gradebook https://source.sakaiproject.org/svn/gradebook/tags/sakai-2.7.0-b04
-help https://source.sakaiproject.org/svn/help/tags/sakai-2.7.0-b04
-linktool https://source.sakaiproject.org/svn/linktool/tags/sakai-2.7.0-b04
-login https://source.sakaiproject.org/svn/login/tags/sakai-2.7.0-b04
-mailarchive https://source.sakaiproject.org/svn/mailarchive/tags/sakai-2.7.0-b04
-mailtool https://source.sakaiproject.org/svn/mailtool/tags/sakai-2.7.0-b04
-master https://source.sakaiproject.org/svn/master/tags/sakai-2.7.0-b04
-memory https://source.sakaiproject.org/svn/memory/tags/sakai-2.7.0-b04
-message https://source.sakaiproject.org/svn/message/tags/sakai-2.7.0-b04
-metaobj https://source.sakaiproject.org/svn/metaobj/tags/sakai-2.7.0-b04
-osp https://source.sakaiproject.org/svn/osp/tags/sakai-2.7.0-b04
-podcasts https://source.sakaiproject.org/svn/podcasts/tags/sakai-2.7.0-b04
-portal https://source.sakaiproject.org/svn/portal/tags/sakai-2.7.0-b04
-postem https://source.sakaiproject.org/svn/postem/tags/sakai-2.7.0-b04
-presence https://source.sakaiproject.org/svn/presence/tags/sakai-2.7.0-b04
-presentation https://source.sakaiproject.org/svn/presentation/tags/sakai-2.7.0-b04
-providers https://source.sakaiproject.org/svn/providers/tags/sakai-2.7.0-b04
-reference https://source.sakaiproject.org/svn/reference/tags/sakai-2.7.0-b04
-reports https://source.sakaiproject.org/svn/reports/tags/sakai-2.7.0-b04
-reset-pass https://source.sakaiproject.org/svn/reset-pass/tags/sakai-2.7.0-b04
-rights https://source.sakaiproject.org/svn/rights/tags/sakai-2.7.0-b04
-roster https://source.sakaiproject.org/svn/roster/tags/sakai-2.7.0-b04
-rwiki https://source.sakaiproject.org/svn/rwiki/tags/sakai-2.7.0-b04
-samples https://source.sakaiproject.org/svn/samples/tags/sakai-2.7.0-b04
-sections https://source.sakaiproject.org/svn/sections/tags/sakai-2.7.0-b04
-site https://source.sakaiproject.org/svn/site/tags/sakai-2.7.0-b04
-site-manage https://source.sakaiproject.org/svn/site-manage/tags/sakai-2.7.0-b04
-syllabus https://source.sakaiproject.org/svn/syllabus/tags/sakai-2.7.0-b04
-taggable https://source.sakaiproject.org/svn/taggable/tags/sakai-2.7.0-b04
-textarea https://source.sakaiproject.org/svn/textarea/tags/sakai-2.7.0-b04
-tool https://source.sakaiproject.org/svn/tool/tags/sakai-2.7.0-b04
-user https://source.sakaiproject.org/svn/user/tags/sakai-2.7.0-b04
-usermembership https://source.sakaiproject.org/svn/usermembership/tags/sakai-2.7.0-b04
-velocity https://source.sakaiproject.org/svn/velocity/tags/sakai-2.7.0-b04
-warehouse https://source.sakaiproject.org/svn/warehouse/tags/sakai-2.7.0-b04
-was https://source.sakaiproject.org/svn/was/tags/sakai-2.7.0-b04
-web https://source.sakaiproject.org/svn/web/tags/sakai-2.7.0-b04
-webservices https://source.sakaiproject.org/svn/webservices/tags/sakai-2.7.0-b04
-
-# The projects below will be released independently in the coming days and the paths below will be removed from .externals
-content-review https://source.sakaiproject.org/svn/content-review/tags/sakai-2.7.0-b04
+access -r 74345 https://source.sakaiproject.org/svn/access/tags/sakai-2.7.0-b04
+alias -r 74346 https://source.sakaiproject.org/svn/alias/tags/sakai-2.7.0-b04
+announcement -r 74347 https://source.sakaiproject.org/svn/announcement/tags/sakai-2.7.0-b04
+archive -r 74348 https://source.sakaiproject.org/svn/archive/tags/sakai-2.7.0-b04
+assignment -r 74349 https://source.sakaiproject.org/svn/assignment/tags/sakai-2.7.0-b04
+authz -r 74350 https://source.sakaiproject.org/svn/authz/tags/sakai-2.7.0-b04
+blog -r 74351 https://source.sakaiproject.org/svn/blog/tags/sakai-2.7.0-b04
+calendar -r 74352 https://source.sakaiproject.org/svn/calendar/tags/sakai-2.7.0-b04
+chat -r 74353 https://source.sakaiproject.org/svn/chat/tags/sakai-2.7.0-b04
+citations -r 74354 https://source.sakaiproject.org/svn/citations/tags/sakai-2.7.0-b04
+config -r 74355 https://source.sakaiproject.org/svn/config/tags/sakai-2.7.0-b04
+content -r 74357 https://source.sakaiproject.org/svn/content/tags/sakai-2.7.0-b04
+courier -r 74358 https://source.sakaiproject.org/svn/courier/tags/sakai-2.7.0-b04
+dav -r 74359 https://source.sakaiproject.org/svn/dav/tags/sakai-2.7.0-b04
+gradebook -r 74360 https://source.sakaiproject.org/svn/gradebook/tags/sakai-2.7.0-b04
+help -r 74361 https://source.sakaiproject.org/svn/help/tags/sakai-2.7.0-b04
+linktool -r 74362 https://source.sakaiproject.org/svn/linktool/tags/sakai-2.7.0-b04
+login -r 74363 https://source.sakaiproject.org/svn/login/tags/sakai-2.7.0-b04
+mailarchive -r 74364 https://source.sakaiproject.org/svn/mailarchive/tags/sakai-2.7.0-b04
+mailtool -r 74365 https://source.sakaiproject.org/svn/mailtool/tags/sakai-2.7.0-b04
+master -r 74367 https://source.sakaiproject.org/svn/master/tags/sakai-2.7.0-b04
+memory -r 74368 https://source.sakaiproject.org/svn/memory/tags/sakai-2.7.0-b04
+message -r 74369 https://source.sakaiproject.org/svn/message/tags/sakai-2.7.0-b04
+metaobj -r 74370 https://source.sakaiproject.org/svn/metaobj/tags/sakai-2.7.0-b04
+osp -r 74371 https://source.sakaiproject.org/svn/osp/tags/sakai-2.7.0-b04
+podcasts -r 74372 https://source.sakaiproject.org/svn/podcasts/tags/sakai-2.7.0-b04
+portal -r 74373 https://source.sakaiproject.org/svn/portal/tags/sakai-2.7.0-b04
+postem -r 74374 https://source.sakaiproject.org/svn/postem/tags/sakai-2.7.0-b04
+presence -r 74375 https://source.sakaiproject.org/svn/presence/tags/sakai-2.7.0-b04
+presentation -r 74376 https://source.sakaiproject.org/svn/presentation/tags/sakai-2.7.0-b04
+providers -r 74378 https://source.sakaiproject.org/svn/providers/tags/sakai-2.7.0-b04
+reference -r 74379 https://source.sakaiproject.org/svn/reference/tags/sakai-2.7.0-b04
+reports -r 74380 https://source.sakaiproject.org/svn/reports/tags/sakai-2.7.0-b04
+reset-pass -r 74381 https://source.sakaiproject.org/svn/reset-pass/tags/sakai-2.7.0-b04
+rights -r 74382 https://source.sakaiproject.org/svn/rights/tags/sakai-2.7.0-b04
+roster -r 74383 https://source.sakaiproject.org/svn/roster/tags/sakai-2.7.0-b04
+rwiki -r 74384 https://source.sakaiproject.org/svn/rwiki/tags/sakai-2.7.0-b04
+samples -r 74385 https://source.sakaiproject.org/svn/samples/tags/sakai-2.7.0-b04
+sections -r 74386 https://source.sakaiproject.org/svn/sections/tags/sakai-2.7.0-b04
+site -r 74387 https://source.sakaiproject.org/svn/site/tags/sakai-2.7.0-b04
+site-manage -r 74388 https://source.sakaiproject.org/svn/site-manage/tags/sakai-2.7.0-b04
+syllabus -r 74389 https://source.sakaiproject.org/svn/syllabus/tags/sakai-2.7.0-b04
+taggable -r 74390 https://source.sakaiproject.org/svn/taggable/tags/sakai-2.7.0-b04
+textarea -r 74391 https://source.sakaiproject.org/svn/textarea/tags/sakai-2.7.0-b04
+tool -r 74392 https://source.sakaiproject.org/svn/tool/tags/sakai-2.7.0-b04
+user -r 74393 https://source.sakaiproject.org/svn/user/tags/sakai-2.7.0-b04
+usermembership -r 74394 https://source.sakaiproject.org/svn/usermembership/tags/sakai-2.7.0-b04
+velocity -r 74395 https://source.sakaiproject.org/svn/velocity/tags/sakai-2.7.0-b04
+warehouse -r 74396 https://source.sakaiproject.org/svn/warehouse/tags/sakai-2.7.0-b04
+was -r 74397 https://source.sakaiproject.org/svn/was/tags/sakai-2.7.0-b04
+web -r 74398 https://source.sakaiproject.org/svn/web/tags/sakai-2.7.0-b04
+webservices -r 74399 https://source.sakaiproject.org/svn/webservices/tags/sakai-2.7.0-b04
+# -r  https://source.sakaiproject.org/svn/#/tags/sakai-2.7.0-b04
+content-review -r 74400 https://source.sakaiproject.org/svn/content-review/tags/sakai-2.7.0-b04
