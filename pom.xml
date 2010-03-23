@@ -99,7 +99,6 @@
                 <module>linktool</module>
                 <module>login</module>
                 <module>mailarchive</module>
-                <module>mailtool</module>
                 <module>memory</module>
                 <module>message</module>
                 <module>metaobj</module>
@@ -108,7 +107,6 @@
                 <module>portal</module>
                 <module>postem</module>
                 <module>presence</module>
-                <module>presentation</module>
                 <module>providers</module>
                 <module>reference</module>
                 <module>reports</module>
@@ -130,65 +128,6 @@
                 <module>web</module>
                 <module>webservices</module>
                 <module>usermembership</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>experimental</id>
-            <modules>
-                <module>kernel-deploy</module>
-                <module>master</module>
-                <module>core-deploy</module>
-                <module>access</module>
-                <module>alias</module>
-                <module>announcement</module>
-                <module>archive</module>
-                <module>assignment</module>
-                <module>authz</module>
-                <module>blog</module>
-                <module>calendar</module>
-                <module>chat</module>
-                <module>citations</module>
-                <module>config</module>
-                <module>content</module>
-                <module>content-review</module>
-                <module>courier</module>
-                <module>dav</module>
-                <module>gradebook</module>
-                <module>help</module>
-                <module>linktool</module>
-                <module>login</module>
-                <module>mailarchive</module>
-                <module>mailtool</module>
-                <module>memory</module>
-                <module>message</module>
-                <module>metaobj</module>
-                <module>osp</module>
-                <module>podcasts</module>
-                <module>portal</module>
-                <module>postem</module>
-                <module>presence</module>
-                <module>presentation</module>
-                <module>providers</module>
-                <module>reference</module>
-                <module>reports</module>
-                <module>reset-pass</module>
-                <module>rights</module>
-                <module>roster</module>
-                <module>rwiki</module>
-                <module>samples</module>
-                <module>sections</module>
-                <module>site</module>
-                <module>site-manage</module>
-                <module>syllabus</module>
-                <module>taggable</module>
-                <module>textarea</module>
-                <module>tool</module>
-                <module>user</module>
-                <module>usermembership</module>
-                <module>velocity</module>
-                <module>warehouse</module>
-                <module>web</module>
-                <module>webservices</module>
             </modules>
         </profile>
         <profile>
@@ -230,7 +169,6 @@
                 <module>gradebook/app/ui</module>
                 <module>help/help-tool</module>
                 <!-- <module>jsf/jsf-widgets</module> -->
-                <module>mailtool/mailtool</module>
                 <module>metaobj/metaobj-util/tool-lib</module>
                 <!-- <module>msgcntr/messageforums-app</module> -->
                 <module>osp/common/tool-lib</module>
