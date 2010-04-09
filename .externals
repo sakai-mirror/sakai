@@ -34,7 +34,6 @@ reset-pass https://source.sakaiproject.org/svn/reset-pass/branches/sakai-2.7.x
 rights https://source.sakaiproject.org/svn/rights/branches/sakai-2.7.x
 roster https://source.sakaiproject.org/svn/roster/branches/sakai-2.7.x
 rwiki https://source.sakaiproject.org/svn/rwiki/branches/sakai-2.7.x
-samples https://source.sakaiproject.org/svn/samples/branches/sakai-2.7.x
 sections https://source.sakaiproject.org/svn/sections/branches/sakai-2.7.x
 site https://source.sakaiproject.org/svn/site/branches/sakai-2.7.x
 site-manage https://source.sakaiproject.org/svn/site-manage/branches/sakai-2.7.x
