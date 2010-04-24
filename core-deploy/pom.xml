@@ -25,6 +25,7 @@
             </activation>
             <properties>
                 <clean.targets>
+	                components/archive-pack;
                     components/basiclti-pack;
                     components/emailtemplateservice-pack;
                     components/coursemanagement-hibernate-pack;
@@ -127,7 +128,8 @@
         <profile>
             <id>cafe</id>
             <properties>
-                <clean.targets>components/archive-pack;
+                <clean.targets>
+	                components/archive-pack;
                     components/emailtemplateservice-pack;
                     components/scheduler-component
                 </clean.targets>
