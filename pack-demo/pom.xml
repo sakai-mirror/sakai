@@ -191,6 +191,12 @@
 									
 								<copy file="${basedir}/../reference/demo/start-sakai.sh"
 									tofile="${basedir}/target/pack/start-sakai.sh" />
+                                    
+                               <copy file="${basedir}/../reference/demo/start-sakai-java6.bat"
+                                    tofile="${basedir}/target/pack/start-sakai-java6.bat" />
+                                    
+                                <copy file="${basedir}/../reference/demo/start-sakai-java6.sh"
+                                    tofile="${basedir}/target/pack/start-sakai-java6.sh" />     
 									
 								<copy file="${basedir}/../reference/demo/stop-sakai.bat"
 									tofile="${basedir}/target/pack/stop-sakai.bat" />
