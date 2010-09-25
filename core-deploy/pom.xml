@@ -100,6 +100,7 @@
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
+                <!--
                 <dependency>
                     <groupId>org.sakaiproject.hybrid</groupId>
                     <artifactId>hybrid-assembly</artifactId>
@@ -107,6 +108,7 @@
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
+                -->
                 <dependency>
                     <groupId>org.sakaiproject.jsf</groupId>
                     <artifactId>jsf-assembly</artifactId>
