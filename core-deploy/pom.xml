@@ -101,13 +101,6 @@
                     <type>zip</type>
                 </dependency>
                 <dependency>
-                    <groupId>org.sakaiproject.hybrid</groupId>
-                    <artifactId>hybrid-assembly</artifactId>
-                    <version>${sakai.hybrid.version}</version>
-                    <classifier>tomcat-overlay</classifier>
-                    <type>zip</type>
-                </dependency>
-                <dependency>
                     <groupId>org.sakaiproject.jsf</groupId>
                     <artifactId>jsf-assembly</artifactId>
                     <version>${sakai.jsf.version}</version>
