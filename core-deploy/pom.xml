@@ -60,6 +60,7 @@
                     components/scheduler-component;
                     components/search-pack;
                     components/sections-pack;
+                    components/shortenedurl-pack;
                     components/sitestats-component
                 </clean.targets>
                 <deploy.target>tomcat-overlay</deploy.target>
@@ -160,6 +161,13 @@
                     <groupId>org.sakaiproject.search</groupId>
                     <artifactId>search-assembly</artifactId>
                     <version>${sakai.search.version}</version>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+                <dependency>
+                    <groupId>org.sakaiproject.shortenedurl</groupId>
+                    <artifactId>shortenedurl-assembly</artifactId>
+                    <version>${sakai.shortenedurl.version}</version>
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
