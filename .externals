@@ -20,6 +20,7 @@ master https://source.sakaiproject.org/svn/master/branches/sakai-2.8.x
 memory https://source.sakaiproject.org/svn/memory/branches/sakai-2.8.x
 message https://source.sakaiproject.org/svn/message/branches/sakai-2.8.x
 metaobj https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.8.x
+pack https://source.sakaiproject.org/svn/pack/branches/pack-2.8.x/
 osp https://source.sakaiproject.org/svn/osp/branches/sakai-2.8.x
 podcasts https://source.sakaiproject.org/svn/podcasts/branches/sakai-2.8.x
 portal https://source.sakaiproject.org/svn/portal/branches/sakai-2.8.x
