@@ -19,25 +19,6 @@
     </organization>
     <profiles>
         <profile>
-            <id>jsmath</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <clean.targets>webapps/library/jsMath</clean.targets>
-                <deploy.target>tomcat-overlay</deploy.target>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.sakaiproject.jsmath</groupId>
-                    <artifactId>jsMath</artifactId>
-                    <version>3.6c-SNAPSHOT</version>
-                    <classifier>tomcat-overlay</classifier>
-                    <type>zip</type>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
             <id>full</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
