@@ -237,7 +237,7 @@
                 <module>help/help-tool</module>
                 <!-- <module>jsf/jsf-widgets</module> -->
                 <module>metaobj/metaobj-util/tool-lib</module>
-                <module>msgcntr/messageforums-app</module>
+                <!-- <module>msgcntr/messageforums-app</module> -->
                 <module>osp/common/tool-lib</module>
                 <module>osp/glossary/tool-lib</module>
                 <module>osp/jsf/widgets</module>
