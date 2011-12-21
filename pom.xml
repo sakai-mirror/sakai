@@ -212,6 +212,7 @@
                 <module>authz</module>
                 <module>config</module>
                 <module>content/content-bundles</module>
+                <module>content/content-copyright/api</module>
                 <module>content/content-help</module>
                 <module>content/content-tool/tool</module>
                 <module>courier</module>
@@ -225,6 +226,7 @@
                 <module>reference</module>
                 <module>site</module>
                 <module>site-manage</module>
+                <module>textarea/FCKeditor/connector</module>
                 <module>tool</module>
                 <module>user/user-tool/tool</module>
                 <module>velocity</module>
