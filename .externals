@@ -1,62 +1,35 @@
-access -r67919 https://source.sakaiproject.org/svn/access/trunk
-alias -r67919 https://source.sakaiproject.org/svn/alias/trunk
-announcement -r67919 https://source.sakaiproject.org/svn/announcement/trunk
-archive -r67919 https://source.sakaiproject.org/svn/archive/trunk
-assignment -r67919 https://source.sakaiproject.org/svn/assignment/trunk
-authz -r67919 https://source.sakaiproject.org/svn/authz/trunk
-blog -r67919 https://source.sakaiproject.org/svn/blog/trunk
-calendar -r67919 https://source.sakaiproject.org/svn/calendar/trunk
-chat -r67919 https://source.sakaiproject.org/svn/chat/trunk
-citations -r67919 https://source.sakaiproject.org/svn/citations/trunk
-config -r67919 https://source.sakaiproject.org/svn/config/trunk
-content -r67919 https://source.sakaiproject.org/svn/content/trunk
-content-review -r67919 https://source.sakaiproject.org/svn/content-review/trunk
-courier -r67919 https://source.sakaiproject.org/svn/courier/trunk
-course-management -r67919 https://source.sakaiproject.org/svn/course-management/trunk
-dav -r67919 https://source.sakaiproject.org/svn/dav/trunk
-emailtemplateservice -r67919 https://source.sakaiproject.org/svn/emailtemplateservice/trunk
-gradebook -r67919 https://source.sakaiproject.org/svn/gradebook/trunk
-help -r67919 https://source.sakaiproject.org/svn/help/trunk
-jobscheduler -r67919 https://source.sakaiproject.org/svn/jobscheduler/trunk
-jsf -r67919 https://source.sakaiproject.org/svn/jsf/trunk
-linktool -r67919 https://source.sakaiproject.org/svn/linktool/trunk
-login -r67919 https://source.sakaiproject.org/svn/login/trunk
-mailarchive -r67919 https://source.sakaiproject.org/svn/mailarchive/trunk
-mailtool -r67919 https://source.sakaiproject.org/svn/mailtool/trunk
-master -r67919 https://source.sakaiproject.org/svn/master/trunk
-memory -r67919 https://source.sakaiproject.org/svn/memory/trunk
-message -r67919 https://source.sakaiproject.org/svn/message/trunk
-metaobj -r67919 https://source.sakaiproject.org/svn/metaobj/trunk
-msgcntr -r67919 https://source.sakaiproject.org/svn/msgcntr/trunk
-osp -r67919 https://source.sakaiproject.org/svn/osp/trunk
-podcasts -r67919 https://source.sakaiproject.org/svn/podcasts/trunk
-polls -r67919 https://source.sakaiproject.org/svn/polls/trunk
-portal -r67919 https://source.sakaiproject.org/svn/portal/trunk
-postem -r67919 https://source.sakaiproject.org/svn/postem/trunk
-presence -r67919 https://source.sakaiproject.org/svn/presence/trunk
-presentation -r67919 https://source.sakaiproject.org/svn/presentation/trunk
-profile -r67919 https://source.sakaiproject.org/svn/profile/trunk
-providers -r67919 https://source.sakaiproject.org/svn/providers/trunk
-reference -r67919 https://source.sakaiproject.org/svn/reference/trunk
-reports -r67919 https://source.sakaiproject.org/svn/reports/trunk
-reset-pass -r67919 https://source.sakaiproject.org/svn/reset-pass/trunk
-rights -r67919 https://source.sakaiproject.org/svn/rights/trunk
-roster -r67919 https://source.sakaiproject.org/svn/roster/trunk
-rwiki -r67919 https://source.sakaiproject.org/svn/rwiki/trunk
-sakai-mock -r67919 https://source.sakaiproject.org/svn/sakai-mock/trunk
-sam -r67919 https://source.sakaiproject.org/svn/sam/trunk
-samples -r67919 https://source.sakaiproject.org/svn/samples/trunk
-sections -r67919 https://source.sakaiproject.org/svn/sections/trunk
-site -r67919 https://source.sakaiproject.org/svn/site/trunk
-site-manage -r67919 https://source.sakaiproject.org/svn/site-manage/trunk
-syllabus -r67919 https://source.sakaiproject.org/svn/syllabus/trunk
-taggable -r67919 https://source.sakaiproject.org/svn/taggable/trunk
-textarea -r67919 https://source.sakaiproject.org/svn/textarea/trunk
-tool -r67919 https://source.sakaiproject.org/svn/tool/trunk
-user -r67919 https://source.sakaiproject.org/svn/user/trunk
-usermembership -r67919 https://source.sakaiproject.org/svn/usermembership/trunk
-velocity -r67919 https://source.sakaiproject.org/svn/velocity/trunk
-warehouse -r67919 https://source.sakaiproject.org/svn/warehouse/trunk
-was -r67919 https://source.sakaiproject.org/svn/was/trunk
-web -r67919 https://source.sakaiproject.org/svn/web/trunk
-webservices -r67919 https://source.sakaiproject.org/svn/webservices/trunk
+# Core Sakai capabilities
+access https://source.sakaiproject.org/svn/access/trunk
+alias https://source.sakaiproject.org/svn/alias/trunk
+archive https://source.sakaiproject.org/svn/archive/trunk
+authz https://source.sakaiproject.org/svn/authz/trunk
+chat https://source.sakaiproject.org/svn/chat/trunk
+citations https://source.sakaiproject.org/svn/citations/trunk
+config https://source.sakaiproject.org/svn/config/trunk
+content https://source.sakaiproject.org/svn/content/trunk
+dav https://source.sakaiproject.org/svn/dav/trunk
+gradebook https://source.sakaiproject.org/svn/gradebook/trunk
+help https://source.sakaiproject.org/svn/help/trunk
+linktool https://source.sakaiproject.org/svn/linktool/trunk
+login https://source.sakaiproject.org/svn/login/trunk
+master https://source.sakaiproject.org/svn/master/trunk
+memory https://source.sakaiproject.org/svn/memory/trunk
+metaobj https://source.sakaiproject.org/svn/metaobj/trunk
+osp https://source.sakaiproject.org/svn/osp/trunk
+pack https://source.sakaiproject.org/svn/pack/trunk
+podcasts https://source.sakaiproject.org/svn/podcasts/trunk
+postem https://source.sakaiproject.org/svn/postem/trunk
+providers https://source.sakaiproject.org/svn/providers/trunk
+reference https://source.sakaiproject.org/svn/reference/trunk
+rights https://source.sakaiproject.org/svn/rights/trunk
+roster https://source.sakaiproject.org/svn/roster/trunk
+rwiki https://source.sakaiproject.org/svn/rwiki/trunk
+sections https://source.sakaiproject.org/svn/sections/trunk
+site-manage https://source.sakaiproject.org/svn/site-manage/trunk
+syllabus https://source.sakaiproject.org/svn/syllabus/trunk
+textarea https://source.sakaiproject.org/svn/textarea/trunk
+tool https://source.sakaiproject.org/svn/tool/trunk
+user https://source.sakaiproject.org/svn/user/trunk
+usermembership https://source.sakaiproject.org/svn/usermembership/trunk
+warehouse https://source.sakaiproject.org/svn/warehouse/trunk
+web https://source.sakaiproject.org/svn/web/trunk
