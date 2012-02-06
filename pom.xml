@@ -198,6 +198,7 @@
                 <module>warehouse</module>
                 <module>web</module>
                 <module>usermembership</module>
+		<module>dashboard</module>
             </modules>
         </profile>
         <profile>
