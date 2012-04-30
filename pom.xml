@@ -124,6 +124,9 @@
                 <module>velocity</module>
                 <module>warehouse</module>
                 <module>web</module>
+
+		<!-- experimental -->
+		<module>dashboard</module>
             </modules>
         </profile>
         <profile>
