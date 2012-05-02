@@ -127,6 +127,7 @@
 
 		<!-- experimental -->
 		<module>dashboard</module>
+		<module>reports</module>
             </modules>
         </profile>
         <profile>

@@ -28,6 +28,7 @@ sitestats https://source.sakaiproject.org/svn/sitestats/trunk
 #assignment2 https://source.sakaiproject.org/contrib/assignment2/trunk
 dashboard https://source.sakaiproject.org/contrib/dashboard/trunk
 hybrid https://source.sakaiproject.org/svn/hybrid/trunk
+reports https://source.sakaiproject.org/svn/reports/trunk
 #roster2 https://source.sakaiproject.org/contrib/roster2/trunk
 
 # Monolithic Sakai
