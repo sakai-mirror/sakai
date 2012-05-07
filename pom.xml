@@ -126,6 +126,7 @@
                 <module>web</module>
 
 		<!-- experimental -->
+		<module>assignment2</module>
 		<module>dashboard</module>
 		<module>reports</module>
             </modules>
