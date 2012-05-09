@@ -128,6 +128,8 @@
 		<!-- experimental -->
 		<module>assignment2</module>
 		<module>dashboard</module>
+		<module>delegatedaccess</module>
+		<module>hierarchy</module>
 		<module>reports</module>
             </modules>
         </profile>

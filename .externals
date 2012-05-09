@@ -27,6 +27,8 @@ sitestats https://source.sakaiproject.org/svn/sitestats/trunk
 # Indie experimental
 assignment2 https://source.sakaiproject.org/contrib/assignment2/trunk
 dashboard https://source.sakaiproject.org/contrib/dashboard/trunk
+delegatedaccess https://source.sakaiproject.org/contrib/delegatedaccess/trunk
+hierarchy https://source.sakaiproject.org/contrib/caret/hierarchy/trunk
 hybrid https://source.sakaiproject.org/svn/hybrid/trunk
 reports https://source.sakaiproject.org/svn/reports/trunk
 #roster2 https://source.sakaiproject.org/contrib/roster2/trunk
