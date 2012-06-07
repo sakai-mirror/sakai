@@ -131,7 +131,6 @@
                 <module>clogdashboardintegration</module>
 		<module>dashboard</module>
 		<module>delegatedaccess</module>
-		<module>evaluation</module>
 		<module>hierarchy</module>
 		<module>reports</module>
             </modules>
