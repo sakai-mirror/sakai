@@ -3,3 +3,6 @@ Dashboard
 Reports
 Hierarchy
 Delegated Access
+Evaluation
+Clog
+Clog Dashboard Integration
