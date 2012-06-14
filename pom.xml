@@ -134,6 +134,7 @@
                 <module>formbuilder</module>
 		<module>hierarchy</module>
 		<module>reports</module>
+                <module>roster2</module>
             </modules>
         </profile>
         <profile>

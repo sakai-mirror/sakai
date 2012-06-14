@@ -36,6 +36,7 @@ reports https://source.sakaiproject.org/svn/reports/trunk
 clog https://source.sakaiproject.org/contrib/clog/trunk
 clogdashboardintegration https://source.sakaiproject.org/contrib/lancaster.ac.uk/clogdashboardintegration/trunk
 formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
+roster2 https://source.sakaiproject.org/contrib/roster2/trunk/
 
 # Monolithic Sakai
 access https://source.sakaiproject.org/svn/access/trunk
