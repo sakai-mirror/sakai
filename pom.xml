@@ -128,7 +128,7 @@
 		<!-- experimental -->
 		<module>assignment2</module>
                 <module>clog</module>
-                <!--<module>clogdashboardintegration</module>-->
+                <module>clogdashboardintegration</module>
 		<module>dashboard</module>
 		<module>delegatedaccess</module>
                 <module>formbuilder</module>
