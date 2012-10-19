@@ -36,7 +36,6 @@
         <profile>
             <id>pack</id>
             <modules>
-		<module>master</module>
                 <module>pack/pack-src</module>
                 <module>pack/pack-bin</module>
                 <module>pack/pack-demo</module>
@@ -45,21 +44,18 @@
         <profile>
             <id>pack-bin</id>
             <modules>
-	        <module>master</module>
                 <module>pack/pack-bin</module>
             </modules>
         </profile>
         <profile>
             <id>pack-demo</id>
             <modules>
-                <module>master</module>
                 <module>pack/pack-demo</module>
             </modules>
         </profile>
         <profile>
             <id>pack-src</id>
             <modules>
-                <module>master</module>
                 <module>pack/pack-src</module>
             </modules>
         </profile>
@@ -78,7 +74,6 @@
                 <module>courier</module>
                 <module>dav</module>
                 <module>login</module>
-                <module>master</module>
                 <module>memory</module>
                 <module>message/message-api/api</module>
                 <module>portal</module>
@@ -100,7 +95,6 @@
             </activation>
             <modules>
                 <module>kernel-deploy</module>
-                <module>master</module>
                 <module>core-deploy</module>
                 <module>jstl-shared-deploy</module>
                 <module>access</module>
@@ -154,7 +148,6 @@
             <id>experimental</id>
             <modules>
                 <module>kernel-deploy</module>
-                <module>master</module>
                 <module>core-deploy</module>
                 <module>jstl-shared-deploy</module>
                 <module>access</module>
@@ -230,7 +223,6 @@
                 <!-- <module>courier</module> -->
                 <module>help</module>
                 <module>login</module>
-                <module>master</module>
                 <!-- <module>message</module> -->
                 <module>memory</module>
                 <module>portal</module>
