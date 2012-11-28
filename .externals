@@ -47,9 +47,9 @@ webservices https://source.sakaiproject.org/svn/webservices/tags/webservices-1.1
 
 # Indie tools
 basiclti https://source.sakaiproject.org/svn/basiclti/tags/basiclti-2.0.0
-jobscheduler https://source.sakaiproject.org/svn/jobscheduler/tags/jobscheduler-2.9.0
-lessonbuilder https://source.sakaiproject.org/svn/lessonbuilder/tags/lessonbuilder-1.4.0
-mailsender https://source.sakaiproject.org/svn/mailsender/tags/1.7.1
+jobscheduler https://source.sakaiproject.org/svn/jobscheduler/tags/scheduler-2.9.0
+lessonbuilder https://source.sakaiproject.org/svn/lessonbuilder/tags/sakai-lessonbuildertool-tool-base-1.4.0/
+mailsender https://source.sakaiproject.org/svn/mailsender/tags/mailsender-base-1.7.1/
 msgcntr https://source.sakaiproject.org/svn/msgcntr/tags/msgcntr-3.0.0
 polls https://source.sakaiproject.org/svn/polls/tags/polls-1.5.0
 profile https://source.sakaiproject.org/svn/profile/tags/profile-2.9.0
@@ -63,16 +63,11 @@ sitestats https://source.sakaiproject.org/svn/sitestats/tags/sitestats-2.3.0
 announcement https://source.sakaiproject.org/svn/announcement/tags/announcement-2.9.0
 assignment https://source.sakaiproject.org/svn/assignment/tags/assignment-2.9.0
 calendar https://source.sakaiproject.org/svn/calendar/tags/calendar-2.9.0
-courier https://source.sakaiproject.org/svn/courier/tags/courier-2.9.0
+courier https://source.sakaiproject.org/svn/courier/tags/courier-base-2.9.0/
 mailarchive https://source.sakaiproject.org/svn/mailarchive/tags/mailarchive-2.9.0
 message https://source.sakaiproject.org/svn/message/tags/message-2.9.0
-portal https://source.sakaiproject.org/svn/portal/tags/portal-2.9.0
+portal https://source.sakaiproject.org/svn/portal/tags/portal-base-2.9.0/
 presence https://source.sakaiproject.org/svn/presence/tags/presence-2.9.0
 site https://source.sakaiproject.org/svn/site/tags/site-2.9.0
 taggable https://source.sakaiproject.org/svn/taggable/tags/taggable-2.9.0
 velocity https://source.sakaiproject.org/svn/velocity/tags/velocity-2.9.0
-
-
-# Indie experimental
-hybrid https://source.sakaiproject.org/svn/hybrid/tags/hybrid-1.2.0
-
