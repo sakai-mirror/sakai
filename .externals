@@ -48,7 +48,7 @@ webservices https://source.sakaiproject.org/svn/webservices/tags/webservices-1.1
 # Indie tools
 basiclti https://source.sakaiproject.org/svn/basiclti/tags/basiclti-2.0.1
 jobscheduler https://source.sakaiproject.org/svn/jobscheduler/tags/scheduler-2.9.1
-lessonbuilder https://source.sakaiproject.org/svn/lessonbuilder/tags/sakai-lessonbuildertool-2.9.1-recommended
+lessonbuilder https://source.sakaiproject.org/svn/lessonbuilder/tags/lessonbuilder-1.4.1
 mailsender https://source.sakaiproject.org/svn/mailsender/tags/mailsender-1.7.2
 msgcntr https://source.sakaiproject.org/svn/msgcntr/tags/msgcntr-3.0.1
 polls https://source.sakaiproject.org/svn/polls/tags/polls-1.5.1
