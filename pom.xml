@@ -131,7 +131,7 @@
                 <module>clogdashboardintegration</module>
 		<module>dashboard</module>
 		<module>delegatedaccess</module>
-                <!--<module>endorsed</module>-->
+                <module>endorsed</module>
                 <module>formbuilder</module>
 		<module>hierarchy</module>
 		<module>reports</module>
