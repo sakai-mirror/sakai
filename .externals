@@ -1,78 +1,78 @@
 # Core Sakai capabilities
-access-r123988 https://source.sakaiproject.org/svn/access/branches/sakai-2.9.x
-alias-r123988 https://source.sakaiproject.org/svn/alias/branches/sakai-2.9.x
-archive-r123988 https://source.sakaiproject.org/svn/archive/branches/sakai-2.9.x
-authz-r123988 https://source.sakaiproject.org/svn/authz/branches/sakai-2.9.x
-chat-r123988 https://source.sakaiproject.org/svn/chat/branches/sakai-2.9.x
-citations-r123988 https://source.sakaiproject.org/svn/citations/branches/sakai-2.9.x
-config-r123988 https://source.sakaiproject.org/svn/config/branches/sakai-2.9.x
-content-r123988 https://source.sakaiproject.org/svn/content/branches/sakai-2.9.x
-dav-r123988 https://source.sakaiproject.org/svn/dav/branches/sakai-2.9.x
-gradebook-r123988 https://source.sakaiproject.org/svn/gradebook/branches/sakai-2.9.x
-help-r123988 https://source.sakaiproject.org/svn/help/branches/sakai-2.9.x
-linktool-r123988 https://source.sakaiproject.org/svn/linktool/branches/sakai-2.9.x
-login-r123988 https://source.sakaiproject.org/svn/login/branches/sakai-2.9.x
-master-r123988 https://source.sakaiproject.org/svn/master/branches/sakai-2.9.x
-memory-r123988 https://source.sakaiproject.org/svn/memory/branches/sakai-2.9.x
-metaobj-r123988 https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.9.x
-osp-r123988 https://source.sakaiproject.org/svn/osp/branches/sakai-2.9.x
-pack-r123988 https://source.sakaiproject.org/svn/pack/branches/sakai-2.9.x
-podcasts-r123988 https://source.sakaiproject.org/svn/podcasts/branches/sakai-2.9.x
-postem-r123988 https://source.sakaiproject.org/svn/postem/branches/sakai-2.9.x
-providers-r123988 https://source.sakaiproject.org/svn/providers/branches/sakai-2.9.x
-reference-r123988 https://source.sakaiproject.org/svn/reference/branches/sakai-2.9.x
-rights-r123988 https://source.sakaiproject.org/svn/rights/branches/sakai-2.9.x
-roster-r123988 https://source.sakaiproject.org/svn/roster/branches/sakai-2.9.x
-rwiki-r123988 https://source.sakaiproject.org/svn/rwiki/branches/sakai-2.9.x
-sections-r123988 https://source.sakaiproject.org/svn/sections/branches/sakai-2.9.x
-site-manage-r123988 https://source.sakaiproject.org/svn/site-manage/branches/sakai-2.9.x
-syllabus-r123988 https://source.sakaiproject.org/svn/syllabus/branches/sakai-2.9.x
-textarea-r123988 https://source.sakaiproject.org/svn/textarea/branches/sakai-2.9.x
-tool-r123988 https://source.sakaiproject.org/svn/tool/branches/sakai-2.9.x
-user-r123988 https://source.sakaiproject.org/svn/user/branches/sakai-2.9.x
-usermembership-r123988 https://source.sakaiproject.org/svn/usermembership/branches/sakai-2.9.x
-warehouse-r123988 https://source.sakaiproject.org/svn/warehouse/branches/sakai-2.9.x
-web-r123988 https://source.sakaiproject.org/svn/web/branches/sakai-2.9.x
+access -r123989 https://source.sakaiproject.org/svn/access/branches/sakai-2.9.x
+alias -r123989 https://source.sakaiproject.org/svn/alias/branches/sakai-2.9.x
+archive -r123989 https://source.sakaiproject.org/svn/archive/branches/sakai-2.9.x
+authz -r123989 https://source.sakaiproject.org/svn/authz/branches/sakai-2.9.x
+chat -r123989 https://source.sakaiproject.org/svn/chat/branches/sakai-2.9.x
+citations -r123989 https://source.sakaiproject.org/svn/citations/branches/sakai-2.9.x
+config -r123989 https://source.sakaiproject.org/svn/config/branches/sakai-2.9.x
+content -r123989 https://source.sakaiproject.org/svn/content/branches/sakai-2.9.x
+dav -r123989 https://source.sakaiproject.org/svn/dav/branches/sakai-2.9.x
+gradebook -r123989 https://source.sakaiproject.org/svn/gradebook/branches/sakai-2.9.x
+help -r123989 https://source.sakaiproject.org/svn/help/branches/sakai-2.9.x
+linktool -r123989 https://source.sakaiproject.org/svn/linktool/branches/sakai-2.9.x
+login -r123989 https://source.sakaiproject.org/svn/login/branches/sakai-2.9.x
+master -r123989 https://source.sakaiproject.org/svn/master/branches/sakai-2.9.x
+memory -r123989 https://source.sakaiproject.org/svn/memory/branches/sakai-2.9.x
+metaobj -r123989 https://source.sakaiproject.org/svn/metaobj/branches/sakai-2.9.x
+osp -r123989 https://source.sakaiproject.org/svn/osp/branches/sakai-2.9.x
+pack -r123989 https://source.sakaiproject.org/svn/pack/branches/sakai-2.9.x
+podcasts -r123989 https://source.sakaiproject.org/svn/podcasts/branches/sakai-2.9.x
+postem -r123989 https://source.sakaiproject.org/svn/postem/branches/sakai-2.9.x
+providers -r123989 https://source.sakaiproject.org/svn/providers/branches/sakai-2.9.x
+reference -r123989 https://source.sakaiproject.org/svn/reference/branches/sakai-2.9.x
+rights -r123989 https://source.sakaiproject.org/svn/rights/branches/sakai-2.9.x
+roster -r123989 https://source.sakaiproject.org/svn/roster/branches/sakai-2.9.x
+rwiki -r123989 https://source.sakaiproject.org/svn/rwiki/branches/sakai-2.9.x
+sections -r123989 https://source.sakaiproject.org/svn/sections/branches/sakai-2.9.x
+site-manage -r123989 https://source.sakaiproject.org/svn/site-manage/branches/sakai-2.9.x
+syllabus -r123989 https://source.sakaiproject.org/svn/syllabus/branches/sakai-2.9.x
+textarea -r123989 https://source.sakaiproject.org/svn/textarea/branches/sakai-2.9.x
+tool -r123989 https://source.sakaiproject.org/svn/tool/branches/sakai-2.9.x
+user -r123989 https://source.sakaiproject.org/svn/user/branches/sakai-2.9.x
+usermembership -r123989 https://source.sakaiproject.org/svn/usermembership/branches/sakai-2.9.x
+warehouse -r123989 https://source.sakaiproject.org/svn/warehouse/branches/sakai-2.9.x
+web -r123989 https://source.sakaiproject.org/svn/web/branches/sakai-2.9.x
 
 # Indie services
-kernel-r123988 https://source.sakaiproject.org/svn/kernel/branches/kernel-1.3.x
-common-r123988 https://source.sakaiproject.org/svn/common/branches/common-1.2.x
-content-review-r123988 https://source.sakaiproject.org/svn/content-review/branches/contentreview-2.9.x
-edu-services-r123988 https://source.sakaiproject.org/svn/edu-services/branches/edu-services-1.2.x
-emailtemplateservice-r123988 https://source.sakaiproject.org/svn/emailtemplateservice/branches/emailtemplateservice-0.6.x
-entitybroker-r123988 https://source.sakaiproject.org/svn/entitybroker/branches/entitybroker-1.5.x
-jsf-r123988 https://source.sakaiproject.org/svn/jsf/branches/jsf-2.9.x
-sakai-mock-r123988 https://source.sakaiproject.org/svn/sakai-mock/branches/sakai-mock-2.9.x
-webservices-r123988 https://source.sakaiproject.org/svn/webservices/branches/webservices-1.1.x
+kernel -r123989 https://source.sakaiproject.org/svn/kernel/branches/kernel-1.3.x
+common -r123989 https://source.sakaiproject.org/svn/common/branches/common-1.2.x
+content-review -r123989 https://source.sakaiproject.org/svn/content-review/branches/contentreview-2.9.x
+edu-services -r123989 https://source.sakaiproject.org/svn/edu-services/branches/edu-services-1.2.x
+emailtemplateservice -r123989 https://source.sakaiproject.org/svn/emailtemplateservice/branches/emailtemplateservice-0.6.x
+entitybroker -r123989 https://source.sakaiproject.org/svn/entitybroker/branches/entitybroker-1.5.x
+jsf -r123989 https://source.sakaiproject.org/svn/jsf/branches/jsf-2.9.x
+sakai-mock -r123989 https://source.sakaiproject.org/svn/sakai-mock/branches/sakai-mock-2.9.x
+webservices -r123989 https://source.sakaiproject.org/svn/webservices/branches/webservices-1.1.x
 
 # Indie tools
-basiclti-r123988 https://source.sakaiproject.org/svn/basiclti/branches/basiclti-2.1.x
-jobscheduler-r123988 https://source.sakaiproject.org/svn/jobscheduler/branches/jobscheduler-2.9.x
-lessonbuilder-r123988 https://source.sakaiproject.org/svn/lessonbuilder/branches/lessonbuilder-1.4.x
-mailsender-r123988 https://source.sakaiproject.org/svn/mailsender/branches/1.7
-msgcntr-r123988 https://source.sakaiproject.org/svn/msgcntr/branches/msgcntr-3.0.x
-polls-r123988 https://source.sakaiproject.org/svn/polls/branches/polls-1.5.x
-profile-r123988 https://source.sakaiproject.org/svn/profile/branches/profile-2.9.x
-profile2-r123988 https://source.sakaiproject.org/svn/profile2/branches/profile2-1.5.x
-reset-pass-r123988 https://source.sakaiproject.org/svn/reset-pass/branches/reset-pass-2.9.x
-samigo-r123988 https://source.sakaiproject.org/svn/sam/branches/samigo-2.9.x
-search-r123988 https://source.sakaiproject.org/svn/search/branches/search-1.4.x
-shortenedurl-r123988 https://source.sakaiproject.org/svn/shortenedurl/branches/shortenedurl-1.1.x
-sitestats-r123988 https://source.sakaiproject.org/svn/sitestats/branches/sitestats-2.3.x
+basiclti -r123989 https://source.sakaiproject.org/svn/basiclti/branches/basiclti-2.1.x
+jobscheduler -r123989 https://source.sakaiproject.org/svn/jobscheduler/branches/jobscheduler-2.9.x
+lessonbuilder -r123989 https://source.sakaiproject.org/svn/lessonbuilder/branches/lessonbuilder-1.4.x
+mailsender -r123989 https://source.sakaiproject.org/svn/mailsender/branches/1.7
+msgcntr -r123989 https://source.sakaiproject.org/svn/msgcntr/branches/msgcntr-3.0.x
+polls -r123989 https://source.sakaiproject.org/svn/polls/branches/polls-1.5.x
+profile -r123989 https://source.sakaiproject.org/svn/profile/branches/profile-2.9.x
+profile2 -r123989 https://source.sakaiproject.org/svn/profile2/branches/profile2-1.5.x
+reset-pass -r123989 https://source.sakaiproject.org/svn/reset-pass/branches/reset-pass-2.9.x
+samigo -r123989 https://source.sakaiproject.org/svn/sam/branches/samigo-2.9.x
+search -r123989 https://source.sakaiproject.org/svn/search/branches/search-1.4.x
+shortenedurl -r123989 https://source.sakaiproject.org/svn/shortenedurl/branches/shortenedurl-1.1.x
+sitestats -r123989 https://source.sakaiproject.org/svn/sitestats/branches/sitestats-2.3.x
 
-announcement-r123988 https://source.sakaiproject.org/svn/announcement/branches/announcement-2.9.x
-assignment-r123988 https://source.sakaiproject.org/svn/assignment/branches/assignment-2.9.x
-calendar-r123988 https://source.sakaiproject.org/svn/calendar/branches/calendar-2.9.x
-courier-r123988 https://source.sakaiproject.org/svn/courier/branches/courier-2.9.x
-mailarchive-r123988 https://source.sakaiproject.org/svn/mailarchive/branches/mailarchive-2.9.x
-message-r123988 https://source.sakaiproject.org/svn/message/branches/message-2.9.x
-portal-r123988 https://source.sakaiproject.org/svn/portal/branches/portal-2.9.x
-presence-r123988 https://source.sakaiproject.org/svn/presence/branches/presence-2.9.x
-site-r123988 https://source.sakaiproject.org/svn/site/branches/site-2.9.x
-taggable-r123988 https://source.sakaiproject.org/svn/taggable/branches/taggable-2.9.x
-velocity-r123988 https://source.sakaiproject.org/svn/velocity/branches/velocity-2.9.x
+announcement -r123989 https://source.sakaiproject.org/svn/announcement/branches/announcement-2.9.x
+assignment -r123989 https://source.sakaiproject.org/svn/assignment/branches/assignment-2.9.x
+calendar -r123989 https://source.sakaiproject.org/svn/calendar/branches/calendar-2.9.x
+courier -r123989 https://source.sakaiproject.org/svn/courier/branches/courier-2.9.x
+mailarchive -r123989 https://source.sakaiproject.org/svn/mailarchive/branches/mailarchive-2.9.x
+message -r123989 https://source.sakaiproject.org/svn/message/branches/message-2.9.x
+portal -r123989 https://source.sakaiproject.org/svn/portal/branches/portal-2.9.x
+presence -r123989 https://source.sakaiproject.org/svn/presence/branches/presence-2.9.x
+site -r123989 https://source.sakaiproject.org/svn/site/branches/site-2.9.x
+taggable -r123989 https://source.sakaiproject.org/svn/taggable/branches/taggable-2.9.x
+velocity -r123989 https://source.sakaiproject.org/svn/velocity/branches/velocity-2.9.x
 
 
 # Indie experimental
-hybrid-r123988 https://source.sakaiproject.org/svn/hybrid/branches/hybrid-1.2.x
+hybrid -r123989 https://source.sakaiproject.org/svn/hybrid/branches/hybrid-1.2.x
 
