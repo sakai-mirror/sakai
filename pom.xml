@@ -64,7 +64,8 @@
                 <!-- Indie tools -->
                 <module>basiclti</module>
                 <module>jobscheduler</module>
-                <module>lessonbuilder</module>
+                <!-- commenting out to build manually in server script to enable the contrib profile -->
+                <!-- <module>lessonbuilder</module>-->
                 <module>mailsender</module>
                 <module>msgcntr</module>
                 <module>polls</module>
