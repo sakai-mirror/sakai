@@ -563,6 +563,8 @@
                     components/emailtemplateservice-pack;
                     components/sakai-announcement-pack;
                     components/sakai-courier-pack;
+                    components/sakai-portal-render-pack;
+                	components/sakai-portal-service-pack;
                     components/sakai-presence-pack;
                     components/scheduler-component
                 </clean.targets>
@@ -578,7 +580,7 @@
                 </dependency>
                 <dependency>
                     <groupId>org.sakaiproject.common</groupId>
-                    <artifactId>archive-assembly</artifactId>
+                    <artifactId>sakai-common-assembly</artifactId>
                     <classifier>tomcat-overlay</classifier>
                     <version>${sakai.common.version}</version>
                     <type>zip</type>
@@ -615,6 +617,13 @@
                     <groupId>org.sakaiproject.message</groupId>
                     <artifactId>sakai-message-assembly</artifactId>
                     <version>${sakai.message.version}</version>
+                    <classifier>tomcat-overlay</classifier>
+                    <type>zip</type>
+                </dependency>
+				<dependency>
+                    <groupId>org.sakaiproject.portal</groupId>
+                    <artifactId>sakai-portal-assembly</artifactId>
+                    <version>${sakai.portal.version}</version>
                     <classifier>tomcat-overlay</classifier>
                     <type>zip</type>
                 </dependency>
