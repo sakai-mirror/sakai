@@ -1,4 +1,4 @@
-Assignment2
+Assignment2 (w/ Lessons integration)
 Dashboard
 Reports
 Hierarchy
@@ -9,3 +9,4 @@ Clog Dashboard Integration
 FormBuilder
 Roster2
 Endorsed
+Signup

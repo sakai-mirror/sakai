@@ -137,6 +137,7 @@
 		<module>hierarchy</module>
 		<module>reports</module>
                 <module>roster2</module>
+                <module>signup</module>
             </modules>
         </profile>
         <profile>
