@@ -127,15 +127,21 @@
                 <module>web</module>
 
 		<!-- experimental -->
+		<!--
 		<module>assignment2</module>
+-->
                 <module>clog</module>
                 <module>clogdashboardintegration</module>
 		<module>dashboard</module>
 		<module>delegatedaccess</module>
                 <module>endorsed</module>
+				<!--
                 <module>formbuilder</module>
+-->
 		<module>hierarchy</module>
+		<!--
 		<module>reports</module>
+-->
                 <module>roster2</module>
                 <module>signup</module>
             </modules>
@@ -225,7 +231,9 @@
                 <module>web</module>
                 
                 <!-- Experimental -->
+				<!--
                 <module>hybrid</module>
+-->
                 <!-- <module>roster2</module> -->
             </modules>
         </profile>
