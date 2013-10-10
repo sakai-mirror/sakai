@@ -127,9 +127,7 @@
                 <module>web</module>
 
 		<!-- experimental -->
-		<!--
 		<module>assignment2</module>
--->
                 <module>clog</module>
                 <module>clogdashboardintegration</module>
 		<module>dashboard</module>
