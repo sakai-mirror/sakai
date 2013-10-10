@@ -142,7 +142,8 @@
 		<!--
 		<module>reports</module>
 -->
-                <module>roster2</module>
+<!--
+                <module>roster2</module>-->
                 <module>signup</module>
             </modules>
         </profile>
