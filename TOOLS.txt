@@ -1,12 +1,12 @@
-(Disabled Temporarily) Assignment2 (w/ Lessons integration)
+Assignment2 (w/ Lessons integration)
 Clog
 Clog Dashboard Integration
 Dashboard
 Delegated Access
 Endorsed
 Evaluation
-(Disabled Temporarily) FormBuilder
+FormBuilder
 Hierarchy
-(Disabled Temporarily) Reports
+Reports
 (Disabled Temporarily) Roster2
 Signup
