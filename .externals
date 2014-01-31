@@ -1,5 +1,6 @@
-# Sakai CLE Experimental Externals
+# Sakai CLE Externals
 # Updating: svn propset svn:externals -F .externals .
+
 # Corporate POM
 master https://source.sakaiproject.org/svn/master/trunk
 
@@ -13,6 +14,7 @@ entitybroker https://source.sakaiproject.org/svn/entitybroker/trunk
 jobscheduler https://source.sakaiproject.org/svn/jobscheduler/trunk
 jsf https://source.sakaiproject.org/svn/jsf/trunk
 sakai-mock https://source.sakaiproject.org/svn/sakai-mock/trunk
+userauditservice https://source.sakaiproject.org/svn/userauditservice/trunk
 webservices https://source.sakaiproject.org/svn/webservices/trunk
 
 # Core Sakai Tools
@@ -33,7 +35,6 @@ dav https://source.sakaiproject.org/svn/dav/trunk
 gradebook https://source.sakaiproject.org/svn/gradebook/trunk
 help https://source.sakaiproject.org/svn/help/trunk
 lessonbuilder https://source.sakaiproject.org/svn/lessonbuilder/trunk/
-linktool https://source.sakaiproject.org/svn/linktool/trunk
 login https://source.sakaiproject.org/svn/login/trunk
 mailarchive https://source.sakaiproject.org/svn/mailarchive/trunk
 mailsender https://source.sakaiproject.org/svn/mailsender/trunk
@@ -73,29 +74,22 @@ velocity https://source.sakaiproject.org/svn/velocity/trunk
 warehouse https://source.sakaiproject.org/svn/warehouse/trunk
 web https://source.sakaiproject.org/svn/web/trunk
 
-# Experimental
+# Sakai 10 additions
+roster2 https://source.sakaiproject.org/contrib/roster2/trunk
+hierarchy https://source.sakaiproject.org/contrib/caret/hierarchy/trunk/
+delegatedaccess https://source.sakaiproject.org/contrib/delegatedaccess/trunk/ 
+external-calendaring-service https://source.sakaiproject.org/contrib/external-calendaring-service/trunk/ 
+signup https://source.sakaiproject.org/contrib/signup/trunk/
+
+# Experimental (contrib)
 assignment2 https://source.sakaiproject.org/contrib/assignment2/trunk
-clog https://source.sakaiproject.org/contrib/clog/trunk
 clogdashboardintegration https://source.sakaiproject.org/contrib/lancaster.ac.uk/clogdashboardintegration/trunk
 dashboard https://source.sakaiproject.org/contrib/dashboard/trunk
-delegatedaccess https://source.sakaiproject.org/contrib/delegatedaccess/trunk
 endorsed https://source.sakaiproject.org/contrib/endorsed/trunk
 evaluation https://source.sakaiproject.org/contrib/evaluation/trunk
 formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
-hierarchy https://source.sakaiproject.org/contrib/caret/hierarchy/trunk
 reports https://source.sakaiproject.org/svn/reports/trunk
-roster2 https://source.sakaiproject.org/contrib/roster2/trunk/
-signup https://source.sakaiproject.org/contrib/signup/trunk/
 
-
-# Zeckoski projects
-#genericdao http://genericdao.googlecode.com/svn/trunk/
-#reflectutils http://reflectutils.googlecode.com/svn/trunk/
-
-# Fluid Project Reasonable Server Faces (RSF)
-# rsf-ponderutilcore http://rsf.fluidproject.org/svn/projects/PonderUtilCore/trunk
-# rsf-rsfutil http://rsf.fluidproject.org/svn/projects/RSFUtil/trunk
-# rsf-rsfcomponents http://rsf.fluidproject.org/svn/projects/RSFComponents/trunk
-# rsf-sakairsf http://rsf.fluidproject.org/svn/projects/SakaiRSF/trunk
-# rsf-sakairsfsamples http://rsf.fluidproject.org/svn/projects/SakaiRSFSamples/trunk
-# rsf-servletutil http://rsf.fluidproject.org/svn/projects/ServletUtil/trunk
+# Experimental (Github)
+clog https://github.com/adrianfish/clog/trunk
+yaft https://github.com/adrianfish/yaft/trunk
