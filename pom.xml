@@ -5,7 +5,7 @@
     <parent>
         <artifactId>master</artifactId>
         <groupId>org.sakaiproject</groupId>
-        <version>2.10-SNAPSHOT</version>
+        <version>10.0-SNAPSHOT</version>
         <relativePath>master/pom.xml</relativePath>
     </parent>
 
@@ -35,9 +35,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:https://source.sakaiproject.org/svn/sakai/branches/sakai-trunk-all</connection>
-        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/sakai/branches/sakai-trunk-all</developerConnection>
-        <url>https://source.sakaiproject.org/svn/sakai/branches/sakai-trunk-all</url>
+        <connection>scm:svn:https://source.sakaiproject.org/svn/sakai/trunk</connection>
+        <developerConnection>scm:svn:https://source.sakaiproject.org/svn/sakai/trunk</developerConnection>
+        <url>https://source.sakaiproject.org/svn/sakai/trunk</url>
     </scm>
 
     <profiles>
@@ -59,17 +59,16 @@
                 <module>entitybroker</module>
                 <module>jsf</module>
                 <module>sakai-mock</module>
+                <module>userauditservice</module>
                 <module>webservices</module>
                 
                 <!-- Indie tools -->
                 <module>basiclti</module>
                 <module>jobscheduler</module>
-                <!-- commenting out to build manually in server script to enable the contrib profile -->
-                <!-- <module>lessonbuilder</module>-->
+                <module>lessonbuilder</module>
                 <module>mailsender</module>
                 <module>msgcntr</module>
                 <module>polls</module>
-                <module>profile</module>
                 <module>profile2</module>
                 <module>reset-pass</module>
                 <module>samigo</module>
@@ -95,9 +94,11 @@
                 <module>content</module>
                 <module>courier</module>
                 <module>dav</module>
+                <module>delegatedaccess</module>
+                <module>external-calendaring-service</module>
                 <module>gradebook</module>
                 <module>help</module>
-                <module>linktool</module>
+                <module>hierarchy</module>
                 <module>login</module>
                 <module>mailarchive</module>
                 <module>memory</module>
@@ -110,10 +111,11 @@
                 <module>presence</module>
                 <module>providers</module>
                 <module>reference</module>
+                <module>roster2</module>
                 <module>rights</module>
-                <module>roster</module>
                 <module>rwiki</module>
                 <module>sections</module>
+                <module>signup</module>
                 <module>site</module>
                 <module>site-manage</module>
                 <module>syllabus</module>
@@ -125,20 +127,6 @@
                 <module>velocity</module>
                 <module>warehouse</module>
                 <module>web</module>
-
-		<!-- experimental -->
-		<module>assignment2</module>
-                <module>clog</module>
-                <module>clogdashboardintegration</module>
-		<module>dashboard</module>
-		<module>delegatedaccess</module>
-                <module>endorsed</module>
-                <module>formbuilder</module>
-		<module>hierarchy</module>
-		<module>reports</module>
-<!--
-                <module>roster2</module>-->
-                <module>signup</module>
             </modules>
         </profile>
         <profile>
@@ -146,9 +134,6 @@
             <modules>
                 <!-- TEMP -->
                 <module>deploy</module>
-            
-                <!-- Indie purepoms -->
-                <module>purepoms</module>
             
                 <!-- Indie services -->
                 <module>kernel</module>
@@ -159,6 +144,7 @@
                 <module>entitybroker</module>
                 <module>jsf</module>
                 <module>sakai-mock</module>
+                <module>userauditservice</module>
                 <module>webservices</module>
                 
                 <!-- Indie tools -->
@@ -168,7 +154,6 @@
                 <module>mailsender</module>
                 <module>msgcntr</module>
                 <module>polls</module>
-                <module>profile</module>
                 <module>profile2</module>
                 <module>reset-pass</module>
                 <module>samigo</module>
@@ -186,17 +171,25 @@
                 <module>announcement</module>
                 <module>archive</module>
                 <module>assignment</module>
+                <module>assignment2</module>
                 <module>authz</module>
                 <module>calendar</module>
                 <module>chat</module>
                 <module>citations</module>
+                <module>clog</module>
+                <module>clogdashboardintegration</module>
                 <module>config</module>
                 <module>content</module>
                 <module>courier</module>
+                <module>dashboard</module>
                 <module>dav</module>
+                <module>delegatedaccess</module>
+                <module>endorsed</module>
+                <module>external-calendaring-service</module>
+                <module>formbuilder</module>
                 <module>gradebook</module>
                 <module>help</module>
-                <module>linktool</module>
+                <module>hierarchy</module>
                 <module>login</module>
                 <module>mailarchive</module>
                 <module>memory</module>
@@ -209,10 +202,12 @@
                 <module>presence</module>
                 <module>providers</module>
                 <module>reference</module>
+                <module>reports</module>
                 <module>rights</module>
-                <module>roster</module> <!-- replace with roster2 -->
+                <module>roster2</module>
                 <module>rwiki</module>
                 <module>sections</module>
+                <module>signup</module>
                 <module>site</module>
                 <module>site-manage</module>
                 <module>syllabus</module>
@@ -224,14 +219,41 @@
                 <module>velocity</module>
                 <module>warehouse</module>
                 <module>web</module>
-                
-                <!-- Experimental -->
-				<!--
-                <module>hybrid</module>
--->
-                <!-- <module>roster2</module> -->
             </modules>
         </profile>
+        
+        <!-- pack profiles for building release artifacts -->
+        <profile>
+            <id>pack</id>
+            <modules>
+				<module>master</module>
+                <module>pack/pack-src</module>
+                <module>pack/pack-bin</module>
+                <module>pack/pack-demo</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>pack-bin</id>
+            <modules>
+				<module>master</module>
+                <module>pack/pack-bin</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>pack-demo</id>
+            <modules>
+                <module>master</module>
+                <module>pack/pack-demo</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>pack-src</id>
+            <modules>
+                <module>master</module>
+                <module>pack/pack-src</module>
+            </modules>
+        </profile>
+        
     </profiles>
     <reporting>
         <plugins>
