@@ -83,7 +83,6 @@ signup https://source.sakaiproject.org/contrib/signup/trunk/
 
 # Experimental (contrib)
 assignment2 https://source.sakaiproject.org/contrib/assignment2/trunk
-clogdashboardintegration https://source.sakaiproject.org/contrib/lancaster.ac.uk/clogdashboardintegration/trunk
 dashboard https://source.sakaiproject.org/contrib/dashboard/trunk
 endorsed https://source.sakaiproject.org/contrib/endorsed/trunk
 evaluation https://source.sakaiproject.org/contrib/evaluation/trunk
@@ -92,4 +91,5 @@ reports https://source.sakaiproject.org/svn/reports/trunk
 
 # Experimental (Github)
 clog https://github.com/adrianfish/clog/trunk
+clogdashboardintegration https://github.com/adrianfish/clogdashboardintegration/trunk
 yaft https://github.com/adrianfish/yaft/trunk
