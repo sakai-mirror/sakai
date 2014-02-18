@@ -2,11 +2,8 @@ Assignment2 (w/ Lessons integration)
 Clog
 Clog Dashboard Integration
 Dashboard
-Delegated Access
 Endorsed
 Evaluation
 FormBuilder
-Hierarchy
 Reports
-(Disabled Temporarily) Roster2
-Signup
+Yaft
