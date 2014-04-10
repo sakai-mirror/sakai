@@ -88,7 +88,7 @@ formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
 reports https://source.sakaiproject.org/svn/reports/trunk
 
 # Experimental (Github)
-clog https://github.com/adrianfish/clog/
-clogdashboardintegration https://github.com/adrianfish/clogdashboardintegration/
-yaft https://github.com/adrianfish/yaft/
+clog https://github.com/adrianfish/clog/trunk
+clogdashboardintegration https://github.com/adrianfish/clogdashboardintegration/trunk
+yaft https://github.com/adrianfish/yaft/trunk
 rss https://github.com/steveswinsburg/simple-rss-portlet/branches/sakai-10
