@@ -128,7 +128,7 @@
                 <module>announcement</module>
                 <module>archive</module>
                 <module>assignment</module>
-                <!--<module>assignment2</module>-->
+                <module>assignment2</module>
                 <module>authz</module>
                 <module>basiclti</module>
                 <module>calendar</module>
