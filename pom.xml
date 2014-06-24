@@ -236,7 +236,106 @@
                 <module>pack/pack-src</module>
             </modules>
         </profile>
-        
+
+		<profile>
+			<id>sakai-provided</id>
+			<modules>
+				<module>master</module>
+				<module>jsf</module>
+				<module>velocity</module>
+				<module>reset-pass/account-validator-api</module>
+				<module>announcement/announcement-api/api</module>
+				<module>assignment/assignment-api/api</module>
+				<module>basiclti/basiclti-api</module>
+				<module>external-calendaring-service/api</module>
+				<module>calendar/calendar-api/api</module>
+				<module>calendar/calendar-hbm</module>
+				<module>common/archive-api</module>
+				<module>common/impl</module>
+				<module>common/edu-person-api</module>
+				<module>common/manager-api</module>
+				<module>common/type-api</module>
+				<module>common/privacy-api</module>
+				<module>common/privacy-hbm</module>
+				<module>content/content-copyright/api</module>
+				<module>content-review/content-review-api/model</module>
+				<module>content-review/content-review-api/public</module>
+				<module>courier/courier-api/api</module>
+				<module>delegatedaccess/api</module>
+				<module>edu-services/cm-service/cm-api/api</module>
+				<module>edu-services/gradebook-service/api</module>
+				<module>edu-services/gradebook-service/hibernate</module>
+				<module>edu-services/scoring-service/api</module>
+				<module>edu-services/sections-service/sections-api</module>
+				<module>edu-services/sections-service/sections-impl/sakai/impl</module>
+				<module>edu-services/sections-service/sections-impl/standalone</module>
+				<module>edu-services/sections-service/sections-impl/integration-support</module>
+				<module>edu-services/sections-service/sections-impl/sakai/model</module>
+				<module>emailtemplateservice/api</module>
+				<module>entitybroker/api</module>
+				<module>hierarchy/api</module>
+				<module>kernel/component-manager</module>
+				<module>kernel/api</module>
+				<module>kernel/kernel-util</module>
+				<module>lessonbuilder/api</module>
+				<module>lessonbuilder/hbm</module>
+				<module>login/login-api/api</module>
+				<module>mailarchive/mailarchive-api/api</module>
+				<module>mailsender/api</module>
+				<module>message/message-api/api</module>
+				<module>metaobj/metaobj-api/api</module>
+				<module>msgcntr/messageforums-api</module>
+				<module>msgcntr/messageforums-hbm</module>
+				<!--
+				<module>osp/common/api</module>
+				<module>osp/common/tool-lib</module>
+				<module>osp/glossary/api</module>
+				<module>osp/integration/api</module>
+				<module>osp/matrix/api</module>
+				<module>osp/portal/api</module>
+				<module>osp/presentation/api</module>
+				<module>osp/wizard/api</module>
+				-->
+				<module>polls/api</module>
+				<module>portal/portal-api/api</module>
+				<module>portal/portal-render-api/api</module>
+				<module>presence/presence-api/api</module>
+				<module>profile2/api</module>
+				<module>chat/chat-api/api</module>
+				<module>citations/citations-api/api</module>
+				<module>help/help-component-shared</module>
+				<module>dav/dav-common</module>
+				<module>help/help-api</module>
+				<module>web/news-api/api</module>
+				<module>podcasts/podcasts-api</module>
+				<module>postem/postem-api</module>
+				<module>rights/rights-api/api</module>
+				<module>rwiki/rwiki-api/api</module>
+				<module>syllabus/syllabus-api</module>
+				<module>usermembership/api</module>
+				<module>web/web-api/api</module>
+				<module>samigo/samigo-api</module>
+				<module>samigo/samigo-hibernate</module>
+				<module>samigo/samigo-services</module>
+				<module>jobscheduler/scheduler-api</module>
+				<module>jobscheduler/scheduler-component-shared</module>
+				<module>jobscheduler/scheduler-events-model</module>
+				<module>search/search-api/api</module>
+				<module>shortenedurl/api</module>
+				<module>signup/api</module>
+				<module>site-manage/site-association-api/api</module>
+				<module>site-manage/site-association-hbm/hbm</module>
+				<module>site-manage/site-manage-api/api</module>
+				<module>site-manage/site-manage-hbm</module>
+				<module>sitestats/sitestats-api</module>
+				<module>sitestats/sitestats-impl-hib</module>
+				<module>taggable/taggable-api/api</module>
+				<module>taggable/taggable-hbm/hbm</module>
+				<module>userauditservice/api</module>
+				<module>warehouse/warehouse-api/api</module>
+			</modules>
+		</profile>
+
     </profiles>
     <reporting>
         <plugins>
