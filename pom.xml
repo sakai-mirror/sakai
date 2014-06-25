@@ -299,6 +299,8 @@
 				<module>polls/api</module>
 				<module>portal/portal-api/api</module>
 				<module>portal/portal-render-api/api</module>
+				<!--LSNBLDR-391-->
+				<module>portal/portal-util/util</module>
 				<module>presence/presence-api/api</module>
 				<module>profile2/api</module>
 				<module>chat/chat-api/api</module>
