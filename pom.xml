@@ -128,7 +128,9 @@
                 <module>announcement</module>
                 <module>archive</module>
                 <module>assignment</module>
+                <!-- Because of SAK-26601 A2 is not compiling with trunk - 2014-07-09
                 <module>assignment2</module>
+                -->
                 <module>authz</module>
                 <module>basiclti</module>
                 <module>calendar</module>
