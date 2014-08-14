@@ -1,77 +1,77 @@
 # Sakai CLE Externals
 # Updating: svn propset svn:externals -F .externals .
 # Corporate POM
-master https://source.sakaiproject.org/svn/master/branches/sakai-10.x
+master -r311955 https://source.sakaiproject.org/svn/master/branches/sakai-10.x
 
 # Core services
-kernel https://source.sakaiproject.org/svn/kernel/branches/sakai-10.x
-common https://source.sakaiproject.org/svn/common/branches/sakai-10.x
-content-review https://source.sakaiproject.org/svn/content-review/branches/sakai-10.x
-delegatedaccess https://source.sakaiproject.org/svn/delegatedaccess/branches/sakai-10.x/
-edu-services https://source.sakaiproject.org/svn/edu-services/branches/sakai-10.x
-emailtemplateservice https://source.sakaiproject.org/svn/emailtemplateservice/branches/sakai-10.x
-entitybroker https://source.sakaiproject.org/svn/entitybroker/branches/sakai-10.x
-external-calendaring-service https://source.sakaiproject.org/svn/external-calendaring-service/branches/sakai-10.x/ 
-hierarchy https://source.sakaiproject.org/svn/hierarchy/branches/sakai-10.x/
-jobscheduler https://source.sakaiproject.org/svn/jobscheduler/branches/sakai-10.x
-jsf https://source.sakaiproject.org/svn/jsf/branches/sakai-10.x
-sakai-mock https://source.sakaiproject.org/svn/sakai-mock/branches/sakai-10.x
-userauditservice https://source.sakaiproject.org/svn/userauditservice/branches/sakai-10.x
-webservices https://source.sakaiproject.org/svn/webservices/branches/sakai-10.x
+kernel -r311955 https://source.sakaiproject.org/svn/kernel/branches/sakai-10.x
+common -r311955 https://source.sakaiproject.org/svn/common/branches/sakai-10.x
+content-review -r311955 https://source.sakaiproject.org/svn/content-review/branches/sakai-10.x
+delegatedaccess -r311955 https://source.sakaiproject.org/svn/delegatedaccess/branches/sakai-10.x/
+edu-services -r311955 https://source.sakaiproject.org/svn/edu-services/branches/sakai-10.x
+emailtemplateservice -r311955 https://source.sakaiproject.org/svn/emailtemplateservice/branches/sakai-10.x
+entitybroker -r311955 https://source.sakaiproject.org/svn/entitybroker/branches/sakai-10.x
+external-calendaring-service -r311955 https://source.sakaiproject.org/svn/external-calendaring-service/branches/sakai-10.x/ 
+hierarchy -r311955 https://source.sakaiproject.org/svn/hierarchy/branches/sakai-10.x/
+jobscheduler -r311955 https://source.sakaiproject.org/svn/jobscheduler/branches/sakai-10.x
+jsf -r311955 https://source.sakaiproject.org/svn/jsf/branches/sakai-10.x
+sakai-mock -r311955 https://source.sakaiproject.org/svn/sakai-mock/branches/sakai-10.x
+userauditservice -r311955 https://source.sakaiproject.org/svn/userauditservice/branches/sakai-10.x
+webservices -r311955 https://source.sakaiproject.org/svn/webservices/branches/sakai-10.x
 
 # Core Sakai Tools
-access https://source.sakaiproject.org/svn/access/branches/sakai-10.x
-alias https://source.sakaiproject.org/svn/alias/branches/sakai-10.x
-announcement https://source.sakaiproject.org/svn/announcement/branches/sakai-10.x
-archive https://source.sakaiproject.org/svn/archive/branches/sakai-10.x
-assignment https://source.sakaiproject.org/svn/assignment/branches/sakai-10.x
-authz https://source.sakaiproject.org/svn/authz/branches/sakai-10.x
-basiclti https://source.sakaiproject.org/svn/basiclti/branches/sakai-10.x
-calendar https://source.sakaiproject.org/svn/calendar/branches/sakai-10.x
-chat https://source.sakaiproject.org/svn/chat/branches/sakai-10.x
-citations https://source.sakaiproject.org/svn/citations/branches/sakai-10.x
-config https://source.sakaiproject.org/svn/config/branches/sakai-10.x
-content https://source.sakaiproject.org/svn/content/branches/sakai-10.x
-courier https://source.sakaiproject.org/svn/courier/branches/sakai-10.x
-dav https://source.sakaiproject.org/svn/dav/branches/sakai-10.x
-gradebook https://source.sakaiproject.org/svn/gradebook/branches/sakai-10.x
-help https://source.sakaiproject.org/svn/help/branches/sakai-10.x
-lessonbuilder https://source.sakaiproject.org/svn/lessonbuilder/branches/sakai-10.x/
-login https://source.sakaiproject.org/svn/login/branches/sakai-10.x
-mailarchive https://source.sakaiproject.org/svn/mailarchive/branches/sakai-10.x
-mailsender https://source.sakaiproject.org/svn/mailsender/branches/sakai-10.x
-memory https://source.sakaiproject.org/svn/memory/branches/sakai-10.x
-message https://source.sakaiproject.org/svn/message/branches/sakai-10.x
-metaobj https://source.sakaiproject.org/svn/metaobj/branches/sakai-10.x
-msgcntr https://source.sakaiproject.org/svn/msgcntr/branches/sakai-10.x
-osp https://source.sakaiproject.org/svn/osp/branches/sakai-10.x
-pack https://source.sakaiproject.org/svn/pack/branches/sakai-10.x
-podcasts https://source.sakaiproject.org/svn/podcasts/branches/sakai-10.x
-polls https://source.sakaiproject.org/svn/polls/branches/sakai-10.x
-portal https://source.sakaiproject.org/svn/portal/branches/sakai-10.x
-postem https://source.sakaiproject.org/svn/postem/branches/sakai-10.x
-presence https://source.sakaiproject.org/svn/presence/branches/sakai-10.x
-profile2 https://source.sakaiproject.org/svn/profile2/branches/sakai-10.x
-providers https://source.sakaiproject.org/svn/providers/branches/sakai-10.x
-reference https://source.sakaiproject.org/svn/reference/branches/sakai-10.x
-reset-pass https://source.sakaiproject.org/svn/reset-pass/branches/sakai-10.x
-rights https://source.sakaiproject.org/svn/rights/branches/sakai-10.x
-roster2 https://source.sakaiproject.org/svn/roster2/branches/sakai-10.x
-rwiki https://source.sakaiproject.org/svn/rwiki/branches/sakai-10.x
-samigo https://source.sakaiproject.org/svn/sam/branches/sakai-10.x
-search https://source.sakaiproject.org/svn/search/branches/sakai-10.x
-sections https://source.sakaiproject.org/svn/sections/branches/sakai-10.x
-shortenedurl https://source.sakaiproject.org/svn/shortenedurl/branches/sakai-10.x
-signup https://source.sakaiproject.org/svn/signup/branches/sakai-10.x/
-site https://source.sakaiproject.org/svn/site/branches/sakai-10.x
-site-manage https://source.sakaiproject.org/svn/site-manage/branches/sakai-10.x
-sitestats https://source.sakaiproject.org/svn/sitestats/branches/sakai-10.x
-syllabus https://source.sakaiproject.org/svn/syllabus/branches/sakai-10.x
-taggable https://source.sakaiproject.org/svn/taggable/branches/sakai-10.x
-textarea https://source.sakaiproject.org/svn/textarea/branches/sakai-10.x
-tool https://source.sakaiproject.org/svn/tool/branches/sakai-10.x
-user https://source.sakaiproject.org/svn/user/branches/sakai-10.x
-usermembership https://source.sakaiproject.org/svn/usermembership/branches/sakai-10.x
-velocity https://source.sakaiproject.org/svn/velocity/branches/sakai-10.x
-warehouse https://source.sakaiproject.org/svn/warehouse/branches/sakai-10.x
-web https://source.sakaiproject.org/svn/web/branches/sakai-10.x
+access -r311955 https://source.sakaiproject.org/svn/access/branches/sakai-10.x
+alias -r311955 https://source.sakaiproject.org/svn/alias/branches/sakai-10.x
+announcement -r311955 https://source.sakaiproject.org/svn/announcement/branches/sakai-10.x
+archive -r311955 https://source.sakaiproject.org/svn/archive/branches/sakai-10.x
+assignment -r311955 https://source.sakaiproject.org/svn/assignment/branches/sakai-10.x
+authz -r311955 https://source.sakaiproject.org/svn/authz/branches/sakai-10.x
+basiclti -r311955 https://source.sakaiproject.org/svn/basiclti/branches/sakai-10.x
+calendar -r311955 https://source.sakaiproject.org/svn/calendar/branches/sakai-10.x
+chat -r311955 https://source.sakaiproject.org/svn/chat/branches/sakai-10.x
+citations -r311955 https://source.sakaiproject.org/svn/citations/branches/sakai-10.x
+config -r311955 https://source.sakaiproject.org/svn/config/branches/sakai-10.x
+content -r311955 https://source.sakaiproject.org/svn/content/branches/sakai-10.x
+courier -r311955 https://source.sakaiproject.org/svn/courier/branches/sakai-10.x
+dav -r311955 https://source.sakaiproject.org/svn/dav/branches/sakai-10.x
+gradebook -r311955 https://source.sakaiproject.org/svn/gradebook/branches/sakai-10.x
+help -r311955 https://source.sakaiproject.org/svn/help/branches/sakai-10.x
+lessonbuilder -r311955 https://source.sakaiproject.org/svn/lessonbuilder/branches/sakai-10.x/
+login -r311955 https://source.sakaiproject.org/svn/login/branches/sakai-10.x
+mailarchive -r311955 https://source.sakaiproject.org/svn/mailarchive/branches/sakai-10.x
+mailsender -r311955 https://source.sakaiproject.org/svn/mailsender/branches/sakai-10.x
+memory -r311955 https://source.sakaiproject.org/svn/memory/branches/sakai-10.x
+message -r311955 https://source.sakaiproject.org/svn/message/branches/sakai-10.x
+metaobj -r311955 https://source.sakaiproject.org/svn/metaobj/branches/sakai-10.x
+msgcntr -r311955 https://source.sakaiproject.org/svn/msgcntr/branches/sakai-10.x
+osp -r311955 https://source.sakaiproject.org/svn/osp/branches/sakai-10.x
+pack -r311955 https://source.sakaiproject.org/svn/pack/branches/sakai-10.x
+podcasts -r311955 https://source.sakaiproject.org/svn/podcasts/branches/sakai-10.x
+polls -r311955 https://source.sakaiproject.org/svn/polls/branches/sakai-10.x
+portal -r311955 https://source.sakaiproject.org/svn/portal/branches/sakai-10.x
+postem -r311955 https://source.sakaiproject.org/svn/postem/branches/sakai-10.x
+presence -r311955 https://source.sakaiproject.org/svn/presence/branches/sakai-10.x
+profile2 -r311955 https://source.sakaiproject.org/svn/profile2/branches/sakai-10.x
+providers -r311955 https://source.sakaiproject.org/svn/providers/branches/sakai-10.x
+reference -r311955 https://source.sakaiproject.org/svn/reference/branches/sakai-10.x
+reset-pass -r311955 https://source.sakaiproject.org/svn/reset-pass/branches/sakai-10.x
+rights -r311955 https://source.sakaiproject.org/svn/rights/branches/sakai-10.x
+roster2 -r311955 https://source.sakaiproject.org/svn/roster2/branches/sakai-10.x
+rwiki -r311955 https://source.sakaiproject.org/svn/rwiki/branches/sakai-10.x
+samigo -r311955 https://source.sakaiproject.org/svn/sam/branches/sakai-10.x
+search -r311955 https://source.sakaiproject.org/svn/search/branches/sakai-10.x
+sections -r311955 https://source.sakaiproject.org/svn/sections/branches/sakai-10.x
+shortenedurl -r311955 https://source.sakaiproject.org/svn/shortenedurl/branches/sakai-10.x
+signup -r311955 https://source.sakaiproject.org/svn/signup/branches/sakai-10.x/
+site -r311955 https://source.sakaiproject.org/svn/site/branches/sakai-10.x
+site-manage -r311955 https://source.sakaiproject.org/svn/site-manage/branches/sakai-10.x
+sitestats -r311955 https://source.sakaiproject.org/svn/sitestats/branches/sakai-10.x
+syllabus -r311955 https://source.sakaiproject.org/svn/syllabus/branches/sakai-10.x
+taggable -r311955 https://source.sakaiproject.org/svn/taggable/branches/sakai-10.x
+textarea -r311955 https://source.sakaiproject.org/svn/textarea/branches/sakai-10.x
+tool -r311955 https://source.sakaiproject.org/svn/tool/branches/sakai-10.x
+user -r311955 https://source.sakaiproject.org/svn/user/branches/sakai-10.x
+usermembership -r311955 https://source.sakaiproject.org/svn/usermembership/branches/sakai-10.x
+velocity -r311955 https://source.sakaiproject.org/svn/velocity/branches/sakai-10.x
+warehouse -r311955 https://source.sakaiproject.org/svn/warehouse/branches/sakai-10.x
+web -r311955 https://source.sakaiproject.org/svn/web/branches/sakai-10.x
