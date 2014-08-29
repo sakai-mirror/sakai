@@ -271,6 +271,7 @@
 				<module>edu-services/sections-service/sections-impl/sakai/model</module>
 				<module>emailtemplateservice/api</module>
 				<module>entitybroker/api</module>
+				<module>entitybroker/utils</module>
 				<module>hierarchy/api</module>
 				<module>kernel/component-manager</module>
 				<module>kernel/api</module>
@@ -321,6 +322,7 @@
 				<module>jobscheduler/scheduler-component-shared</module>
 				<module>jobscheduler/scheduler-events-model</module>
 				<module>search/search-api/api</module>
+				<module>search/search-util</module>
 				<module>shortenedurl/api</module>
 				<module>signup/api</module>
 				<module>site-manage/site-association-api/api</module>
