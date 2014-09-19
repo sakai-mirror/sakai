@@ -81,7 +81,7 @@ signup https://source.sakaiproject.org/svn/signup/trunk/
 
 # Experimental (contrib)
 assignment2 https://source.sakaiproject.org/contrib/assignment2/trunk
-dashboard https://source.sakaiproject.org/contrib/dashboard/trunk
+dashboard https://source.sakaiproject.org/svn/dashboard/trunk/
 endorsed https://source.sakaiproject.org/contrib/endorsed/trunk
 evaluation https://source.sakaiproject.org/contrib/evaluation/trunk
 formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
