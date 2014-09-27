@@ -58,7 +58,7 @@ reset-pass -r313935 https://source.sakaiproject.org/svn/reset-pass/branches/saka
 rights -r313935 https://source.sakaiproject.org/svn/rights/branches/sakai-10.x
 roster2 -r313935 https://source.sakaiproject.org/svn/roster2/branches/sakai-10.x
 rwiki -r313935 https://source.sakaiproject.org/svn/rwiki/branches/sakai-10.x
-samigo -r313935 https://source.sakaiproject.org/svn/sam/branches/sakai-10.x
+samigo -r313938 https://source.sakaiproject.org/svn/sam/branches/sakai-10.x
 search -r313935 https://source.sakaiproject.org/svn/search/branches/sakai-10.x
 sections -r313935 https://source.sakaiproject.org/svn/sections/branches/sakai-10.x
 shortenedurl -r313935 https://source.sakaiproject.org/svn/shortenedurl/branches/sakai-10.x
