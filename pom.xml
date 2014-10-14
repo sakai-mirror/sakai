@@ -250,6 +250,7 @@
 				<module>calendar/calendar-hbm</module>
 				<module>common/archive-api</module>
 				<module>common/impl</module>
+				<module>common/import-impl</module>
 				<module>common/edu-person-api</module>
 				<module>common/manager-api</module>
 				<module>common/type-api</module>
@@ -276,6 +277,7 @@
 				<module>kernel/component-manager</module>
 				<module>kernel/api</module>
 				<module>kernel/kernel-util</module>
+				<module>kernel/test-harness</module>
 				<module>lessonbuilder/api</module>
 				<module>lessonbuilder/hbm</module>
 				<module>login/login-api/api</module>
@@ -318,6 +320,7 @@
 				<module>samigo/samigo-api</module>
 				<module>samigo/samigo-hibernate</module>
 				<module>samigo/samigo-services</module>
+				<module>samigo/samigo-qti</module>
 				<module>jobscheduler/scheduler-api</module>
 				<module>jobscheduler/scheduler-component-shared</module>
 				<module>jobscheduler/scheduler-events-model</module>
