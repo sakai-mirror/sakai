@@ -41,9 +41,9 @@ mailarchive https://github.com/sakaiproject/sakai/trunk/mailarchive
 mailsender https://github.com/sakaiproject/sakai/trunk/mailsender
 memory https://github.com/sakaiproject/sakai/trunk/memory
 message https://github.com/sakaiproject/sakai/trunk/message
-metaobj https://github.com/sakaiproject/sakai/trunk/metaobj
+#metaobj https://github.com/sakaiproject/sakai/trunk/metaobj
 msgcntr https://github.com/sakaiproject/sakai/trunk/msgcntr
-osp https://github.com/sakaiproject/sakai/trunk/osp
+#osp https://github.com/sakaiproject/sakai/trunk/osp
 pack https://github.com/sakaiproject/sakai/trunk/pack
 podcasts https://github.com/sakaiproject/sakai/trunk/podcasts
 polls https://github.com/sakaiproject/sakai/trunk/polls
@@ -56,7 +56,7 @@ reference https://github.com/sakaiproject/sakai/trunk/reference
 reset-pass https://github.com/sakaiproject/sakai/trunk/reset-pass
 rights https://github.com/sakaiproject/sakai/trunk/rights
 rwiki https://github.com/sakaiproject/sakai/trunk/rwiki
-samigo https://github.com/sakaiproject/sakai/trunk/sam
+samigo https://github.com/sakaiproject/sakai/trunk/samigo
 search https://github.com/sakaiproject/sakai/trunk/search
 sections https://github.com/sakaiproject/sakai/trunk/sections
 shortenedurl https://github.com/sakaiproject/sakai/trunk/shortenedurl
@@ -70,7 +70,7 @@ tool https://github.com/sakaiproject/sakai/trunk/tool
 user https://github.com/sakaiproject/sakai/trunk/user
 usermembership https://github.com/sakaiproject/sakai/trunk/usermembership
 velocity https://github.com/sakaiproject/sakai/trunk/velocity
-warehouse https://github.com/sakaiproject/sakai/trunk/warehouse
+#warehouse https://github.com/sakaiproject/sakai/trunk/warehouse
 web https://github.com/sakaiproject/sakai/trunk/web
 
 # Sakai 10 additions
