@@ -82,9 +82,7 @@
                 <module>mailsender</module>
                 <module>memory</module>
                 <module>message</module>
-                <module>metaobj</module>
                 <module>msgcntr</module>
-                <module>osp</module>
                 <module>podcasts</module>
                 <module>polls</module>
                 <module>portal</module>
@@ -114,9 +112,13 @@
                 <module>userauditservice</module>
                 <module>usermembership</module>
                 <module>velocity</module>
-                <module>warehouse</module>
                 <module>web</module>
                 <module>webservices</module>
+                <!--
+                <module>metaobj</module>
+                <module>osp</module>
+                <module>warehouse</module>
+                -->
             </modules>
         </profile>
         <profile>
@@ -166,9 +168,7 @@
                 <module>mailsender</module>
                 <module>memory</module>
                 <module>message</module>
-                <module>metaobj</module>
                 <module>msgcntr</module>
-                <module>osp</module>
                 <module>podcasts</module>
                 <module>polls</module>
                 <module>portal</module>
@@ -184,9 +184,9 @@
                 <module>rss</module>
                 <module>rwiki</module>
                 <module>sakai-mock</module>
-				<module>samigo</module>
-				<module>search</module>
-				<module>sections</module>
+                <module>samigo</module>
+                <module>search</module>
+                <module>sections</module>
                 <module>shortenedurl</module>
                 <module>signup</module>
                 <module>site</module>
@@ -200,10 +200,14 @@
                 <module>userauditservice</module>
                 <module>usermembership</module>
                 <module>velocity</module>
-                <module>warehouse</module>
                 <module>web</module>
                 <module>webservices</module>
                 <module>yaft</module>
+                <!--
+                <module>metaobj</module>
+                <module>osp</module>
+                <module>warehouse</module>
+                -->
             </modules>
         </profile>
         
