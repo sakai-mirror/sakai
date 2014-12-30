@@ -81,11 +81,11 @@ external-calendaring-service https://github.com/sakaiproject/sakai/trunk/externa
 signup https://github.com/sakaiproject/sakai/trunk/signup/
 
 # Experimental (contrib)
-assignment2 https://source.sakaiproject.org/contrib/assignment2
+assignment2 https://source.sakaiproject.org/contrib/assignment2/trunk
 dashboard https://github.com/sakaiproject/sakai/trunk/dashboard/
-endorsed https://source.sakaiproject.org/contrib/endorsed
-evaluation https://source.sakaiproject.org/contrib/evaluation
-formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder
+endorsed https://source.sakaiproject.org/contrib/endorsed/trunk
+evaluation https://source.sakaiproject.org/contrib/evaluation/trunk
+formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
 reports https://github.com/sakaiproject/sakai/trunk/reports
 
 # Experimental (Github)
