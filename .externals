@@ -86,7 +86,7 @@ dashboard https://github.com/sakaiproject/sakai/trunk/dashboard/
 endorsed https://source.sakaiproject.org/contrib/endorsed/trunk
 evaluation https://source.sakaiproject.org/contrib/evaluation/trunk
 formbuilder https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
-reports https://github.com/sakaiproject/sakai/trunk/reports
+#reports https://github.com/sakaiproject/sakai/trunk/reports
 
 # Experimental (Github)
 clog https://github.com/adrianfish/clog/trunk
