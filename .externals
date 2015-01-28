@@ -14,7 +14,6 @@ emailtemplateservice https://github.com/sakaiproject/sakai/trunk/emailtemplatese
 entitybroker https://github.com/sakaiproject/sakai/trunk/entitybroker
 jobscheduler https://github.com/sakaiproject/sakai/trunk/jobscheduler
 jsf https://github.com/sakaiproject/sakai/trunk/jsf
-sakai-mock https://github.com/sakaiproject/sakai/trunk/sakai-mock
 userauditservice https://github.com/sakaiproject/sakai/trunk/userauditservice
 webservices https://github.com/sakaiproject/sakai/trunk/webservices
 

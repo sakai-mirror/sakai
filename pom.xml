@@ -95,7 +95,6 @@
                 <module>rights</module>
                 <module>roster2</module>
                 <module>rwiki</module>
-                <module>sakai-mock</module>
                 <module>samigo</module>
                 <module>search</module>
                 <module>sections</module>
@@ -182,7 +181,6 @@
                 <module>roster2</module>
                 <module>rss</module>
                 <module>rwiki</module>
-                <module>sakai-mock</module>
                 <module>samigo</module>
                 <module>search</module>
                 <module>sections</module>
