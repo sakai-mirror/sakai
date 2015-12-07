@@ -4,14 +4,14 @@
 	<parent>
 		<groupId>org.sakaiproject</groupId>
 		<artifactId>master</artifactId>
-		<version>11-SNAPSHOT</version>
+		<version>10-SNAPSHOT</version>
 		<relativePath>../master/pom.xml</relativePath>
 	</parent>
 	<name>Profile2</name>
 	<groupId>org.sakaiproject.profile2</groupId>
 	<artifactId>profile2</artifactId>
 	<packaging>pom</packaging>
-	<version>11-SNAPSHOT</version>
+	<version>10-SNAPSHOT</version>
 	<!-- ProjectVersion -->
 	<organization>
 		<name>The Sakai Foundation</name>
@@ -100,6 +100,11 @@
 				<version>2.3</version>
 				<scope>compile</scope>
 			</dependency>
+		<dependency>
+			<groupId>org.sakaiproject</groupId>
+			<artifactId>generic-dao</artifactId>
+			<version>${generic-dao.version}</version>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<issueManagement>

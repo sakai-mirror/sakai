@@ -5,7 +5,7 @@
   <classpathentry kind="src" path="/profile2-impl"/>
   <classpathentry kind="src" path="/profile2-util"/>
   <classpathentry kind="var" path="M2_REPO/org/imgscalr/imgscalr-lib/4.2/imgscalr-lib-4.2.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/11-SNAPSHOT/sakai-kernel-util-11-SNAPSHOT.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/11-SNAPSHOT/sakai-kernel-util-11-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/10-SNAPSHOT/sakai-kernel-util-10-SNAPSHOT.jar" sourcepath="M2_REPO/org/sakaiproject/kernel/sakai-kernel-util/10-SNAPSHOT/sakai-kernel-util-10-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/twitter4j/twitter4j-core/3.0.5/twitter4j-core-3.0.5.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/sakaiproject/generic-dao/0.9.18/generic-dao-0.9.18.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/azeckoski/reflectutils/0.9.14/reflectutils-0.9.14.jar"/>

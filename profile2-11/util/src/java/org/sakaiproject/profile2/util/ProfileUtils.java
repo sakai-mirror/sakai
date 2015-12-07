@@ -365,7 +365,9 @@ public class ProfileUtils {
 	 */
 	public static String getUserPreferredOrientation() {
 		ResourceLoader rl = new ResourceLoader();
-		return rl.getOrientation(rl.getLocale());
+		//This only exists in Sakai 11
+		return "ltr";
+		//return rl.getOrientation(rl.getLocale());
 	}
 	
 	/**
